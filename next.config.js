@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "heroui.com",
+			},
+			{
+				protocol: "https",
+				hostname: "i.pravatar.cc",
+			},
+		],
+	},
+};
 
 module.exports = nextConfig;
