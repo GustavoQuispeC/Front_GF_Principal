@@ -37,10 +37,10 @@ export default function Marcas() {
                   <rect width="100%" height="100%" fill="#fff" data-original="#ffffff" />
                 </mask>
                 <g mask="url(#a)">
-                  <g fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="30" clip-path="url(#b)" transform="matrix(1.33333 0 0 -1.33333 0 682.667)">
+                  <g fill="none" stroke="currentColor" strokeMiterlimit="10" strokeWidth="30" clipPath="url(#b)" transform="matrix(1.33333 0 0 -1.33333 0 682.667)">
                     <path d="M458.172 372.633a533.882 533.882 0 0 0-.474 16.345c-.303 20.475-16.411 37.184-36.856 38.326-62.529 3.493-111.431 24.292-152.737 64.553-6.912 6.336-17.279 6.336-24.191 0-41.306-40.261-90.208-61.06-152.737-64.553-20.445-1.142-36.553-17.851-36.857-38.325a530.642 530.642 0 0 0-.473-16.346C51.549 251.97 48.104 86.598 248.803 16.615a22.014 22.014 0 0 1 2.942-.801l.01-.002a21.72 21.72 0 0 1 8.509 0c1.002.2 1.996.47 2.961.807C463.342 86.602 460.47 251.398 458.172 372.633Z" data-original="#000000" />
                     <path d="M368.408 256c0-62.082-50.327-112.409-112.408-112.409S143.592 193.918 143.592 256c0 62.082 50.327 112.409 112.408 112.409S368.408 318.082 368.408 256Z" data-original="#000000" />
-                    <path stroke-linecap="round" d="m303.227 284.952-69.785-69.785M206.773 241.834l26.668-26.668" data-original="#000000" />
+                    <path strokeLinecap="round" d="m303.227 284.952-69.785-69.785M206.773 241.834l26.668-26.668" data-original="#000000" />
                   </g>
                 </g>
               </svg>
@@ -57,7 +57,7 @@ export default function Marcas() {
 
           <div className="bg-white border border-gray-200 p-5 rounded-2xl">
             <div className="flex items-center gap-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-[52px] h-[52px] bg-purple-50 fill-purple-700 p-3 rounded-lg shrink-0" fill-rule="evenodd" viewBox="0 0 24 24">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-[52px] h-[52px] bg-purple-50 fill-purple-700 p-3 rounded-lg shrink-0" fillRule="evenodd" viewBox="0 0 24 24">
                 <g transform="matrix(1.06 0 0 1.06 -.72 -.72)">
                   <circle cx="5.25" cy="5" r=".75" data-original="#000000" />
                   <circle cx="7.75" cy="5" r=".75" data-original="#000000" />
@@ -102,12 +102,12 @@ export default function Marcas() {
                     <path d="M0 512h512V0H0Z" data-original="#000000" />
                   </clipPath>
                 </defs>
-                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="30" clip-path="url(#a)" transform="matrix(1.33333 0 0 -1.33333 0 682.667)">
+                <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="30" clipPath="url(#a)" transform="matrix(1.33333 0 0 -1.33333 0 682.667)">
                   <path d="M75 467c0-16.568-13.432-30-30-30-16.568 0-30 13.432-30 30 0 16.568 13.432 30 30 30 16.568 0 30-13.432 30-30ZM75 45c0-16.568-13.432-30-30-30-16.568 0-30 13.432-30 30 0 16.568 13.432 30 30 30 16.568 0 30-13.432 30-30ZM497 467c0-16.568-13.432-30-30-30-16.568 0-30 13.432-30 30 0 16.568 13.432 30 30 30 16.568 0 30-13.432 30-30ZM497 45c0-16.568-13.432-30-30-30-16.568 0-30 13.432-30 30 0 16.568 13.432 30 30 30 16.568 0 30-13.432 30-30ZM406 256c0-82.843-67.157-150-150-150s-150 67.157-150 150 67.157 150 150 150 150-67.157 150-150Z" data-original="#000000" />
                   <path d="M316 256c0-82.843-26.863-150-60-150s-60 67.157-60 150 26.863 150 60 150 60-67.157 60-150ZM106 256h300M66.213 445.787l83.721-83.721M445.787 445.787l-83.721-83.721M362.066 149.934l83.721-83.721M149.934 149.934 66.213 66.213" data-original="#000000" />
                 </g>
               </svg>
-              <div>
+              <div> 
                 <h3 className="text-slate-900 text-lg font-semibold">Scalability</h3>
                 <p className="text-[13px] text-slate-600 mt-1">Scales with your growth</p>
               </div>

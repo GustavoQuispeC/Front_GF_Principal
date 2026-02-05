@@ -8,6 +8,7 @@ export const Logo: React.FC<IconSvgProps> = ({
   height,
   ...props
 }) => (
+  
   <svg
     fill="none"
     height={size || height}

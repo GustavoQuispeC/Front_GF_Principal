@@ -7,7 +7,7 @@ export default function Header() {
           <div className="grid lg:grid-cols-2 justify-center items-center gap-x-12 gap-y-16">
             <div>
               <div className="max-w-3xl max-lg:mx-auto max-lg:text-center">
-                <p className="mb-2 font-medium text-indigo-600  uppercase">
+                <p className="mb-2 font-medium text-blue-600  uppercase">
                   <span className="rotate-90 inline-block mr-2">|</span>{" "}
                   construye tus sueños
                 </p>
@@ -18,14 +18,14 @@ export default function Header() {
                   {/* Segunda línea */}
                   <span className="block">
                     <span className="text-black">G</span>
-                    <span className="text-blue-800">rupo</span>{" "}
+                    <span className="text-blue-700">rupo</span>{" "}
                     <span className="text-black">F</span>
-                    <span className="text-orange-600">amet</span>{" "}
-                    <span className="text-blue-800">
-                      S<span className="text-orange-600">.</span>A
-                      <span className="text-orange-600">.</span>C
+                    <span className="text-orange-500">amet</span>{" "}
+                    <span className="text-blue-700">
+                      S<span className="text-orange-500">.</span>A
+                      <span className="text-orange-500">.</span>C
                     </span>
-                    <span className="text-orange-600">.</span>
+                    <span className="text-orange-500">.</span>
                   </span>
                 </h1>
                 <p className="text-slate-600 text-base leading-relaxed mt-6">
@@ -36,7 +36,7 @@ export default function Header() {
                 <div className="mt-12 flex flex-wrap gap-6 max-lg:justify-center">
                   <button
                     type="button"
-                    className="bg-indigo-600 hover:bg-indigo-700 border border-indigo-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0"
+                    className="bg-blue-600 hover:bg-blue-700 border border-blue-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0"
                   >
                     Visitar la Tienda
                   </button>
@@ -69,9 +69,9 @@ export default function Header() {
                       ></path>
                       <path
                         fill="#fff"
-                        fill-rule="evenodd"
+                        fillRule="evenodd"
                         d="M19.268,16.045c-0.355-0.79-0.729-0.806-1.068-0.82c-0.277-0.012-0.593-0.011-0.909-0.011c-0.316,0-0.83,0.119-1.265,0.594c-0.435,0.475-1.661,1.622-1.661,3.956c0,2.334,1.7,4.59,1.937,4.906c0.237,0.316,3.282,5.259,8.104,7.161c4.007,1.58,4.823,1.266,5.693,1.187c0.87-0.079,2.807-1.147,3.202-2.255c0.395-1.108,0.395-2.057,0.277-2.255c-0.119-0.198-0.435-0.316-0.909-0.554s-2.807-1.385-3.242-1.543c-0.435-0.158-0.751-0.237-1.068,0.238c-0.316,0.474-1.225,1.543-1.502,1.859c-0.277,0.317-0.554,0.357-1.028,0.119c-0.474-0.238-2.002-0.738-3.815-2.354c-1.41-1.257-2.362-2.81-2.639-3.285c-0.277-0.474-0.03-0.731,0.208-0.968c0.213-0.213,0.474-0.554,0.712-0.831c0.237-0.277,0.316-0.475,0.474-0.791c0.158-0.317,0.079-0.594-0.04-0.831C20.612,19.329,19.69,16.983,19.268,16.045z"
-                        clip-rule="evenodd"
+                        clipRule="evenodd"
                       ></path>
                     </svg>
                     <span>Contáctanos</span>
@@ -107,7 +107,7 @@ export default function Header() {
             <div className="w-full aspect-[42/33]">
               <img
                 // 
-                src="https://scontent.ftru3-1.fna.fbcdn.net/v/t39.30808-6/515041271_1416367416522443_3217425880766110001_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=AbFxKEk75-EQ7kNvwECBcBg&_nc_oc=Adm0fQbPafU9EROGAYeP12Pbc9PFttNJv-9597-hkuzUzI5RktdDlmkeEcRGTqpfWUc&_nc_zt=23&_nc_ht=scontent.ftru3-1.fna&_nc_gid=fmKDo4hZttEGzw8ZNufJRQ&oh=00_Afu79Aoox5vCBU-gzsDpB5-jCbg2-g6Y4lGG-oxgqRRlEA&oe=698A0ECA"
+                src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Flogo.png?alt=media&token=44593030-63ef-4f3a-bb6b-5feb87f02201"
                 alt="banner img"
                 className="w-full h-full object-contain"
               />
