@@ -2,12 +2,12 @@
 
 export default function Productos() {
   return (
-    <div className="bg-white p-4">
+    <div className="bg-white p-4 dark:bg-gray-900">
         <div className="mx-auto lg:max-w-7xl md:max-w-4xl sm:max-w-xl max-sm:max-w-sm">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-6 sm:mb-8">Catálogo de productos</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900 mb-6 sm:mb-8 dark:text-white">Catálogo de productos</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Fsika_impermur.png?alt=media&token=42fb4a60-a8a7-4d7e-ab17-9cc0377a066a" alt="Product 1"
@@ -15,10 +15,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Sika Impermur</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$10.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Sika Impermur</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$10.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -33,7 +33,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Fcemento%20extraforte.png?alt=media&token=49be29bc-4fb0-4c84-a02d-22e5c49a4f50" alt="Product 2"
@@ -41,10 +41,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Cemento Extraforte</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$12.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Cemento Extraforte</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$12.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -59,7 +59,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp4NaP2LiZtUH2DHpINacDI5974lz1Zu8j-Q&s" alt="Product 3"
@@ -67,10 +67,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Cemento mochica</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$14.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Cemento mochica</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$14.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -85,7 +85,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://d34fyu2ua7aizz.cloudfront.net/images/product/8/large/ts_image_5d164630b43bf4_16775386.jpg" alt="Product 3"
@@ -93,10 +93,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Cemento tipo 1</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$12.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Cemento tipo 1</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$12.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -111,7 +111,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHE10nnA-l3uYYGnHWvdOEXiEnOh-hPZFwEQ&s" alt="Product 3"
@@ -119,10 +119,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Tubo cuadrado 2.0*2.0mm*6mt</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$15.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Tubo cuadrado 2.0*2.0mm*6mt</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$15.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -137,7 +137,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://ferreteriadinova.com/wp-content/uploads/2025/09/CALAMINA-PREPINTADA-ROJO.jpeg" alt="Product 3"
@@ -145,10 +145,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Calamina roja 0.3x0.8x3.60</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$16.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Calamina roja 0.3x0.8x3.60</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$16.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -163,7 +163,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwzNXR7unqfsAqha7psfPwfyvZpvvz6UTwyQ&s" alt="Product 3"
@@ -171,10 +171,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Teja andina</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$12.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Teja andina</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$12.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div
@@ -189,7 +189,7 @@ export default function Productos() {
               </div>
             </div>
 
-            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3">
+            <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
                 <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
                   <img src="https://media.falabella.com/sodimacPE/211230_01/w=800,h=800,fit=pad" alt="Product 3"
@@ -197,10 +197,10 @@ export default function Productos() {
                 </div>
 
                 <div className="flex gap-2 mt-4">
-                  <h5 className="text-base font-semibold text-slate-900">Fierro de 1/2</h5>
-                  <h6 className="text-base text-slate-900 font-bold ml-auto">$11.00</h6>
+                  <h5 className="text-base font-semibold text-slate-900 dark:text-white">Fierro de 1/2</h5>
+                  <h6 className="text-base text-slate-900 font-bold ml-auto dark:text-white">$11.00</h6>
                 </div>
-                <p className="text-slate-600 text-[13px] mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                <p className="text-slate-600 text-[13px] mt-2 dark:text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </a>
               <div className="flex items-center gap-2 mt-6">
                 <div

@@ -1,34 +1,34 @@
 "use cliente";
 export default function Header() {
   return (
-    <div className="bg-gradient-to-b from-white via-sky-50 to-purple-50">
+    <div className="bg-gradient-to-b from-white via-sky-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 rounded dark:to-gray-900">
       <div className="px-4 sm:px-10 py-12 md:py-16">
         <div className="max-w-screen-xl mx-auto">
           <div className="grid lg:grid-cols-2 justify-center items-center gap-x-12 gap-y-16">
             <div>
               <div className="max-w-3xl max-lg:mx-auto max-lg:text-center">
-                <p className="mb-2 font-medium text-blue-600  uppercase">
+                <p className="mb-2 font-medium text-orange-500  uppercase dark:text-orange-400">
                   <span className="rotate-90 inline-block mr-2">|</span>{" "}
                   construye tus sueños
                 </p>
-                <h1 className="text-slate-900 md:text-5xl text-4xl font-bold !leading-tight">
+                <h1 className="text-blue-900 md:text-5xl text-4xl font-bold !leading-tight dark:text-white">
                   {/* Primera línea */}
                   <span className="block">Bienvenidos a</span>
 
                   {/* Segunda línea */}
                   <span className="block">
-                    <span className="text-black">G</span>
-                    <span className="text-blue-700">rupo</span>{" "}
+                    <span className="text-blue-900 dark:text-white">Grupo Famet S.A.C.</span>
+                    {/* <span className="text-blue-700">rupo</span>{" "}
                     <span className="text-black">F</span>
                     <span className="text-orange-500">amet</span>{" "}
                     <span className="text-blue-700">
                       S<span className="text-orange-500">.</span>A
                       <span className="text-orange-500">.</span>C
                     </span>
-                    <span className="text-orange-500">.</span>
+                    <span className="text-orange-500">.</span> */}
                   </span>
                 </h1>
-                <p className="text-slate-600 text-base leading-relaxed mt-6">
+                <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed mt-6">
                   Somos una empresa dedicada a la venta de materiales de
                   construcción y perfiles siderúrgicos.
                 </p>
@@ -36,13 +36,13 @@ export default function Header() {
                 <div className="mt-12 flex flex-wrap gap-6 max-lg:justify-center">
                   <button
                     type="button"
-                    className="bg-blue-600 hover:bg-blue-700 border border-blue-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0"
+                    className="bg-blue-600 hover:bg-blue-700 border border-blue-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:bg-indigo-600 dark:hover:bg-indigo-700"
                   >
                     Visitar la Tienda
                   </button>
                   <button
                     type="button"
-                    className="flex items-center gap-2 bg-transparent hover:border-indigo-700 border border-gray-400 transition-all text-base text-slate-900 font-medium rounded-lg px-6 py-1 cursor-pointer outline-0"
+                    className="flex items-center gap-2 bg-transparent hover:border-indigo-700 border border-gray-400 transition-all text-base text-slate-900 font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:text-white dark:hover:border-indigo-700"
                   >
                     {/* SVG de WhatsApp ajustado a tamaño de icono */}
                     <svg
@@ -97,12 +97,27 @@ export default function Header() {
                     alt="img-3"
                   />
                 </div>
-                <div className="text-slate-600 text-base">
+                <div className="text-slate-600 text-base dark:text-slate-400">
                   <span className="font-semibold">Mas de 10,000</span> Clientes
-                  confian en nosotros
+                  confian en nosotros.
+                </div>
+              </div>
+
+              <div className="flex items-center flex-wrap max-lg:justify-center gap-4 mt-8">
+                <div className="flex -space-x-2">
+                
+                  <img
+                    className="w-16 h-10 rounded-full border-2 border-white"
+                    src="https://media.istockphoto.com/id/1302438914/es/vector/icono-del-cami%C3%B3n-de-entrega-r%C3%A1pida-env%C3%ADo-r%C3%A1pido-dise%C3%B1o-para-sitios-web-y-aplicaciones-m%C3%B3viles.jpg?s=612x612&w=0&k=20&c=yMtEbO4d3z0VC2bFtZhey7X7MLnnBFIrw62Gy06KXXA="
+                    alt="img-3"
+                  />
+                </div>
+                <div className="text-slate-600 text-base dark:text-slate-400">
+                  <span className="font-semibold">Entrega inmediata</span> Envío rápido y seguro.
                 </div>
               </div>
             </div>
+            
 
             <div className="w-full aspect-[42/33]">
               <img
