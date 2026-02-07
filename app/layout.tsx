@@ -44,7 +44,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
-            <div className="bg-slate-900 px-6 py-3 gap-4">
+            <div className="bg-blue-900 px-6 py-3 gap-4">
       <div className="flex items-center justify-center text-center relative">
         <p className="text-[15px] text-white font-medium pr-6 leading-relaxed">🎉 Aprovecha los Mejores Descuentos% este mes de Febrero  – 
           <a href="javascript:void(0)" className="ml-1">Haz tu pedido ahora!</a></p>

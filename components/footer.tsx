@@ -1,11 +1,13 @@
 
 export const Footer = () => {
     return (
-        <footer className="bg-gradient-to-r from-[#111] via-slate-900 to-[#111] pt-14 pb-6 px-12 tracking-wide">
+        <footer className="bg-gradient-to-r from-[#111] via-slate-800 to-[#111] pt-14 pb-6 px-12 tracking-wide">
       <div className="max-w-2xl mx-auto text-center">
-        <a href='javascript:void(0)' className="inline-block"><img src="https://readymadeui.com/readymadeui-light.svg" alt="logo"
-          className="w-44" /></a>
-        <p className="text-sm mt-6 text-slate-300 leading-relaxed">ReadymadeUI is your go-to platform for high-quality, pre-built UI components and website templates. Whether you're a developer or designer, we help you launch beautiful, responsive interfaces.</p>
+        <a href='javascript:void(0)' className="inline-block">
+          <img src="/LogoFamet2.png" alt="logo"
+          className="w-44" />
+          </a>
+        <p className="text-sm mt-6 text-slate-300 leading-relaxed">Somos una empresa especializada en la venta de materiales de construcción, orientada a brindar calidad, seguridad y confianza en cada proyecto.</p>
 
         <ul className="flex flex-wrap justify-center gap-6 mt-8">
           <li>
@@ -67,8 +69,8 @@ export const Footer = () => {
             </svg>
           </div>
           <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Tel</small>
-            <span className="font-medium">180-548-2588</span>
+            <small className="block">Teléfono</small>
+            <span className="font-medium">970232330</span>
           </a>
         </li>
         <li className="flex items-center">
@@ -80,8 +82,8 @@ export const Footer = () => {
             </svg>
           </div>
           <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Mail</small>
-            <span className="font-medium">info@example.com</span>
+            <small className="block">Correo</small>
+            <span className="font-medium">grupo.fametsac@gmail.com</span>
           </a>
         </li>
         <li className="flex items-center">
@@ -96,8 +98,8 @@ export const Footer = () => {
             </svg>
           </div>
           <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Address</small>
-            <span className="font-medium">123 Main Street City, Country</span>
+            <small className="block">Dirección</small>
+            <span className="font-medium">Jr. Libertad N° 824</span>
           </a>
         </li>
         <li className="flex items-center">
@@ -109,8 +111,8 @@ export const Footer = () => {
             </svg>
           </div>
           <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Fax</small>
-            <span className="font-medium">+1-548-2588</span>
+            <small className="block">Celular</small>
+            <span className="font-medium">970253391</span>
           </a>
         </li>
       </ul>
@@ -120,17 +122,17 @@ export const Footer = () => {
       <div className="flex max-md:flex-col max-md:text-center gap-4">
         <ul className="flex flex-wrap gap-4 max-md:justify-center">
           <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Terms of Service</a>
+            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Terminos de servicios</a>
           </li>
           <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Privacy Policy</a>
+            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Politicas de privacidad</a>
           </li>
           <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Security</a>
+            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Seguridad</a>
           </li>
         </ul>
-        <p className="text-sm text-slate-300 md:ml-auto">© ReadymadeUI. All rights reserved.</p>
-      </div>
+        <p className="text-sm text-slate-300 md:ml-auto">© Grupo Famet SAC. Todos los derechos reservados.</p>
+      </div>|
     </footer>
     );
 }

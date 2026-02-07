@@ -122,7 +122,7 @@ export default function Header() {
             <div className="w-full aspect-[42/33]">
               <img
                 // 
-                src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Flogo.png?alt=media&token=44593030-63ef-4f3a-bb6b-5feb87f02201"
+                src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/PRESENTACION.png?alt=media&token=76f66c11-0c78-415f-b9fe-b772ebdba166"
                 alt="banner img"
                 className="w-full h-full object-contain"
               />
