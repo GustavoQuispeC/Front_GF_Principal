@@ -9,8 +9,8 @@ export default function Productos() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-xl:gap-4 gap-6">
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Fsika_impermur.png?alt=media&token=42fb4a60-a8a7-4d7e-ab17-9cc0377a066a" alt="Product 1"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FSIKA%2FSIKA%20IMPERMUR.png?alt=media&token=5bf61563-0b54-4c38-833c-6e8fcb297e66" alt="Product 1"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -35,8 +35,8 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2Fcemento%20extraforte.png?alt=media&token=49be29bc-4fb0-4c84-a02d-22e5c49a4f50" alt="Product 2"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCEMENTO%2FPACASMAYO%20EXTRAFORTE.png?alt=media&token=4924ff61-2360-40cf-b832-630912ce01ec" alt="Product 2"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -61,8 +61,8 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSp4NaP2LiZtUH2DHpINacDI5974lz1Zu8j-Q&s" alt="Product 3"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCEMENTO%2FCEMENTO%20MOCHICA.png?alt=media&token=1344c797-d93a-4ecb-b27f-1705cfedb7e7" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -87,8 +87,8 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://d34fyu2ua7aizz.cloudfront.net/images/product/8/large/ts_image_5d164630b43bf4_16775386.jpg" alt="Product 3"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCEMENTO%2FCEMENTO%20TIPO%201.png?alt=media&token=51630310-fee3-44bb-9d20-f5111601cef6" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -113,7 +113,7 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHE10nnA-l3uYYGnHWvdOEXiEnOh-hPZFwEQ&s" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>
@@ -139,8 +139,8 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://ferreteriadinova.com/wp-content/uploads/2025/09/CALAMINA-PREPINTADA-ROJO.jpeg" alt="Product 3"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCALAMINA%2FCALAMINA%20ROJA.png?alt=media&token=673a3e65-be58-4b81-b013-e9235e8b4bc6" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -165,8 +165,8 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
-                  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwzNXR7unqfsAqha7psfPwfyvZpvvz6UTwyQ&s" alt="Product 3"
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FTEJA%2FTEJA%20ANDINA.png?alt=media&token=9dd5edfe-554f-4ef2-8c08-e7ed839ff796" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>
 
@@ -191,7 +191,7 @@ export default function Productos() {
 
             <div className="bg-white shadow-sm border border-gray-200 rounded-lg p-3 dark:bg-gray-800 dark:border-gray-700">
               <a href="javascript:void(0)" className="block">
-                <div className="aspect-[12/11] bg-gray-100 rounded-lg p-4">
+                <div className="aspect-[12/11] bg-gray-50 rounded-lg p-4">
                   <img src="https://media.falabella.com/sodimacPE/211230_01/w=800,h=800,fit=pad" alt="Product 3"
                     className="w-full h-full object-contain" />
                 </div>

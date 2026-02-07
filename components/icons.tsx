@@ -23,6 +23,8 @@ export const Logo: React.FC<IconSvgProps> = ({
       fillRule="evenodd"
     />
   </svg>
+ 
+
 );
 
 export const DiscordIcon: React.FC<IconSvgProps> = ({

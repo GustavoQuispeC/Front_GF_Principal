@@ -36,13 +36,13 @@ export default function Header() {
                 <div className="mt-12 flex flex-wrap gap-6 max-lg:justify-center">
                   <button
                     type="button"
-                    className="bg-blue-600 hover:bg-blue-700 border border-blue-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:bg-indigo-600 dark:hover:bg-indigo-700"
+                    className="bg-orange-600 hover:bg-orange-700 border border-orange-700 transition-all text-base text-white font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:bg-orange-600 dark:hover:bg-orange-700"
                   >
                     Visitar la Tienda
                   </button>
                   <button
                     type="button"
-                    className="flex items-center gap-2 bg-transparent hover:border-indigo-700 border border-gray-400 transition-all text-base text-slate-900 font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:text-white dark:hover:border-indigo-700"
+                    className="flex items-center gap-2 bg-transparent hover:border-orange-700 border border-gray-400 transition-all text-base text-slate-900 font-medium rounded-lg px-6 py-1 cursor-pointer outline-0 dark:text-white dark:hover:border-orange-700"
                   >
                     {/* SVG de WhatsApp ajustado a tamaño de icono */}
                     <svg
