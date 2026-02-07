@@ -1,11 +1,11 @@
 
 export default function Marcas() {
     return (
-        <div className="w-full bg-slate-50 px-6 py-12">
+        <div className="w-full bg-slate-50 px-6 py-12 dark:bg-gray-900">
       <div className="max-w-screen-xl mx-auto">
         <div className="max-w-3xl mb-12 max-md:text-center">
-          <h2 className="text-slate-900 text-3xl font-bold mb-4 md:!leading-[45px] leading-[40px]">Aliados estratégicos</h2>
-          <p className="text-slate-600 text-[15px] leading-relaxed">Trabajamos con marcas reconocidas del sector construcción, garantizando materiales de calidad, confianza y respaldo para cada proyecto.</p>
+          <h2 className="text-slate-900 text-3xl font-bold mb-4 md:!leading-[45px] leading-[40px] dark:text-white">Aliados estratégicos</h2>
+          <p className="text-slate-600 text-[15px] leading-relaxed dark:text-gray-400">Trabajamos con marcas reconocidas del sector construcción, garantizando materiales de calidad, confianza y respaldo para cada proyecto.</p>
         </div>
 
         <div className="grid lg:grid-cols-3 md:grid-cols-2 max-md:max-w-lg mx-auto gap-8">
