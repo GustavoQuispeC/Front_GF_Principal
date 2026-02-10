@@ -30,33 +30,38 @@ export default function Categorias() {
   ];
 
   const Card = ({ title, img, classNameImg = "h-48", big = false }: CardProps) => (
-    <div className={`relative overflow-hidden rounded-2xl shadow-lg group ${big ? "md:col-span-2 md:row-span-2" : ""}`}>
-      <img
-        src={img}
-        alt={title}
-        className={`w-full ${big ? "h-full" : classNameImg} object-cover
-          transition duration-300 ease-out
-          group-hover:scale-110
-          group-hover:brightness-75
-          group-hover:blur-[2px]
-        `}
-      />
+  <div
+    className={`relative overflow-hidden rounded-2xl shadow-lg group ${
+      big ? "md:col-span-2 md:row-span-2" : ""
+    }`}
+  >
+    {/* Imagen */}
+    <img
+      src={img}
+      alt={title}
+      className={`w-full ${big ? "h-full" : classNameImg} object-cover
+        transition-transform duration-300 ease-out
+        group-hover:scale-110
+      `}
+    />
 
-      {/* Texto */}
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className={`${big ? "text-2xl" : "text-xl"} font-bold text-white`}>
-            {title}
-          </h3>
-          {big && (
-            <p className="text-white">
-               Somos Distribuidor autorizado.
-            </p>
-          )}
-        </div>
+    {/* Overlay + Texto SIEMPRE visible y centrado */}
+    <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+      <div className="text-center px-4">
+        <h3 className={`${big ? "text-2xl" : "text-xl"} font-bold text-white`}>
+          {title}
+        </h3>
+
+        {big && (
+          <p className="text-white mt-2">
+            Somos Distribuidor autorizado.
+          </p>
+        )}
       </div>
     </div>
-  );
+  </div>
+);
+
   return (
     <div className="bg-slate-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
