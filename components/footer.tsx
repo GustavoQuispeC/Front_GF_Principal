@@ -1,140 +1,227 @@
+import { Facebook, Linkedin, Instagram, X, Mail } from "lucide-react";
 
 export const Footer = () => {
-    return (
-        <footer className="bg-gradient-to-r from-[#111] via-slate-800 to-[#111] pt-14 pb-6 px-4 sm:px-6 lg:px-8 2xl:px-12 tracking-wide">
-      <div className="w-full max-w-screen-2xl mx-auto">
-        <div className="text-center">
-        <a href='javascript:void(0)' className="inline-block">
-          <img src="/LogoFamet2.png" alt="logo"
-          className="w-44" />
-          </a>
-        <p className="text-sm mt-6 text-slate-300 leading-relaxed">Somos una empresa especializada en la venta de materiales de construcción, orientada a brindar calidad, seguridad y confianza en cada proyecto.</p>
+  const WHATSAPP_NUMBER = "51904193374";
+  const WA_LINK = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    "Hola, quiero cotizar materiales. ¿Me pueden ayudar?"
+  )}`;
 
-        <ul className="flex flex-wrap justify-center gap-6 mt-8">
-          <li>
-            <a href='javascript:void(0)'>
-              <svg xmlns="http://www.w3.org/2000/svg" className="fill-blue-600 w-8 h-8" viewBox="0 0 49.652 49.652">
-                <path d="M24.826 0C11.137 0 0 11.137 0 24.826c0 13.688 11.137 24.826 24.826 24.826 13.688 0 24.826-11.138 24.826-24.826C49.652 11.137 38.516 0 24.826 0zM31 25.7h-4.039v14.396h-5.985V25.7h-2.845v-5.088h2.845v-3.291c0-2.357 1.12-6.04 6.04-6.04l4.435.017v4.939h-3.219c-.524 0-1.269.262-1.269 1.386v2.99h4.56z" data-original="#000000" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href='javascript:void(0)'>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 112.196 112.196">
-                <circle cx="56.098" cy="56.097" r="56.098" fill="#007ab9" data-original="#007ab9" />
-                <path fill="#fff" d="M89.616 60.611v23.128H76.207V62.161c0-5.418-1.936-9.118-6.791-9.118-3.705 0-5.906 2.491-6.878 4.903-.353.862-.444 2.059-.444 3.268v22.524h-13.41s.18-36.546 0-40.329h13.411v5.715c-.027.045-.065.089-.089.132h.089v-.132c1.782-2.742 4.96-6.662 12.085-6.662 8.822 0 15.436 5.764 15.436 18.149zm-54.96-36.642c-4.587 0-7.588 3.011-7.588 6.967 0 3.872 2.914 6.97 7.412 6.97h.087c4.677 0 7.585-3.098 7.585-6.97-.089-3.956-2.908-6.967-7.496-6.967zm-6.791 59.77H41.27v-40.33H27.865v40.33z" data-original="#f1f2f2" />
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href='javascript:void(0)'>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 152 152">
-                <linearGradient id="a" x1="22.26" x2="129.74" y1="22.26" y2="129.74" gradientUnits="userSpaceOnUse">
-                  <stop offset="0" stopColor="#fae100" />
-                  <stop offset=".15" stopColor="#fcb720" />
-                  <stop offset=".3" stopColor="#ff7950" />
-                  <stop offset=".5" stopColor="#ff1c74" />
-                  <stop offset="1" stopColor="#6c1cd1" />
-                </linearGradient>
-                <g data-name="Layer 2">
-                  <g data-name="03.Instagram">
-                    <rect width="152" height="152" fill="url(#a)" data-original="url(#a)" rx="76" />
-                    <g fill="#fff">
-                      <path fill="#ffffff10" d="M133.2 26c-11.08 20.34-26.75 41.32-46.33 60.9S46.31 122.12 26 133.2q-1.91-1.66-3.71-3.46A76 76 0 1 1 129.74 22.26q1.8 1.8 3.46 3.74z" data-original="#ffffff10" />
-                      <path d="M94 36H58a22 22 0 0 0-22 22v36a22 22 0 0 0 22 22h36a22 22 0 0 0 22-22V58a22 22 0 0 0-22-22zm15 54.84A18.16 18.16 0 0 1 90.84 109H61.16A18.16 18.16 0 0 1 43 90.84V61.16A18.16 18.16 0 0 1 61.16 43h29.68A18.16 18.16 0 0 1 109 61.16z" data-original="#ffffff" />
-                      <path d="m90.59 61.56-.19-.19-.16-.16A20.16 20.16 0 0 0 76 55.33 20.52 20.52 0 0 0 55.62 76a20.75 20.75 0 0 0 6 14.61 20.19 20.19 0 0 0 14.42 6 20.73 20.73 0 0 0 14.55-35.05zM76 89.56A13.56 13.56 0 1 1 89.37 76 13.46 13.46 0 0 1 76 89.56zm26.43-35.18a4.88 4.88 0 0 1-4.85 4.92 4.81 4.81 0 0 1-3.42-1.43 4.93 4.93 0 0 1 3.43-8.39 4.82 4.82 0 0 1 3.09 1.12l.1.1a3.05 3.05 0 0 1 .44.44l.11.12a4.92 4.92 0 0 1 1.1 3.12z" data-original="#ffffff" />
-                    </g>
-                  </g>
-                </g>
-              </svg>
-            </a>
-          </li>
-          <li>
-            <a href='javascript:void(0)'>
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" viewBox="0 0 1227 1227">
-                <path d="M613.5 0C274.685 0 0 274.685 0 613.5S274.685 1227 613.5 1227 1227 952.315 1227 613.5 952.315 0 613.5 0z" data-original="#000000" />
-                <path fill="#fff" d="m680.617 557.98 262.632-305.288h-62.235L652.97 517.77 470.833 252.692H260.759l275.427 400.844-275.427 320.142h62.239l240.82-279.931 192.35 279.931h210.074L680.601 557.98zM345.423 299.545h95.595l440.024 629.411h-95.595z" data-original="#ffffff" />
-              </svg>
-            </a>
-          </li>
-        </ul>
-      </div>
+  return (
+    <footer className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-slate-200">
+      <div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 2xl:px-12">
 
-      <ul className="grid max-sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12 mt-20">
-        <li className="flex items-center">
-          <div className="bg-gray-300 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-black" viewBox="0 0 482.6 482.6">
-              <path
-                d="M98.339 320.8c47.6 56.9 104.9 101.7 170.3 133.4 24.9 11.8 58.2 25.8 95.3 28.2 2.3.1 4.5.2 6.8.2 24.9 0 44.9-8.6 61.2-26.3.1-.1.3-.3.4-.5 5.8-7 12.4-13.3 19.3-20 4.7-4.5 9.5-9.2 14.1-14 21.3-22.2 21.3-50.4-.2-71.9l-60.1-60.1c-10.2-10.6-22.4-16.2-35.2-16.2-12.8 0-25.1 5.6-35.6 16.1l-35.8 35.8c-3.3-1.9-6.7-3.6-9.9-5.2-4-2-7.7-3.9-11-6-32.6-20.7-62.2-47.7-90.5-82.4-14.3-18.1-23.9-33.3-30.6-48.8 9.4-8.5 18.2-17.4 26.7-26.1 3-3.1 6.1-6.2 9.2-9.3 10.8-10.8 16.6-23.3 16.6-36s-5.7-25.2-16.6-36l-29.8-29.8c-3.5-3.5-6.8-6.9-10.2-10.4-6.6-6.8-13.5-13.8-20.3-20.1-10.3-10.1-22.4-15.4-35.2-15.4-12.7 0-24.9 5.3-35.6 15.5l-37.4 37.4c-13.6 13.6-21.3 30.1-22.9 49.2-1.9 23.9 2.5 49.3 13.9 80 17.5 47.5 43.9 91.6 83.1 138.7zm-72.6-216.6c1.2-13.3 6.3-24.4 15.9-34l37.2-37.2c5.8-5.6 12.2-8.5 18.4-8.5 6.1 0 12.3 2.9 18 8.7 6.7 6.2 13 12.7 19.8 19.6 3.4 3.5 6.9 7 10.4 10.6l29.8 29.8c6.2 6.2 9.4 12.5 9.4 18.7s-3.2 12.5-9.4 18.7c-3.1 3.1-6.2 6.3-9.3 9.4-9.3 9.4-18 18.3-27.6 26.8l-.5.5c-8.3 8.3-7 16.2-5 22.2.1.3.2.5.3.8 7.7 18.5 18.4 36.1 35.1 57.1 30 37 61.6 65.7 96.4 87.8 4.3 2.8 8.9 5 13.2 7.2 4 2 7.7 3.9 11 6 .4.2.7.4 1.1.6 3.3 1.7 6.5 2.5 9.7 2.5 8 0 13.2-5.1 14.9-6.8l37.4-37.4c5.8-5.8 12.1-8.9 18.3-8.9 7.6 0 13.8 4.7 17.7 8.9l60.3 60.2c12 12 11.9 25-.3 37.7-4.2 4.5-8.6 8.8-13.3 13.3-7 6.8-14.3 13.8-20.9 21.7-11.5 12.4-25.2 18.2-42.9 18.2-1.7 0-3.5-.1-5.2-.2-32.8-2.1-63.3-14.9-86.2-25.8-62.2-30.1-116.8-72.8-162.1-127-37.3-44.9-62.4-86.7-79-131.5-10.3-27.5-14.2-49.6-12.6-69.7z"
-                data-original="#000000" />
-            </svg>
-          </div>
-          <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Teléfono</small>
-            <span className="font-medium">970232330</span>
-          </a>
-        </li>
-        <li className="flex items-center">
-          <div className="bg-gray-300 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-black" viewBox="0 0 479.058 479.058">
-              <path
-                d="M434.146 59.882H44.912C20.146 59.882 0 80.028 0 104.794v269.47c0 24.766 20.146 44.912 44.912 44.912h389.234c24.766 0 44.912-20.146 44.912-44.912v-269.47c0-24.766-20.146-44.912-44.912-44.912zm0 29.941c2.034 0 3.969.422 5.738 1.159L239.529 264.631 39.173 90.982a14.902 14.902 0 0 1 5.738-1.159zm0 299.411H44.912c-8.26 0-14.971-6.71-14.971-14.971V122.615l199.778 173.141c2.822 2.441 6.316 3.655 9.81 3.655s6.988-1.213 9.81-3.655l199.778-173.141v251.649c-.001 8.26-6.711 14.97-14.971 14.97z"
-                data-original="#000000" />
-            </svg>
-          </div>
-          <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Correo</small>
-            <span className="font-medium">grupo.fametsac@gmail.com</span>
-          </a>
-        </li>
-        <li className="flex items-center">
-          <div className="bg-gray-300 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-black" viewBox="0 0 368.16 368.16">
-              <path
-                d="M184.08 0c-74.992 0-136 61.008-136 136 0 24.688 11.072 51.24 11.536 52.36 3.576 8.488 10.632 21.672 15.72 29.4l93.248 141.288c3.816 5.792 9.464 9.112 15.496 9.112s11.68-3.32 15.496-9.104l93.256-141.296c5.096-7.728 12.144-20.912 15.72-29.4.464-1.112 11.528-27.664 11.528-52.36 0-74.992-61.008-136-136-136zM293.8 182.152c-3.192 7.608-9.76 19.872-14.328 26.8l-93.256 141.296c-1.84 2.792-2.424 2.792-4.264 0L88.696 208.952c-4.568-6.928-11.136-19.2-14.328-26.808-.136-.328-10.288-24.768-10.288-46.144 0-66.168 53.832-120 120-120s120 53.832 120 120c0 21.408-10.176 45.912-10.28 46.152z"
-                data-original="#000000" />
-              <path
-                d="M184.08 64.008c-39.704 0-72 32.304-72 72s32.296 72 72 72 72-32.304 72-72-32.296-72-72-72zm0 128c-30.872 0-56-25.12-56-56s25.128-56 56-56 56 25.12 56 56-25.128 56-56 56z"
-                data-original="#000000" />
-            </svg>
-          </div>
-          <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Dirección</small>
-            <span className="font-medium">Jr. Libertad N° 824</span>
-          </a>
-        </li>
-        <li className="flex items-center">
-          <div className="bg-gray-300 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-black" viewBox="0 0 100 100">
-              <path
-                d="M83 23h-3V11c0-3.309-2.692-6-6-6H26c-3.308 0-6 2.691-6 6v12h-3C8.729 23 2 29.729 2 38v30c0 4.963 4.037 9 9 9h9v12c0 3.309 2.692 6 6 6h48c3.308 0 6-2.691 6-6V77h9c4.963 0 9-4.037 9-9V38c0-8.271-6.729-15-15-15zM26 11h48v12H26zm0 78V59h48v30zm66-21c0 1.654-1.345 3-3 3h-9V59h3a3 3 0 1 0 0-6H17a3 3 0 1 0 0 6h3v12h-9c-1.655 0-3-1.346-3-3V38c0-4.963 4.037-9 9-9h66c4.963 0 9 4.037 9 9zm-27 0a3 3 0 0 1-3 3H38a3 3 0 1 1 0-6h24a3 3 0 0 1 3 3zm0 12a3 3 0 0 1-3 3H38a3 3 0 1 1 0-6h24a3 3 0 0 1 3 3zm21-42a3 3 0 0 1-3 3h-6a3 3 0 1 1 0-6h6a3 3 0 0 1 3 3z"
-                data-original="#000000" />
-            </svg>
-          </div>
-          <a href="javascript:void(0)" className="text-slate-300 text-sm ml-3">
-            <small className="block">Celular</small>
-            <span className="font-medium">970253391</span>
-          </a>
-        </li>
-      </ul>
+        {/* TOP */}
+        <div className="py-14">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-      <hr className="mt-14 mb-6 border-gray-600" />
+            {/* Brand */}
+            <div className="lg:col-span-5">
+              <a href="#" className="inline-flex items-center gap-3">
+                <img src="/LogoFamet2.png" alt="Grupo Famet" className="w-44" />
+              </a>
 
-      <div className="flex max-md:flex-col max-md:text-center gap-4">
-        <ul className="flex flex-wrap gap-4 max-md:justify-center">
-          <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Terminos de servicios</a>
-          </li>
-          <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Politicas de privacidad</a>
-          </li>
-          <li className="text-sm">
-            <a href='javascript:void(0)' className="text-slate-300 font-medium hover:underline">Seguridad</a>
-          </li>
-        </ul>
-        <p className="text-sm text-slate-300 md:ml-auto">© Grupo Famet SAC. Todos los derechos reservados.</p>
-      </div>
+              <p className="mt-5 text-sm leading-relaxed text-slate-300">
+                Somos una empresa especializada en la venta de materiales de construcción,
+                orientada a brindar calidad, seguridad y confianza en cada proyecto.
+              </p>
+
+              {/* CTA */}
+              <div className="mt-6 flex flex-wrap gap-3">
+                <a
+                  href="#"
+                  className="inline-flex items-center justify-center rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-orange-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70"
+                >
+                  Cotiza ahora
+                </a>
+
+                <a
+                  href="#"
+                  className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-semibold text-slate-100 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70"
+                >
+                  Ver catálogo
+                </a>
+              </div>
+
+              {/* Social */}
+              <ul className="mt-7 flex flex-wrap gap-3">
+                {[
+                  { name: "Facebook", icon: <Facebook className="h-6 w-6" /> },
+                  { name: "LinkedIn", icon: <Linkedin className="h-6 w-6" /> },
+                  { name: "Instagram", icon: <Instagram className="h-6 w-6" /> },
+                  { name: "X", icon: <X className="h-6 w-6" /> },
+                ].map((s) => (
+                  <li key={s.name}>
+                    <a
+                      href="#"
+                      aria-label={s.name}
+                      className="group inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-0.5 hover:border-orange-500/40 hover:bg-orange-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70"
+                    >
+                      <span className="opacity-90 transition group-hover:opacity-100">
+                        {s.icon}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Links */}
+            <div className="lg:col-span-3">
+              <h3 className="text-sm font-extrabold tracking-wide text-white">
+                Enlaces
+              </h3>
+
+              <ul className="mt-4 space-y-3 text-sm">
+                {[
+                  { label: "Categorías", href: "#" },
+                  { label: "Marcas", href: "#" },
+                  { label: "Ofertas", href: "#" },
+                  { label: "Contáctenos", href: "#" },
+                ].map((l) => (
+                  <li key={l.label}>
+                    <a
+                      href={l.href}
+                      className="text-slate-300 hover:text-white hover:underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 rounded"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div className="lg:col-span-4">
+              <h3 className="text-sm font-extrabold tracking-wide text-white">
+                Contacto
+              </h3>
+
+              <ul className="mt-4 space-y-4">
+                <FooterContactItem
+  label="Tienda Libertad"
+  value="WhatsApp: 904 193 374"
+  href={WA_LINK}
+  icon={<WhatsAppIcon />}
+  variant="whatsapp"
+/>
+
+                <FooterContactItem
+                  label="Tienda Salamanca"
+                  value="WhatsApp: 904 193 374"
+                  href={WA_LINK}
+                  icon={<WhatsAppIcon />}
+                  variant="whatsapp"
+                />
+                <FooterContactItem
+                  label="Almacén Central"
+                  value="WhatsApp: 904 193 374"
+                  href={WA_LINK}
+                  icon={<WhatsAppIcon />}
+                  variant="whatsapp"
+                />
+                <FooterContactItem
+                  label="Correo"
+                  value="grupo.fametsac@gmail.com"
+                  href="mailto:grupo.fametsac@gmail.com"
+                  icon={<Mail className="h-5 w-5" />}
+                />
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="h-px w-full bg-white/10" />
+
+        {/* Bottom */}
+        <div className="py-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <ul className="flex flex-wrap gap-4 text-sm justify-center md:justify-start">
+            {[
+              { label: "Términos de servicio", href: "#" },
+              { label: "Políticas de privacidad", href: "#" },
+              { label: "Seguridad", href: "#" },
+            ].map((l) => (
+              <li key={l.label}>
+                <a
+                  href={l.href}
+                  className="text-slate-300 hover:text-white hover:underline underline-offset-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70 rounded"
+                >
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <p className="text-center md:text-right text-sm text-slate-400">
+            © Grupo Famet SAC. Todos los derechos reservados.
+          </p>
+        </div>
+
       </div>
     </footer>
-    );
+  );
+};
+
+/* ---------- Contact Item ---------- */
+
+function FooterContactItem({
+  label,
+  value,
+  href,
+  icon,
+  variant,
+}: {
+  label: string;
+  value: string;
+  href: string;
+  icon: React.ReactNode;
+  variant?: "whatsapp";
+}) {
+  const isWA = variant === "whatsapp";
+
+  return (
+    <li>
+      <a
+        href={href}
+        target={isWA ? "_blank" : undefined}
+        rel={isWA ? "noreferrer" : undefined}
+        className={`group flex items-center gap-3 rounded-2xl px-4 py-3 transition border border-white/10 bg-white/5 hover:-translate-y-0.5 ${
+          isWA
+            ? "hover:border-emerald-500/40 hover:bg-emerald-500/10"
+            : "hover:border-orange-500/40 hover:bg-orange-500/10"
+        } focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70`}
+      >
+        <div
+          className={`flex h-10 w-10 items-center justify-center rounded-xl bg-white/10 ${
+            isWA ? "text-emerald-400" : "text-white"
+          }`}
+        >
+          {icon}
+        </div>
+
+        <div>
+          <small className="block text-xs text-slate-400">{label}</small>
+          <span className="block text-sm font-semibold text-slate-200 group-hover:text-white">
+            {value}
+          </span>
+        </div>
+      </a>
+    </li>
+  );
+}
+
+/* ---------- WhatsApp Icon ---------- */
+
+function WhatsAppIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 32 32"
+      className="w-5 h-5 text-emerald-500"
+      fill="currentColor"
+    >
+      <path d="M16 0a16 16 0 0 0-13.84 24.08L0 32l8.16-2.16A16 16 0 1 0 16 0zm0 29.33a13.22 13.22 0 0 1-6.72-1.8l-.48-.28-4.84 1.28 1.3-4.78-.32-.5A13.27 13.27 0 1 1 16 29.33zm7.38-9.38c-.4-.2-2.36-1.17-2.73-1.3s-.63-.2-.9.2-1.04 1.3-1.28 1.56-.48.3-.84.1a10.94 10.94 0 0 1-3.36-2.06 12.7 12.7 0 0 1-2.36-3.02c-.24-.4 0-.62.18-.84s.42-.52.63-.8c.2-.28.26-.46.38-.76s.06-.58 0-.8c-.1-.24-.94-2.4-1.3-3.3s-.7-.7-.96-.7h-.82a1.6 1.6 0 0 0-1.18.56 4.93 4.93 0 0 0-1.44 3.66c0 2.16 1.56 4.27 1.76 4.56s3.1 4.72 7.55 6.6a25.37 25.37 0 0 0 2.52.94 6 6 0 0 0 2.76.18c.84-.12 2.5-1 2.85-1.9s.35-1.7.25-1.88-.36-.28-.75-.48z" />
+    </svg>
+  );
 }
