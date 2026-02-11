@@ -44,8 +44,8 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <div className="relative flex flex-col h-screen">
-            <div className="bg-blue-900 px-6 py-3 gap-4">
-      <div className="flex items-center justify-center text-center relative">
+            <div className="bg-blue-800 px-6 py-3 gap-4">
+      {/* <div className="flex items-center justify-center text-center relative">
         <p className="text-[15px] text-white font-medium pr-6 leading-relaxed">🎉 Aprovecha los Mejores Descuentos% este mes de Febrero  – 
           <a href="javascript:void(0)" className="ml-1">Haz tu pedido ahora!</a></p>
         <div className="absolute right-0">
@@ -54,7 +54,7 @@ export default function RootLayout({
             <path d="M287.9 318.583a30.37 30.37 0 0 1-21.257-8.806L8.83 51.963C-2.078 39.225-.595 20.055 12.143 9.146c11.369-9.736 28.136-9.736 39.504 0l259.331 257.813c12.243 11.462 12.876 30.679 1.414 42.922-.456.487-.927.958-1.414 1.414a30.368 30.368 0 0 1-23.078 7.288z" data-original="#000000" />
           </svg>
         </div>
-      </div>
+      </div> */}
     </div>
             <Navbar />
             <main className="mx-auto w-full max-w-screen-2xl pt-1 px-4 sm:px-6 lg:px-8 2xl:px-12 flex-grow">

@@ -25,7 +25,7 @@ export const Footer = () => {
                 orientada a brindar calidad, seguridad y confianza en cada proyecto.
               </p>
 
-              {/* CTA */}
+              CTA
               <div className="mt-6 flex flex-wrap gap-3">
                 <a
                   href="#"
@@ -98,13 +98,12 @@ export const Footer = () => {
 
               <ul className="mt-4 space-y-4">
                 <FooterContactItem
-  label="Tienda Libertad"
-  value="WhatsApp: 904 193 374"
-  href={WA_LINK}
-  icon={<WhatsAppIcon />}
-  variant="whatsapp"
-/>
-
+                  label="Tienda Libertad"
+                  value="WhatsApp: 904 193 374"
+                  href={WA_LINK}
+                  icon={<WhatsAppIcon />}
+                  variant="whatsapp"
+                />
                 <FooterContactItem
                   label="Tienda Salamanca"
                   value="WhatsApp: 904 193 374"
