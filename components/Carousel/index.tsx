@@ -34,7 +34,7 @@ export default function EcommerceCarousel({ images }: Props) {
 
   return (
     <div className="w-full bg-white py-8 dark:bg-gray-900">
-      <div className="container mx-auto px-8 relative group">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 relative group">
         
         {/* Viewport */}
         <div className="overflow-hidden rounded-2xl shadow-md border border-slate-100 dark:border-gray-800" ref={emblaRef}>

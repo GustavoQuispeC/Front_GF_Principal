@@ -1,7 +1,7 @@
 export default function Marcas() {
   return (
-    <div className="w-full bg-slate-50 px-6 py-12 dark:bg-gray-900">
-      <div className="container mx-auto px-8 mt-32">
+    <div className="w-full bg-slate-50 py-12 dark:bg-gray-900">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 mt-32">
 
         {/* TEXTO CENTRADO */}
         <div className="max-w-3xl mx-auto mb-12 text-center">
@@ -16,7 +16,7 @@ export default function Marcas() {
         </div>
 
         {/* GRID DE MARCAS */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 lg:gap-6">
           {[
             "ACEROS AREQUIPA",
             "PACASMAYO",

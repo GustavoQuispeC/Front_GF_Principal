@@ -35,8 +35,8 @@ export default function Contactenos() {
     const [tiendaActiva, setTiendaActiva] = useState(tiendas[0]);
   return (
      <section className="bg-gray-50 dark:bg-gray-900">
-      <div className="px-6 sm:px-10 py-12">
-        <div className="max-w-screen-xl mx-auto">
+      <div className="w-full py-12">
+        <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12">
           {/* Header */}
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900">

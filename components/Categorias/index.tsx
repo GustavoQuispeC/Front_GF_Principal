@@ -64,12 +64,12 @@ export default function Categorias() {
 
   return (
     <div className="bg-slate-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-8">
         <h1 className="text-4xl font-bold text-center mb-8">
           Nuestras Categorías
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {/* Large */}
           <Card
             title="Cementos"

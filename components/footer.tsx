@@ -1,8 +1,9 @@
 
 export const Footer = () => {
     return (
-        <footer className="bg-gradient-to-r from-[#111] via-slate-800 to-[#111] pt-14 pb-6 px-12 tracking-wide">
-      <div className="max-w-2xl mx-auto text-center">
+        <footer className="bg-gradient-to-r from-[#111] via-slate-800 to-[#111] pt-14 pb-6 px-4 sm:px-6 lg:px-8 2xl:px-12 tracking-wide">
+      <div className="w-full max-w-screen-2xl mx-auto">
+        <div className="text-center">
         <a href='javascript:void(0)' className="inline-block">
           <img src="/LogoFamet2.png" alt="logo"
           className="w-44" />
@@ -59,7 +60,7 @@ export const Footer = () => {
         </ul>
       </div>
 
-      <ul className="grid max-sm:grid-cols-1 max-lg:grid-cols-2 lg:grid-cols-4 gap-12 mt-20">
+      <ul className="grid max-sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12 mt-20">
         <li className="flex items-center">
           <div className="bg-gray-300 h-10 w-10 rounded-full flex items-center justify-center shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-black" viewBox="0 0 482.6 482.6">
@@ -132,7 +133,8 @@ export const Footer = () => {
           </li>
         </ul>
         <p className="text-sm text-slate-300 md:ml-auto">© Grupo Famet SAC. Todos los derechos reservados.</p>
-      </div>|
+      </div>
+      </div>
     </footer>
     );
 }

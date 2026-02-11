@@ -57,7 +57,7 @@ export default function RootLayout({
       </div>
     </div>
             <Navbar />
-            <main className="container mx-auto max-w-7xl pt-1 px-2 flex-grow">
+            <main className="mx-auto w-full max-w-screen-2xl pt-1 px-4 sm:px-6 lg:px-8 2xl:px-12 flex-grow">
               {children}
             </main>
             <Footer />
