@@ -12,7 +12,7 @@ interface Props {
 export default function EcommerceCarousel({ images }: Props) {
   // Configuración de Autoplay: 4 segundos entre slides
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 4000, stopOnInteraction: false, stopOnMouseEnter: true })
+    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
   ])
   
   const [selectedIndex, setSelectedIndex] = useState(0)
