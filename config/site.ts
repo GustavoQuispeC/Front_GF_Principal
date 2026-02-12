@@ -2,7 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "Grupo Famet S.A.C.",
-  description: "Make beautiful websites regardless of your design experience.",
+  description: "Somos una empresa dedicada a la venta de materiales de construcción y perfiles siderúrgicos.",
   navItems: [
     {
       label: "Inicio",

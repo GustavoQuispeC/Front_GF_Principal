@@ -18,7 +18,7 @@ import { ShoppingCart } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon } from "@/components/icons";
-import DrawerComponent from "./Drawer";
+import DrawerComponent from "./Drawer/drawer";
 
 export const Navbar = () => {
   const searchInput = (
@@ -44,16 +44,20 @@ export const Navbar = () => {
   );
 
   return (
-    <HeroUINavbar
-      maxWidth="2xl"
-      position="sticky"
-      className={clsx(
-        "fixed top-0 left-0 right-0 z-50",
-        "bg-white/80 dark:bg-black/40 backdrop-blur-md",
-        "border-b border-black/5 dark:border-white/10",
-        "shadow-sm"
-      )}
-    >
+   <HeroUINavbar
+  maxWidth="2xl"
+  position="sticky"
+  className={clsx(
+    "fixed top-0 left-0 right-0 z-50",
+
+    // ✅ más alto
+    "min-h-[80px] py-3",
+
+    "bg-white/80 dark:bg-black/40 backdrop-blur-md",
+    "border-b border-black/5 dark:border-white/10",
+    "shadow-sm"
+  )}
+>
       {/* LEFT SIDE */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
