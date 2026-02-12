@@ -1,6 +1,9 @@
 interface CardData {
   title: string;
   img: string;
+  big?: boolean;
+  classNameImg?: string;
+  description?: string;
 }
 
 interface CardProps {
@@ -8,10 +11,34 @@ interface CardProps {
   img: string;
   classNameImg?: string;
   big?: boolean;
+  description?: string;
 }
 
 export default function Categorias() {
+  
   const cards: CardData[] = [
+    {
+      title: "Cementos",
+      img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FCEMENTOS.png?alt=media&token=5d3cda29-4bb0-4995-8a06-8ba682fad27d",
+      big: true,
+      description: "Somos Distribuidor autorizado.",
+    },
+    {
+      title: "Ladrillos",
+      img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FLADRILLOS.png?alt=media&token=d5e605cf-989e-4687-9117-6f7d9ae937a7",
+    },
+    {
+      title: "Clavos",
+      img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FCLAVOS.png?alt=media&token=b28b962f-bab1-4ab4-a8af-39554ac19f70",
+    },
+    {
+      title: "Perfiles y Tubos",
+      img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FPERFILES.png?alt=media&token=a9a0deef-eb83-458a-8275-72cf3b3d9338",
+    },
+    {
+      title: "Alambres",
+      img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FALAMBRES.png?alt=media&token=90569c1e-7376-4c63-8de0-bd811dac7435",
+    },
     {
       title: "Teja Andina",
       img: "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FTEJA%20ANDINA.png?alt=media&token=783b20f5-7e8d-4cce-bc89-b8a85f45d2c2",
@@ -30,7 +57,13 @@ export default function Categorias() {
     },
   ];
 
-  const Card = ({ title, img, classNameImg = "h-48", big = false }: CardProps) => (
+  const Card = ({
+    title,
+    img,
+    classNameImg = "h-48",
+    big = false,
+    description,
+  }: CardProps) => (
     <button
       type="button"
       className={[
@@ -44,7 +77,7 @@ export default function Categorias() {
         big ? "md:col-span-2 md:row-span-2" : "",
       ].join(" ")}
     >
-      {/* Glow naranja sutil (como Marcas) */}
+      {/* Glow naranja sutil */}
       <div className="pointer-events-none absolute inset-0 opacity-0 transition duration-300 group-hover:opacity-100 shadow-[0_0_45px_rgba(249,115,22,0.18)]" />
 
       {/* Imagen */}
@@ -60,13 +93,13 @@ export default function Categorias() {
         ].join(" ")}
       />
 
-      {/* Overlay pro: degradado para legibilidad */}
+      {/* Overlay degradado para legibilidad */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/20" />
-        {/* borde brillo sutil */}
+        {/* Borde brillo sutil */}
         <div className="absolute inset-0 ring-1 ring-inset ring-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-        {/* “shine” suave */}
+        {/* Shine suave */}
         <div className="absolute -top-24 left-[-40%] h-40 w-[140%] rotate-6 bg-white/10 blur-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
       </div>
 
@@ -82,13 +115,13 @@ export default function Categorias() {
             {title}
           </h3>
 
-          {big && (
+          {big && description && (
             <p className="mt-2 text-white/90 text-sm sm:text-base">
-              Somos Distribuidor autorizado.
+              {description}
             </p>
           )}
 
-          {/* CTA e-commerce (aparece en hover, no rompe el layout) */}
+          {/* CTA e-commerce (aparece en hover) */}
           <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs sm:text-sm text-white/90 backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             Ver productos <span aria-hidden>→</span>
           </div>
@@ -100,6 +133,7 @@ export default function Categorias() {
   return (
     <section className="bg-slate-50 dark:bg-gray-900">
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 py-10">
+        {/* Header */}
         <div className="mx-auto mb-8 max-w-3xl text-center">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-blue-900 dark:text-white">
             Nuestras Categorías
@@ -109,38 +143,17 @@ export default function Categorias() {
           </p>
         </div>
 
-        {/* MISMA cantidad de columnas/filas: 2 en mobile, 4 en md */}
+        {/* Grid de categorías */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {/* Large */}
-          <Card
-            title="Cementos"
-            img="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FCEMENTOS.png?alt=media&token=5d3cda29-4bb0-4995-8a06-8ba682fad27d"
-            big
-          />
-
-          {/* Two small */}
-          <Card
-            title="Ladrillos"
-            img="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FLADRILLOS.png?alt=media&token=d5e605cf-989e-4687-9117-6f7d9ae937a7"
-          />
-          <Card
-            title="Clavos"
-            img="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FCLAVOS.png?alt=media&token=b28b962f-bab1-4ab4-a8af-39554ac19f70"
-          />
-
-          {/* Medium */}
-          <Card
-            title="Perfiles y Tubos"
-            img="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FPERFILES.png?alt=media&token=a9a0deef-eb83-458a-8275-72cf3b3d9338"
-          />
-          <Card
-            title="Alambres"
-            img="https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/Categorias%2FALAMBRES.png?alt=media&token=90569c1e-7376-4c63-8de0-bd811dac7435"
-          />
-
-          {/* Bottom */}
-          {cards.map((c, i) => (
-            <Card key={i} title={c.title} img={c.img} />
+          {cards.map((card, index) => (
+            <Card
+              key={`${card.title}-${index}`}
+              title={card.title}
+              img={card.img}
+              big={card.big}
+              classNameImg={card.classNameImg}
+              description={card.description}
+            />
           ))}
         </div>
       </div>
