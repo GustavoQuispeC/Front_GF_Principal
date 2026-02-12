@@ -119,7 +119,7 @@ export default function Productos() {
     {
       id: 3,
       nombre: "Cemento Mochica",
-      precio: 33.20,
+      precio: 33.2,
       descripcion: "Excelente rendimiento y resistencia estructural.",
       imagen:
         "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCEMENTO%2FCEMENTO%20MOCHICA.png?alt=media&token=1344c797-d93a-4ecb-b27f-1705cfedb7e7",
@@ -127,7 +127,7 @@ export default function Productos() {
     {
       id: 4,
       nombre: "Cemento Tipo 1",
-      precio: 37.50,
+      precio: 37.5,
       descripcion: "Ideal para construcciones generales.",
       imagen:
         "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCEMENTO%2FCEMENTO%20TIPO%201.png?alt=media&token=51630310-fee3-44bb-9d20-f5111601cef6",
@@ -135,7 +135,7 @@ export default function Productos() {
     {
       id: 5,
       nombre: "Tubo cuadrado 2.0*2.0mm*6mt",
-      precio: 45.00,
+      precio: 45.0,
       descripcion: "Perfil metálico resistente para estructuras.",
       imagen:
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHE10nnA-l3uYYGnHWvdOEXiEnOh-hPZFwEQ&s",
@@ -143,7 +143,7 @@ export default function Productos() {
     {
       id: 6,
       nombre: "Calamina roja 0.3x0.8x3.60",
-      precio: 25.00,
+      precio: 25.0,
       descripcion: "Cobertura resistente para techos.",
       imagen:
         "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FCALAMINA%2FCALAMINA%20ROJA.png?alt=media&token=673a3e65-be58-4b81-b013-e9235e8b4bc6",
@@ -151,7 +151,7 @@ export default function Productos() {
     {
       id: 7,
       nombre: "Teja Andina",
-      precio: 44.00,
+      precio: 44.0,
       descripcion: "Diseño moderno y alta resistencia climática.",
       imagen:
         "https://firebasestorage.googleapis.com/v0/b/grupofamet-456604.firebasestorage.app/o/productos%2FTEJA%2FTEJA%20ANDINA.png?alt=media&token=9dd5edfe-554f-4ef2-8c08-e7ed839ff796",
@@ -159,7 +159,7 @@ export default function Productos() {
     {
       id: 8,
       nombre: "Fierro de 1/2",
-      precio: 28.00,
+      precio: 28.0,
       descripcion: "Barra de acero para refuerzo estructural.",
       imagen:
         "https://media.falabella.com/sodimacPE/211230_01/w=800,h=800,fit=pad",
@@ -177,62 +177,91 @@ export default function Productos() {
 
   return (
     <>
-      <section className="py-16 bg-gray-50 dark:bg-gray-950">
-        <div className="max-w-screen-xl mx-auto px-6">
-          <h2 className="text-3xl font-bold mb-10 text-gray-800 dark:text-white">
-            Catálogo de Productos
-          </h2>
+     <section className="py-16 bg-gray-50 dark:bg-gray-950">
+  <div className="max-w-screen-xl mx-auto px-6">
+    <h2 className="text-3xl font-bold mb-10 text-gray-800 dark:text-white">
+      Catálogo de Productos
+    </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {productosData.map((producto) => (
-              <div
-                key={producto.id}
-                className="bg-white dark:bg-gray-900 rounded-2xl shadow-md overflow-hidden"
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {productosData.map((producto) => (
+        <div
+          key={producto.id}
+          className="
+            bg-white dark:bg-gray-900
+            rounded-2xl shadow-md overflow-hidden
+            flex flex-col h-full
+            relative
+          "
+        >
+          {producto.badge && (
+            <Chip
+              size="sm"
+              color={producto.badge === "Oferta" ? "primary" : "success"}
+              className="absolute top-3 right-3 z-10"
+            >
+              {producto.badge}
+            </Chip>
+          )}
+
+          <div className="aspect-square bg-gray-100 flex justify-center items-center p-6">
+            <img
+              src={producto.imagen}
+              alt={producto.nombre}
+              className="w-full h-full object-contain"
+            />
+          </div>
+
+          <div className="p-5 flex flex-col flex-grow">
+            <div>
+              <h3 className="font-bold text-blue-900 dark:text-white">
+                {producto.nombre}
+              </h3>
+
+              <p className="text-sm text-gray-500 mt-2 line-clamp-2 min-h-[40px]">
+                {producto.descripcion}
+              </p>
+            </div>
+
+            <div className="mt-auto pt-4">
+              <p className="text-xl font-extrabold text-orange-500">
+                S/ {producto.precio.toFixed(2)}
+              </p>
+
+              <Button
+                onPress={() => handleAgregar(producto)}
+                className="w-full mt-3 bg-orange-500 text-white"
+                startContent={<ShoppingCart size={18} />}
               >
-                {producto.badge && (
-                  <Chip
-                    size="sm"
-                    color={producto.badge === "Oferta" ? "primary" : "success"}
-                    className="absolute top-3 right-3"
-                  >
-                    {producto.badge}
-                  </Chip>
-                )}
-
-                <div className="aspect-square bg-gray-100 flex justify-center items-center p-6">
-                  <img
-                    src={producto.imagen}
-                    alt={producto.nombre}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-
-                <div className="p-5">
-                  <h3 className="font-bold text-blue-900 dark:text-white">
-                    {producto.nombre}
-                  </h3>
-
-                  <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                    {producto.descripcion}
-                  </p>
-
-                  <p className="text-xl font-extrabold text-orange-500 mt-4">
-                    S/ {producto.precio.toFixed(2)}
-                  </p>
-
-                  <Button
-                    onPress={() => handleAgregar(producto)}
-                    className="w-full mt-4 bg-orange-500 text-white"
-                    startContent={<ShoppingCart size={18} />}
-                  >
-                    Agregar al carrito
-                  </Button>
-                </div>
-              </div>
-            ))}
+                Agregar al carrito
+              </Button>
+            </div>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+
+    {/* ✅ CTA para ir a la tienda (mantiene la UI) */}
+    <div className="mt-12 flex justify-center">
+      <a
+        href="/tienda"
+        className="
+          inline-flex items-center justify-center
+          px-8 py-3
+          rounded-full
+          border-2 border-orange-600
+          text-orange-600 font-semibold text-lg
+          hover:bg-orange-600 hover:text-white
+          shadow-sm hover:shadow-md
+          transition-all duration-300
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70
+        "
+      >
+        Ver todos los productos →
+      </a>
+    </div>
+  </div>
+</section>
 
       {/* MODAL */}
       {productoSeleccionado && (
@@ -348,16 +377,16 @@ function AddToCartModal({
               </Button>
 
               <Button
-  className="bg-orange-500 text-white"
-  onPress={() => {
-    onClose(); // cierra modal
+                className="bg-orange-500 text-white"
+                onPress={() => {
+                  onClose(); // cierra modal
 
-    // ✅ abre drawer
-    window.dispatchEvent(new Event("drawer:open"));
-  }}
->
-  Ir al carrito
-</Button>
+                  // ✅ abre drawer
+                  window.dispatchEvent(new Event("drawer:open"));
+                }}
+              >
+                Ir al carrito
+              </Button>
             </ModalFooter>
           </>
         )}

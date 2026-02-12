@@ -78,6 +78,8 @@ export default function DrawerComponent() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [badgeQty, setBadgeQty] = useState<number>(0);
 
+
+  // ✅ escucha evento global para abrir el drawer (desde navbar o cualquier otro lugar)
    useEffect(() => {
     const openDrawer = () => {
       refresh();
