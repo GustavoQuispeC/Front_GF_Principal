@@ -1,3 +1,4 @@
+'use client';
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -15,7 +16,7 @@ import { Facebook, Instagram, LogIn, PackageSearch, UserCircle } from "lucide-re
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import DrawerComponent from "./Drawer/drawer";
+import { CartButton } from "./Drawer/drawer"; // ✅ Importar solo el botón
 
 export const Navbar = () => {
   return (
@@ -114,8 +115,9 @@ export const Navbar = () => {
             Iniciar sesión
           </Button>
 
+          {/* ✅ SOLO EL BOTÓN DEL CARRITO */}
           <div className="flex items-center gap-2 ml-2">
-            <DrawerComponent />
+            <CartButton />
             <ThemeSwitch />
           </div>
         </div>
@@ -123,7 +125,8 @@ export const Navbar = () => {
 
       {/* MOBILE CONTENT */}
       <NavbarContent className="lg:hidden flex basis-full" justify="end">
-        <DrawerComponent />
+        {/* ✅ SOLO EL BOTÓN DEL CARRITO */}
+        <CartButton />
         <ThemeSwitch />
         <NavbarMenuToggle className="ml-2 text-slate-700 dark:text-white" />
       </NavbarContent>

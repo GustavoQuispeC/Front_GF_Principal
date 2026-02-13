@@ -34,7 +34,7 @@ export default function EcommerceCarousel({ images }: Props) {
   }, [emblaApi, onSelect])
 
   return (
-    <div className="w-full bg-white dark:bg-gray-950 py-12">
+    <div className="w-full bg-white dark:bg-gray-950 py-14">
       <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative group">
         
         <div className="overflow-hidden rounded-3xl shadow-xl relative border border-slate-200 dark:border-white/5" ref={emblaRef}>

@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useMemo, useState } from "react";
 import {
   Drawer,
@@ -42,7 +41,6 @@ function readCart(): CartMap {
 function writeCart(cart: CartMap) {
   if (typeof window === "undefined") return;
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  // ✅ clave: refrescar UI en la misma pestaña
   window.dispatchEvent(new Event(CART_EVENT));
 }
 
@@ -73,42 +71,22 @@ function clearCart() {
   writeCart({});
 }
 
-export default function DrawerComponent() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [items, setItems] = useState<CartItem[]>([]);
+// ✅ NUEVO: Exportar botón separado
+export function CartButton() {
   const [badgeQty, setBadgeQty] = useState<number>(0);
 
-
-  // ✅ escucha evento global para abrir el drawer (desde navbar o cualquier otro lugar)
-   useEffect(() => {
-    const openDrawer = () => {
-      refresh();
-      onOpen();
-    };
-    window.addEventListener(DRAWER_OPEN_EVENT, openDrawer);
-     return () => {
-      window.removeEventListener(DRAWER_OPEN_EVENT, openDrawer);
-    };
-  }, []);
-
-    
-
-  const refresh = () => {
-    const cart = readCart();
-    setItems(cartToArray(cart));
-    setBadgeQty(getTotalQty(cart));
-  };
-
   useEffect(() => {
-    // ✅ carga inicial
-    refresh();
+    const refresh = () => {
+      const cart = readCart();
+      setBadgeQty(getTotalQty(cart));
+    };
 
-    // ✅ cambios desde OTRA pestaña
+    refresh(); // Carga inicial
+
     const onStorage = (e: StorageEvent) => {
       if (e.key === CART_KEY) refresh();
     };
 
-    // ✅ cambios en la MISMA pestaña (cuando tú hagas dispatchEvent)
     const onCartUpdated = () => refresh();
 
     window.addEventListener("storage", onStorage);
@@ -120,10 +98,74 @@ export default function DrawerComponent() {
     };
   }, []);
 
-  // ✅ extra: cuando se abra, refresca sí o sí (por si ya había data)
+  const openDrawer = () => {
+    window.dispatchEvent(new Event(DRAWER_OPEN_EVENT));
+  };
+
+  return (
+    <Button
+      isIconOnly
+      variant="light"
+      aria-label="Carrito"
+      onPress={openDrawer}
+      className="relative flex items-center justify-center h-12 w-12"
+    >
+      <ShoppingCart className="h-6 w-6 text-orange-500" />
+
+      {badgeQty > 0 && (
+        <span
+          className="
+            absolute top-[2px] right-[2px]
+            min-w-[18px] h-[18px]
+            px-1
+            rounded-full
+            bg-red-600 text-white
+            text-[11px] font-extrabold
+            flex items-center justify-center
+          "
+        >
+          {badgeQty > 99 ? "99+" : badgeQty}
+        </span>
+      )}
+    </Button>
+  );
+}
+
+// ✅ Drawer principal (sin botón)
+export default function DrawerComponent() {
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [badgeQty, setBadgeQty] = useState<number>(0);
+
+  const refresh = () => {
+    const cart = readCart();
+    setItems(cartToArray(cart));
+    setBadgeQty(getTotalQty(cart));
+  };
+
   useEffect(() => {
-    if (isOpen) refresh();
-  }, [isOpen]);
+    refresh();
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === CART_KEY) refresh();
+    };
+
+    const onCartUpdated = () => refresh();
+
+    const openDrawer = () => {
+      onOpen();
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(CART_EVENT, onCartUpdated);
+    window.addEventListener(DRAWER_OPEN_EVENT, openDrawer);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(CART_EVENT, onCartUpdated);
+      window.removeEventListener(DRAWER_OPEN_EVENT, openDrawer);
+    };
+  }, [onOpen]);
 
   const subtotal = useMemo(
     () => items.reduce((acc, it) => acc + it.precio * it.cantidad, 0),
@@ -139,7 +181,7 @@ export default function DrawerComponent() {
   const dec = (id: number) => {
     const it = items.find((x) => x.id === id);
     if (!it) return;
-    setQty(id, it.cantidad - 1); // si llega a 0 elimina
+    setQty(id, it.cantidad - 1);
   };
 
   const onManualQty = (id: number, raw: string) => {
@@ -153,186 +195,153 @@ export default function DrawerComponent() {
   };
 
   return (
-    <>
-      {/* ✅ Botón carrito + badge */}
-      <Button
-        isIconOnly
-        variant="light"
-        aria-label="Carrito"
-        onPress={() => {
-          refresh(); // ✅ refresca antes de abrir
-          onOpen();
-        }}
-        className="relative flex items-center justify-center h-12 w-12"
-      >
-        <ShoppingCart className="h-6 w-6 text-orange-500" />
+    <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="md">
+      <DrawerContent>
+        {(onClose) => (
+          <>
+            <DrawerHeader className="border-b border-black/5 dark:border-white/10">
+              <div className="flex w-full items-center justify-between">
+                <div>
+                  <p className="font-extrabold text-blue-900 dark:text-white">
+                    Tu carrito
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-white/60">
+                    {badgeQty} {badgeQty === 1 ? "producto" : "productos"}
+                  </p>
+                </div>
 
-        {/* 🔴 badge (más pegado) */}
-        {badgeQty > 0 && (
-          <span
-            className="
-              absolute top-[2px] right-[2px]
-              min-w-[18px] h-[18px]
-              px-1
-              rounded-full
-              bg-red-600 text-white
-              text-[11px] font-extrabold
-              flex items-center justify-center
-            "
-          >
-            {badgeQty > 99 ? "99+" : badgeQty}
-          </span>
-        )}
-      </Button>
+                <Button variant="light" onPress={onClose}>
+                  Cerrar
+                </Button>
+              </div>
+            </DrawerHeader>
 
-      <Drawer isOpen={isOpen} onOpenChange={onOpenChange} size="md">
-        <DrawerContent>
-          {(onClose) => (
-            <>
-              <DrawerHeader className="border-b border-black/5 dark:border-white/10">
-                <div className="flex w-full items-center justify-between">
-                  <div>
-                    <p className="font-extrabold text-blue-900 dark:text-white">
-                      Tu carrito
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-white/60">
-                      {badgeQty} {badgeQty === 1 ? "producto" : "productos"}
-                    </p>
-                  </div>
-
-                  <Button variant="light" onPress={onClose}>
-                    Cerrar
+            <DrawerBody className="py-4">
+              {items.length === 0 ? (
+                <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-slate-50 dark:bg-white/5 p-6 text-center">
+                  <p className="font-semibold text-slate-800 dark:text-white/80">
+                    Tu carrito está vacío
+                  </p>
+                  <Button
+                    className="mt-4 bg-orange-600 text-white"
+                    onPress={onClose}
+                  >
+                    Seguir comprando
                   </Button>
                 </div>
-              </DrawerHeader>
-
-              <DrawerBody className="py-4">
-                {items.length === 0 ? (
-                  <div className="rounded-2xl border border-black/5 dark:border-white/10 bg-slate-50 dark:bg-white/5 p-6 text-center">
-                    <p className="font-semibold text-slate-800 dark:text-white/80">
-                      Tu carrito está vacío
-                    </p>
-                    <Button
-                      className="mt-4 bg-orange-600 text-white"
-                      onPress={onClose}
+              ) : (
+                <ul className="space-y-3">
+                  {items.map((it) => (
+                    <li
+                      key={it.id}
+                      className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 p-4"
                     >
-                      Seguir comprando
-                    </Button>
-                  </div>
-                ) : (
-                  <ul className="space-y-3">
-                    {items.map((it) => (
-                      <li
-                        key={it.id}
-                        className="rounded-2xl border border-black/5 dark:border-white/10 bg-white dark:bg-white/5 p-4"
-                      >
-                        <div className="flex gap-4">
-                          <div className="h-16 w-16 shrink-0 rounded-xl bg-slate-50 dark:bg-white/5 border border-black/5 dark:border-white/10 overflow-hidden flex items-center justify-center">
-                            <img
-                              src={it.imagen}
-                              alt={it.nombre}
-                              className="h-full w-full object-contain p-2"
-                              loading="lazy"
-                            />
-                          </div>
+                      <div className="flex gap-4">
+                        <div className="h-16 w-16 shrink-0 rounded-xl bg-slate-50 dark:bg-white/5 border border-black/5 dark:border-white/10 overflow-hidden flex items-center justify-center">
+                          <img
+                            src={it.imagen}
+                            alt={it.nombre}
+                            className="h-full w-full object-contain p-2"
+                            loading="lazy"
+                          />
+                        </div>
 
-                          <div className="min-w-0 flex-1">
-                            <p className="font-semibold text-slate-900 dark:text-white truncate">
-                              {it.nombre}
-                            </p>
-                            <p className="text-sm text-slate-500 dark:text-white/60">
-                              S/ {it.precio.toFixed(2)}
-                            </p>
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-slate-900 dark:text-white truncate">
+                            {it.nombre}
+                          </p>
+                          <p className="text-sm text-slate-500 dark:text-white/60">
+                            S/ {it.precio.toFixed(2)}
+                          </p>
 
-                            <div className="mt-3 flex flex-wrap items-center gap-3">
-                              <div className="inline-flex items-center gap-2 rounded-full border border-black/10 dark:border-white/15 bg-slate-50 dark:bg-white/5 px-2 py-1">
-                                <button
-                                  type="button"
-                                  onClick={() => dec(it.id)}
-                                  className="h-8 w-8 grid place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-                                  aria-label="Disminuir"
-                                >
-                                  <Minus className="h-4 w-4" />
-                                </button>
+                          <div className="mt-3 flex flex-wrap items-center gap-3">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-black/10 dark:border-white/15 bg-slate-50 dark:bg-white/5 px-2 py-1">
+                              <button
+                                type="button"
+                                onClick={() => dec(it.id)}
+                                className="h-8 w-8 grid place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                                aria-label="Disminuir"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </button>
 
-                                <input
-                                  type="number"
-                                  min={0}
-                                  value={it.cantidad}
-                                  onChange={(e) => onManualQty(it.id, e.target.value)}
-                                  className="w-14 text-center bg-transparent outline-none font-bold text-slate-900 dark:text-white"
-                                />
-
-                                <button
-                                  type="button"
-                                  onClick={() => inc(it.id)}
-                                  className="h-8 w-8 grid place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
-                                  aria-label="Aumentar"
-                                >
-                                  <Plus className="h-4 w-4" />
-                                </button>
-                              </div>
+                              <input
+                                type="number"
+                                min={0}
+                                value={it.cantidad}
+                                onChange={(e) => onManualQty(it.id, e.target.value)}
+                                className="w-14 text-center bg-transparent outline-none font-bold text-slate-900 dark:text-white"
+                              />
 
                               <button
                                 type="button"
-                                onClick={() => setQty(it.id, 0)}
-                                className="inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700"
+                                onClick={() => inc(it.id)}
+                                className="h-8 w-8 grid place-items-center rounded-full hover:bg-black/5 dark:hover:bg-white/10"
+                                aria-label="Aumentar"
                               >
-                                <Trash2 className="h-4 w-4" />
-                                Eliminar
+                                <Plus className="h-4 w-4" />
                               </button>
                             </div>
-                          </div>
 
-                          <div className="text-right">
-                            <p className="text-xs text-slate-500 dark:text-white/60">
-                              Total
-                            </p>
-                            <p className="font-extrabold text-slate-900 dark:text-white">
-                              S/ {(it.precio * it.cantidad).toFixed(2)}
-                            </p>
+                            <button
+                              type="button"
+                              onClick={() => setQty(it.id, 0)}
+                              className="inline-flex items-center gap-2 text-sm font-semibold text-red-600 hover:text-red-700"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Eliminar
+                            </button>
                           </div>
                         </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </DrawerBody>
 
-              <DrawerFooter className="border-t border-black/5 dark:border-white/10">
-                <div className="w-full space-y-3">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-600 dark:text-white/70">
-                      Subtotal
-                    </span>
-                    <span className="font-extrabold text-slate-900 dark:text-white">
-                      S/ {subtotal.toFixed(2)}
-                    </span>
-                  </div>
+                        <div className="text-right">
+                          <p className="text-xs text-slate-500 dark:text-white/60">
+                            Total
+                          </p>
+                          <p className="font-extrabold text-slate-900 dark:text-white">
+                            S/ {(it.precio * it.cantidad).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </DrawerBody>
 
-                  <div className="flex gap-2">
-                    <Button
-                      className="w-full bg-orange-600 text-white"
-                      isDisabled={items.length === 0}
-                    >
-                      Ir a pagar
-                    </Button>
-
-                    <Button
-                      variant="light"
-                      className="w-full"
-                      isDisabled={items.length === 0}
-                      onPress={() => clearCart()}
-                    >
-                      Vaciar
-                    </Button>
-                  </div>
+            <DrawerFooter className="border-t border-black/5 dark:border-white/10">
+              <div className="w-full space-y-3">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-slate-600 dark:text-white/70">
+                    Subtotal
+                  </span>
+                  <span className="font-extrabold text-slate-900 dark:text-white">
+                    S/ {subtotal.toFixed(2)}
+                  </span>
                 </div>
-              </DrawerFooter>
-            </>
-          )}
-        </DrawerContent>
-      </Drawer>
-    </>
+
+                <div className="flex gap-2">
+                  <Button
+                    className="w-full bg-orange-600 text-white"
+                    isDisabled={items.length === 0}
+                  >
+                    Ir a pagar
+                  </Button>
+
+                  <Button
+                    variant="light"
+                    className="w-full"
+                    isDisabled={items.length === 0}
+                    onPress={() => clearCart()}
+                  >
+                    Vaciar
+                  </Button>
+                </div>
+              </div>
+            </DrawerFooter>
+          </>
+        )}
+      </DrawerContent>
+    </Drawer>
   );
 }
