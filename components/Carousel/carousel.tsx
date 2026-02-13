@@ -1,16 +1,17 @@
 'use client'
 import React, { useCallback, useEffect, useState } from 'react'
 import useEmblaCarousel from 'embla-carousel-react'
-import Autoplay from 'embla-carousel-autoplay' // Importamos el plugin
+import Autoplay from 'embla-carousel-autoplay'
 import { Button } from "@heroui/react"
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ShoppingCart } from 'lucide-react'
+import NextLink from "next/link"
+import clsx from 'clsx'
 
 interface Props {
   images: string[]
 }
 
 export default function EcommerceCarousel({ images }: Props) {
-  // Configuración de Autoplay: 5 segundos entre slides
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
     Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
   ])
@@ -33,11 +34,10 @@ export default function EcommerceCarousel({ images }: Props) {
   }, [emblaApi, onSelect])
 
   return (
-    <div className="w-full bg-white py-16 dark:bg-gray-900">
-      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 2xl:px-12 relative group">
+    <div className="w-full bg-white dark:bg-gray-950 py-12">
+      <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative group">
         
-        {/* Viewport */}
-        <div className="overflow-hidden rounded-2xl shadow-md border border-slate-100 dark:border-gray-800" ref={emblaRef}>
+        <div className="overflow-hidden rounded-3xl shadow-xl relative border border-slate-200 dark:border-white/5" ref={emblaRef}>
           <div className="flex">
             {images.map((src, index) => (
               <div 
@@ -46,50 +46,68 @@ export default function EcommerceCarousel({ images }: Props) {
               >
                 <img
                   src={src}
-                  alt={`Banner ${index}`}
+                  alt={`Banner ${index + 1}`}
                   className="h-full w-full object-cover"
                 />
+
+                {/* BOTÓN ESTRATÉGICO: Inferior Derecha */}
+                <div className="absolute bottom-8 right-8 md:bottom-12 md:right-12 z-20">
+                  <Button
+                    as={NextLink}
+                    href="/tienda"
+                    className={clsx(
+                      "bg-gray-50 hover:bg-orange-600 hover:text-white text-orange-600  font-bold",
+                      "px-8 py-6 rounded-2xl shadow-2xl scale-100 hover:scale-105 active:scale-95",
+                      "transition-all duration-300 ease-out opacity-0 translate-y-4",
+                      selectedIndex === index && "opacity-100 translate-y-0"
+                    )}
+                    startContent={<ShoppingCart size={20} fill="currentColor" />}
+                  >
+                    Ir a la tienda
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
-        </div>
 
-        {/* Botones de navegación (estilo HeroUI) */}
-        <div className="absolute top-1/2 -translate-y-1/2 left-12 right-12 flex justify-between pointer-events-none">
-          <Button
-            isIconOnly
-            variant="flat"
-            radius="full"
-            className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-all bg-white/60 dark:bg-black/40 backdrop-blur-md"
-            onClick={scrollPrev}
-          >
-            <ChevronLeft size={24} className="text-blue-900 dark:text-white" />
-          </Button>
+          {/* Flechas de Navegación Minimalistas */}
+          <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
+            <Button
+              isIconOnly
+              variant="flat"
+              radius="full"
+              className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-all bg-white/30 dark:bg-black/20 backdrop-blur-md border border-white/20"
+              onClick={scrollPrev}
+            >
+              <ChevronLeft size={24} className="text-blue-950 dark:text-white" />
+            </Button>
 
-          <Button
-            isIconOnly
-            variant="flat"
-            radius="full"
-            className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-all bg-white/60 dark:bg-black/40 backdrop-blur-md"
-            onClick={scrollNext}
-          >
-            <ChevronRight size={24} className="text-blue-900 dark:text-white" />
-          </Button>
-        </div>
+            <Button
+              isIconOnly
+              variant="flat"
+              radius="full"
+              className="pointer-events-auto opacity-0 group-hover:opacity-100 transition-all bg-white/30 dark:bg-black/20 backdrop-blur-md border border-white/20"
+              onClick={scrollNext}
+            >
+              <ChevronRight size={24} className="text-blue-950 dark:text-white" />
+            </Button>
+          </div>
 
-        {/* Indicadores (Dots) */}
-        <div className="flex justify-center gap-2 mt-6">
-          {images.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollTo(index)}
-              className={`h-1.5 transition-all duration-300 rounded-full ${
-                selectedIndex === index 
-                  ? 'w-10 bg-blue-900 dark:bg-blue-500' 
-                  : 'w-2 bg-slate-300 dark:bg-gray-600 hover:bg-slate-400'
-              }`}
-            />
-          ))}
+          {/* Indicadores (Dots) integrados en el banner */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => scrollTo(index)}
+                className={clsx(
+                  "h-1.5 rounded-full transition-all duration-300",
+                  selectedIndex === index 
+                    ? 'w-8 bg-white shadow-lg' 
+                    : 'w-1.5 bg-white/40 hover:bg-white/60'
+                )}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

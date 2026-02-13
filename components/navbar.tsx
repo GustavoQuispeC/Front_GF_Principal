@@ -8,163 +8,172 @@ import {
   NavbarMenuItem,
 } from "@heroui/navbar";
 import { Button } from "@heroui/button";
-import { Kbd } from "@heroui/kbd";
 import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { ShoppingCart } from "lucide-react";
+import { Facebook, Instagram, LogIn, PackageSearch, UserCircle } from "lucide-react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { SearchIcon } from "@/components/icons";
 import DrawerComponent from "./Drawer/drawer";
 
 export const Navbar = () => {
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper:
-          "bg-default-100/80 dark:bg-default-100/10 backdrop-blur-md border border-black/5 dark:border-white/10",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Buscar..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
-
   return (
-   <HeroUINavbar
-  maxWidth="2xl"
-  position="sticky"
-  className={clsx(
-    "fixed top-0 left-0 right-0 z-50",
-
-    // ✅ más alto
-    "min-h-[80px] py-3",
-
-    "bg-white/80 dark:bg-black/40 backdrop-blur-md",
-    "border-b border-black/5 dark:border-white/10",
-    "shadow-sm"
-  )}
->
-      {/* LEFT SIDE */}
+    <HeroUINavbar
+      maxWidth="2xl"
+      position="sticky"
+      className={clsx(
+        "fixed top-0 left-0 right-0 z-50",
+        "h-[80px]",
+        "bg-white/90 dark:bg-slate-950/80 backdrop-blur-xl",
+        "border-b border-slate-200/50 dark:border-white/10",
+        "shadow-sm"
+      )}
+    >
+      {/* BRAND / LOGO */}
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex items-center gap-2" href="/">
+          <NextLink className="flex items-center gap-2 transition-transform hover:scale-105" href="/">
             <img
               src="/LogoFamet2.png"
               alt="Grupo Famet S.A.C. Logo"
-              className="h-12 w-auto"
+              className="h-10 sm:h-12 w-auto object-contain"
             />
           </NextLink>
         </NavbarBrand>
 
         {/* DESKTOP MENU */}
-        <ul className="hidden lg:flex items-center gap-7 justify-start ml-6">
+        <ul className="hidden lg:flex items-center gap-2 ml-8">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
                 href={item.href}
                 className={clsx(
-                  // base
-                  "relative px-1 py-2 font-semibold",
-                  "text-[17px] xl:text-[18px]", // ✅ un poquito más grande
-                  "text-slate-800 dark:text-white/90",
-                  "transition-colors duration-200",
-                  // hover brand
-                  "hover:text-orange-600",
-                  // active (si HeroUI setea data-active)
-                  "data-[active=true]:text-blue-900 dark:data-[active=true]:text-white",
-                  // underline naranja en hover/active
-                  "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-orange-600 after:transition-all after:duration-200",
-                  "hover:after:w-full data-[active=true]:after:w-full"
+                  "relative px-4 py-2 font-bold text-[15px] uppercase tracking-wide",
+                  "text-slate-600 dark:text-slate-300",
+                  "transition-all duration-300 ease-in-out",
+                  "hover:text-orange-600 dark:hover:text-orange-500",
+                  "group"
                 )}
               >
                 {item.label}
+                <span className="absolute inset-x-4 -bottom-1 h-0.5 bg-orange-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
               </NextLink>
             </NavbarItem>
           ))}
         </ul>
       </NavbarContent>
 
-      {/* RIGHT SIDE DESKTOP */}
-      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
-        <NavbarItem className="hidden sm:flex gap-3 items-center">
-          <DrawerComponent />
+      {/* RIGHT ACTIONS (DESKTOP) */}
+      <NavbarContent className="hidden lg:flex basis-full" justify="end">
+        <div className="flex items-center gap-3">
+          {/* Social Icons */}
+          <div className="flex items-center gap-1 mr-2 border-r border-slate-200 dark:border-white/10 pr-3">
+            <Button
+              as={Link}
+              isIconOnly
+              href={siteConfig.links?.facebook ?? "#"}
+              className="bg-transparent hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-500 hover:text-[#1877F2] transition-colors"
+              aria-label="Facebook"
+            >
+              <Facebook className="h-5 w-5 fill-current" strokeWidth={1.5} />
+            </Button>
+            <Button
+              as={Link}
+              isIconOnly
+              href={siteConfig.links?.instagram ?? "#"}
+              className="bg-transparent hover:bg-pink-50 dark:hover:bg-pink-900/20 text-slate-500 hover:text-[#E4405F] transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram className="h-5 w-5" strokeWidth={1.5} />
+            </Button>
+          </div>
 
-          {/* Carrito extra opcional: si quieres solo Drawer, borra esto
+          {/* Ecommerce Actions */}
           <Button
-            isIconOnly
-            variant="light"
-            aria-label="Carrito"
             as={NextLink}
-            href="/cart"
-            className={clsx(
-              "text-slate-700 dark:text-white/80",
-              "hover:text-orange-600"
-            )}
+            href="/mis-pedidos"
+            variant="light"
+            className="font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5"
+            startContent={<PackageSearch className="h-4 w-4 text-orange-600" />}
           >
-            <ShoppingCart className="h-5 w-5" />
-          </Button> */}
+            Mis pedidos
+          </Button>
 
-          <ThemeSwitch />
-        </NavbarItem>
+          <Button
+            as={NextLink}
+            href="/iniciar-sesion"
+            className={clsx(
+              "bg-blue-950 text-white font-bold px-6",
+              "shadow-[0_4px_14px_0_rgba(2,6,23,0.3)]",
+              "hover:bg-blue-900 hover:scale-[1.02] active:scale-[0.98]",
+              "transition-all duration-200"
+            )}
+            startContent={<LogIn className="h-4 w-4" />}
+          >
+            Iniciar sesión
+          </Button>
 
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+          <div className="flex items-center gap-2 ml-2">
+            <DrawerComponent />
+            <ThemeSwitch />
+          </div>
+        </div>
       </NavbarContent>
 
-      {/* MOBILE RIGHT SIDE */}
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+      {/* MOBILE CONTENT */}
+      <NavbarContent className="lg:hidden flex basis-full" justify="end">
         <DrawerComponent />
-
-        {/* <Button
-          isIconOnly
-          variant="light"
-          aria-label="Carrito"
-          as={NextLink}
-          href="/cart"
-          className="text-slate-700 dark:text-white/80 hover:text-orange-600"
-        >
-          <ShoppingCart className="h-5 w-5" />
-        </Button> */}
-
         <ThemeSwitch />
-        <NavbarMenuToggle />
+        <NavbarMenuToggle className="ml-2 text-slate-700 dark:text-white" />
       </NavbarContent>
 
-      {/* MOBILE MENU */}
-      <NavbarMenu className="bg-white/95 dark:bg-black/70 backdrop-blur-md">
-        <div className="px-4 pt-2">{searchInput}</div>
-
-        <div className="mx-4 mt-4 flex flex-col gap-1">
+      {/* MOBILE DRAWER MENU */}
+      <NavbarMenu className="pt-8 bg-white/98 dark:bg-slate-950/95 backdrop-blur-lg">
+        <div className="flex flex-col gap-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 px-4">Navegación</p>
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item.href}-${index}`}>
-              <Link
+              <NextLink
                 href={item.href}
-                className={clsx(
-                  "w-full rounded-2xl px-4 py-3",
-                  "text-[18px] font-semibold", // ✅ un poquito más grande en mobile
-                  "text-slate-900 dark:text-white",
-                  "transition",
-                  "hover:bg-orange-500/10 hover:text-orange-600",
-                  "focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/60"
-                )}
+                className="flex w-full items-center px-4 py-3 text-xl font-black text-blue-950 dark:text-white active:bg-slate-100 dark:active:bg-white/5 rounded-xl transition-colors"
               >
                 {item.label}
-              </Link>
+              </NextLink>
             </NavbarMenuItem>
           ))}
+          
+          <hr className="my-2 border-slate-100 dark:border-white/5" />
+
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400 px-4">Mi Cuenta</p>
+          <div className="grid grid-cols-1 gap-3 px-4">
+            <Button
+              as={NextLink}
+              href="/iniciar-sesion"
+              size="lg"
+              className="bg-blue-950 text-white font-bold justify-start px-6 rounded-xl"
+              startContent={<UserCircle className="h-5 w-5" />}
+            >
+              Iniciar sesión
+            </Button>
+            <Button
+              as={NextLink}
+              href="/mis-pedidos"
+              size="lg"
+              variant="flat"
+              className="bg-slate-100 dark:bg-white/5 font-bold justify-start px-6 rounded-xl text-slate-900 dark:text-white"
+              startContent={<PackageSearch className="h-5 w-5 text-orange-600" />}
+            >
+              Mis pedidos
+            </Button>
+          </div>
+
+          <div className="mt-auto pb-10 px-4">
+             <div className="flex gap-4">
+                <Button as={Link} isIconOnly href="#" className="bg-[#1877F2] text-white rounded-full h-12 w-12 shadow-lg"><Facebook /></Button>
+                <Button as={Link} isIconOnly href="#" className="bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white rounded-full h-12 w-12 shadow-lg"><Instagram /></Button>
+             </div>
+          </div>
         </div>
       </NavbarMenu>
     </HeroUINavbar>

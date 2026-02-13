@@ -2,7 +2,8 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "Grupo Famet S.A.C.",
-  description: "Somos una empresa dedicada a la venta de materiales de construcción y perfiles siderúrgicos.",
+  description:
+    "Somos una empresa dedicada a la venta de materiales de construcción y perfiles siderúrgicos.",
   navItems: [
     {
       label: "Inicio",
@@ -13,17 +14,14 @@ export const siteConfig = {
       href: "/docs",
     },
     {
-      label: "Sobre Nosotros",
+      label: "Nosotros",
       href: "/pricing",
     },
     {
-      label: "Blog",
+      label: "Contacto",
       href: "/blog",
     },
-    {
-      label: "About",
-      href: "/about",
-    },
+   
   ],
   navMenuItems: [
     {
@@ -65,5 +63,7 @@ export const siteConfig = {
     docs: "https://heroui.com",
     discord: "https://discord.gg/9b6yyZKmH4",
     sponsor: "https://patreon.com/jrgarciadev",
+    facebook: "https://facebook.com/tuPagina",
+    instagram: "https://instagram.com/tuCuenta",
   },
 };

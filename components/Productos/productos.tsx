@@ -12,7 +12,7 @@ import {
   Chip,
 } from "@heroui/react";
 
-import { ShoppingCart, CheckCircle, Plus, Minus } from "lucide-react";
+import { ShoppingCart, CheckCircle, Plus, Minus, ArrowRight } from "lucide-react";
 
 interface Producto {
   id: number;
@@ -177,91 +177,138 @@ export default function Productos() {
 
   return (
     <>
-     <section className="py-16 bg-gray-50 dark:bg-gray-950">
-  <div className="max-w-screen-xl mx-auto px-6">
-    <h2 className="text-3xl font-bold mb-10 text-gray-800 dark:text-white">
-      Catálogo de Productos
-    </h2>
+      <section className="py-16 sm:py-20 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header mejorado */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 px-4 py-1.5 rounded-full text-sm font-semibold mb-4">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+              </svg>
+              Productos destacados
+            </div>
 
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-      {productosData.map((producto) => (
-        <div
-          key={producto.id}
-          className="
-            bg-white dark:bg-gray-900
-            rounded-2xl shadow-md overflow-hidden
-            flex flex-col h-full
-            relative
-          "
-        >
-          {producto.badge && (
-            <Chip
-              size="sm"
-              color={producto.badge === "Oferta" ? "primary" : "success"}
-              className="absolute top-3 right-3 z-10"
-            >
-              {producto.badge}
-            </Chip>
-          )}
-
-          <div className="aspect-square bg-gray-100 flex justify-center items-center p-6">
-            <img
-              src={producto.imagen}
-              alt={producto.nombre}
-              className="w-full h-full object-contain"
-            />
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-blue-900 dark:text-white mb-4">
+              Catálogo de Productos
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
+              Encuentra los mejores materiales de construcción con precios competitivos
+            </p>
           </div>
 
-          <div className="p-5 flex flex-col flex-grow">
-            <div>
-              <h3 className="font-bold text-blue-900 dark:text-white">
-                {producto.nombre}
-              </h3>
-
-              <p className="text-sm text-gray-500 mt-2 line-clamp-2 min-h-[40px]">
-                {producto.descripcion}
-              </p>
-            </div>
-
-            <div className="mt-auto pt-4">
-              <p className="text-xl font-extrabold text-orange-500">
-                S/ {producto.precio.toFixed(2)}
-              </p>
-
-              <Button
-                onPress={() => handleAgregar(producto)}
-                className="w-full mt-3 bg-orange-500 text-white"
-                startContent={<ShoppingCart size={18} />}
+          {/* Grid de productos mejorado */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {productosData.map((producto) => (
+              <div
+                key={producto.id}
+                className="
+                  group
+                  bg-white dark:bg-gray-800
+                  rounded-2xl shadow-sm hover:shadow-2xl
+                  border border-gray-200 dark:border-gray-700
+                  overflow-hidden
+                  flex flex-col h-full
+                  relative
+                  transition-all duration-500
+                  hover:-translate-y-2
+                "
               >
-                Agregar al carrito
-              </Button>
-            </div>
+                {/* Badge mejorado */}
+                {producto.badge && (
+                  <Chip
+                    size="sm"
+                    color={producto.badge === "Oferta" ? "primary" : "success"}
+                    className="absolute top-3 left-3 z-10 font-semibold shadow-lg"
+                  >
+                    {producto.badge}
+                  </Chip>
+                )}
+
+                {/* Imagen con hover effect */}
+                <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 flex justify-center items-center p-6 overflow-hidden">
+                  <img
+                    src={producto.imagen}
+                    alt={producto.nombre}
+                    className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
+                  />
+                  
+                  {/* Overlay sutil en hover */}
+                  <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+
+                {/* Contenido */}
+                <div className="p-5 flex flex-col flex-grow bg-white dark:bg-gray-800">
+                  <div className="flex-grow">
+                    <h3 className="font-bold text-base text-blue-900 dark:text-white mb-2 line-clamp-2 min-h-[3rem]">
+                      {producto.nombre}
+                    </h3>
+
+                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 min-h-[2.5rem]">
+                      {producto.descripcion}
+                    </p>
+                  </div>
+
+                  {/* Precio y botón */}
+                  <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <div className="flex items-baseline gap-2 mb-3">
+                      <span className="text-2xl font-extrabold text-orange-500">
+                        S/ {producto.precio.toFixed(2)}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        /unidad
+                      </span>
+                    </div>
+
+                    <Button
+                      onPress={() => handleAgregar(producto)}
+                      className="
+                        w-full 
+                        bg-gradient-to-r from-orange-500 to-orange-600
+                        hover:from-orange-600 hover:to-orange-700
+                        text-white font-semibold
+                        shadow-md hover:shadow-lg
+                        transition-all duration-300
+                      "
+                      startContent={<ShoppingCart size={18} />}
+                    >
+                      Agregar al carrito
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Borde decorativo en hover */}
+                <div className="absolute inset-0 rounded-2xl ring-2 ring-orange-500/0 group-hover:ring-orange-500/20 transition-all duration-300 pointer-events-none" />
+              </div>
+            ))}
+          </div>
+
+          {/* CTA mejorado */}
+          <div className="mt-16 flex justify-center">
+            <a
+              href="/tienda"
+              className="
+                group
+                inline-flex items-center justify-center gap-3
+                px-8 py-4
+                rounded-2xl
+                bg-white dark:bg-gray-800
+                hover:bg-gradient-to-r hover:from-orange-500 hover:to-orange-600
+                border-2 border-orange-500
+                text-orange-600 hover:text-white
+                dark:text-orange-400 dark:hover:text-white
+                font-bold text-lg
+                shadow-lg hover:shadow-2xl
+                transition-all duration-500
+                hover:scale-105
+                focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-400/50
+              "
+            >
+              Ver todos los productos
+              <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </a>
           </div>
         </div>
-      ))}
-    </div>
-
-    {/* ✅ CTA para ir a la tienda (mantiene la UI) */}
-    <div className="mt-12 flex justify-center">
-      <a
-        href="/tienda"
-        className="
-          inline-flex items-center justify-center
-          px-8 py-3
-          rounded-full
-          border-2 border-orange-600
-          text-orange-600 font-semibold text-lg
-          hover:bg-orange-600 hover:text-white
-          shadow-sm hover:shadow-md
-          transition-all duration-300
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/70
-        "
-      >
-        Ver todos los productos →
-      </a>
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* MODAL */}
       {productoSeleccionado && (
@@ -275,7 +322,7 @@ export default function Productos() {
   );
 }
 
-/* ================= MODAL ================= */
+/* ================= MODAL MEJORADO ================= */
 
 interface AddToCartModalProps {
   isOpen: boolean;
@@ -328,62 +375,113 @@ function AddToCartModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="lg">
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader className="flex gap-2">
-              <CheckCircle className="text-green-500" />
-              Producto agregado
+            <ModalHeader className="flex items-center gap-3 pb-2">
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30">
+                <CheckCircle className="text-green-600 dark:text-green-400" size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  ¡Producto agregado!
+                </h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-normal">
+                  Se añadió al carrito correctamente
+                </p>
+              </div>
             </ModalHeader>
 
-            <ModalBody>
-              <div className="flex items-center gap-6">
-                <img
-                  src={producto.imagen}
-                  className="w-20 h-20 object-contain"
-                />
-
-                <div className="flex-1">
-                  <p className="font-bold">{producto.nombre}</p>
-                  <p className="text-orange-500 font-extrabold">
-                    S/ {producto.precio.toFixed(2)}
-                  </p>
+            <ModalBody className="py-6">
+              <div className="flex items-start gap-6 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl">
+                {/* Imagen del producto */}
+                <div className="shrink-0 w-24 h-24 bg-white dark:bg-gray-700 rounded-lg p-2 flex items-center justify-center">
+                  <img
+                    src={producto.imagen}
+                    alt={producto.nombre}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
 
-                <div className="flex items-center border rounded-xl overflow-hidden">
-                  <button onClick={disminuir} className="px-3 py-2">
-                    <Minus size={16} />
-                  </button>
+                {/* Info del producto */}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-blue-900 dark:text-white mb-1 line-clamp-2">
+                    {producto.nombre}
+                  </h4>
+                  <p className="text-2xl font-extrabold text-orange-500 mb-3">
+                    S/ {producto.precio.toFixed(2)}
+                  </p>
 
-                  <input
-                    type="number"
-                    min={0}
-                    value={cantidad}
-                    onChange={(e) => handleChange(e.target.value)}
-                    className="w-14 text-center outline-none"
-                  />
+                  {/* Control de cantidad mejorado */}
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                      Cantidad:
+                    </span>
+                    <div className="flex items-center border-2 border-gray-200 dark:border-gray-600 rounded-xl overflow-hidden bg-white dark:bg-gray-700">
+                      <button
+                        onClick={disminuir}
+                        className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                        aria-label="Disminuir cantidad"
+                      >
+                        <Minus size={16} className="text-gray-700 dark:text-gray-300" />
+                      </button>
 
-                  <button onClick={incrementar} className="px-3 py-2">
-                    <Plus size={16} />
-                  </button>
+                      <input
+                        type="number"
+                        min={0}
+                        value={cantidad}
+                        onChange={(e) => handleChange(e.target.value)}
+                        className="w-16 text-center outline-none bg-transparent font-semibold text-gray-900 dark:text-white"
+                      />
+
+                      <button
+                        onClick={incrementar}
+                        className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
+                        aria-label="Aumentar cantidad"
+                      >
+                        <Plus size={16} className="text-gray-700 dark:text-gray-300" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Subtotal */}
+                  <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                        Subtotal:
+                      </span>
+                      <span className="text-xl font-bold text-blue-900 dark:text-white">
+                        S/ {(producto.precio * cantidad).toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </ModalBody>
 
-            <ModalFooter>
-              <Button variant="light" onPress={onClose}>
+            <ModalFooter className="gap-3">
+              <Button
+                variant="light"
+                onPress={onClose}
+                className="font-semibold text-gray-600 dark:text-gray-400"
+              >
                 Seguir comprando
               </Button>
 
               <Button
-                className="bg-orange-500 text-white"
+                className="
+                  bg-gradient-to-r from-orange-500 to-orange-600
+                  hover:from-orange-600 hover:to-orange-700
+                  text-white font-bold
+                  shadow-md hover:shadow-lg
+                  transition-all duration-300
+                "
                 onPress={() => {
-                  onClose(); // cierra modal
-
-                  // ✅ abre drawer
+                  onClose();
                   window.dispatchEvent(new Event("drawer:open"));
                 }}
+                endContent={<ArrowRight size={18} />}
               >
                 Ir al carrito
               </Button>
