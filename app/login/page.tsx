@@ -1,14 +1,9 @@
-"use client";
+import React from 'react'
 
-
-
-
-export default function LoginForm() {
-  
-
+const page = () => {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#F4F4F5] p-4">
-   
-    </div>
-  );
+    <div>page</div>
+  )
 }
+
+export default page
