@@ -46,7 +46,7 @@ export default function Contactenos() {
   }, [tiendaActiva]);
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900">
+    <section id="contactenos" className="bg-gray-50 dark:bg-gray-900">
       <div className="py-16 sm:py-20">
         <div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 2xl:px-12">
           {/* Header mejorado */}

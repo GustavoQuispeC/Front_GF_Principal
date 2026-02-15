@@ -1,15 +1,12 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { DrawerComponent } from "@/components";
+import LayoutShell from "@/components/layout-shell";
 
 export const metadata: Metadata = {
   title: {
@@ -44,17 +41,7 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-          <div className="relative flex flex-col h-screen">
-            <div className="bg-blue-800 px-6 py-3 gap-4">
-
-    </div>
-            <Navbar />
-            <DrawerComponent />
-            <main className="mx-auto w-full max-w-screen-2xl pt-1 px-4 sm:px-6 lg:px-8 2xl:px-12 flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <LayoutShell>{children}</LayoutShell>
         </Providers>
       </body>
     </html>

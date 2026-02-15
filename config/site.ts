@@ -19,7 +19,7 @@ export const siteConfig = {
     },
     {
       label: "Contacto",
-      href: "/blog",
+      href: "/#contactenos",
     },
    
   ],

@@ -14,6 +14,7 @@ import {
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
+import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { Facebook, Instagram, LogIn, PackageSearch, UserCircle } from "lucide-react";
 
@@ -26,6 +27,22 @@ import { LoginModal } from "./LoginModal/loginModal";
 export const Navbar = () => {
   // ✅ Control del Modal
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const pathname = usePathname();
+
+  const handleAnchorClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!href.startsWith("/#")) return;
+    if (pathname !== "/") return;
+
+    const anchorId = href.split("#")[1];
+    const target = anchorId ? document.getElementById(anchorId) : null;
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <>
@@ -61,6 +78,7 @@ export const Navbar = () => {
                   className={clsx(
                     "relative px-4 py-2 font-bold text-[15px] uppercase tracking-wide text-slate-600 dark:text-slate-300 transition-all hover:text-orange-600 group"
                   )}
+                  onClick={(event) => handleAnchorClick(event, item.href)}
                 >
                   {item.label}
                   <span className="absolute inset-x-4 -bottom-1 h-0.5 bg-orange-600 transform scale-x-0 transition-transform duration-300 group-hover:scale-x-100" />
