@@ -1,4 +1,4 @@
-import { Facebook, Linkedin, Instagram, X, Mail, MapPin, Phone, Clock } from "lucide-react";
+import { Facebook, Linkedin, Instagram, X, Mail, MapPin, Phone, Clock, LayoutDashboard } from "lucide-react";
 
 export const Footer = () => {
   const WHATSAPP_NUMBER = "51904193374";
@@ -19,16 +19,15 @@ export const Footer = () => {
         {/* TOP */}
         <div className="py-12 sm:py-14">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
-            {/* Brand - Mejorado */}
+            {/* Brand */}
             <div className="lg:col-span-5">
               <a href="#" className="inline-block group">
                 <div className="relative">
-                  <img 
-                    src="/LogoFamet2.png" 
-                    alt="Grupo Famet" 
-                    className="w-40 transition-transform duration-300 group-hover:scale-105" 
+                  <img
+                    src="/LogoFamet2.png"
+                    alt="Grupo Famet"
+                    className="w-40 transition-transform duration-300 group-hover:scale-105"
                   />
-                  {/* Glow effect */}
                   <div className="absolute inset-0 bg-orange-500/0 group-hover:bg-orange-500/10 rounded-xl transition-all duration-300 blur-xl" />
                 </div>
               </a>
@@ -38,23 +37,7 @@ export const Footer = () => {
                 construcción, orientada a brindar <span className="text-orange-400 font-semibold">calidad, seguridad y confianza</span> en cada proyecto.
               </p>
 
-              {/* Stats decorativos
-              <div className="mt-8 grid grid-cols-3 gap-4">
-                <div className="text-center p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="text-2xl font-bold text-orange-400">15+</div>
-                  <div className="text-xs text-slate-400 mt-1">Años</div>
-                </div>
-                <div className="text-center p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="text-2xl font-bold text-orange-400">3</div>
-                  <div className="text-xs text-slate-400 mt-1">Tiendas</div>
-                </div>
-                <div className="text-center p-3 rounded-xl bg-white/5 border border-white/10">
-                  <div className="text-2xl font-bold text-orange-400">12+</div>
-                  <div className="text-xs text-slate-400 mt-1">Marcas</div>
-                </div>
-              </div> */}
-
-              {/* Social - Mejorado */}
+              {/* Social */}
               <div className="mt-6">
                 <p className="text-sm font-semibold text-slate-400 mb-3">Síguenos en redes</p>
                 <ul className="flex flex-wrap gap-3">
@@ -80,7 +63,7 @@ export const Footer = () => {
               </div>
             </div>
 
-            {/* Links - Mejorado */}
+            {/* Links */}
             <div className="lg:col-span-3">
               <h3 className="flex items-center gap-2 text-base font-bold text-white mb-4">
                 <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full" />
@@ -108,10 +91,28 @@ export const Footer = () => {
                     </a>
                   </li>
                 ))}
+
+                {/* Separador */}
+                <li className="pt-1">
+                  <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
+                </li>
+
+                {/* Acceso al sistema — discreto, solo para empleados */}
+                <li>
+                  <a
+                    href="/loginEmpleado"
+                    className="group inline-flex items-center gap-2 text-slate-500 hover:text-orange-400 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 rounded px-1"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5 group-hover:text-orange-400 transition-colors" />
+                    <span className="text-xs group-hover:translate-x-1 transition-transform duration-200">
+                      Acceso al sistema
+                    </span>
+                  </a>
+                </li>
               </ul>
             </div>
 
-            {/* Contact - Mejorado */}
+            {/* Contact */}
             <div className="lg:col-span-4">
               <h3 className="flex items-center gap-2 text-base font-bold text-white mb-4">
                 <div className="w-1 h-6 bg-gradient-to-b from-orange-500 to-orange-600 rounded-full" />
@@ -159,7 +160,7 @@ export const Footer = () => {
                 <p className="text-sm text-slate-300 ml-11">
                   Lunes a Viernes: 8:00 AM - 6:30 PM
                 </p>
-                  <p className="text-sm text-slate-300 ml-11">
+                <p className="text-sm text-slate-300 ml-11">
                   Sábado: 8:00 AM - 2:00 PM
                 </p>
               </div>
@@ -167,12 +168,12 @@ export const Footer = () => {
           </div>
         </div>
 
-        {/* Divider mejorado */}
+        {/* Divider */}
         <div className="relative h-px w-full">
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
         </div>
 
-        {/* Bottom - Mejorado */}
+        {/* Bottom */}
         <div className="py-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <ul className="flex flex-wrap gap-5 text-sm justify-center md:justify-start">
@@ -207,7 +208,7 @@ export const Footer = () => {
   );
 };
 
-/* ---------- Contact Item - Mejorado ---------- */
+/* ---------- Contact Item ---------- */
 
 function FooterContactItem({
   label,
@@ -238,8 +239,8 @@ function FooterContactItem({
       >
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
-            isWA 
-              ? "bg-emerald-600/20 group-hover:bg-emerald-500 text-emerald-400 group-hover:text-white" 
+            isWA
+              ? "bg-emerald-600/20 group-hover:bg-emerald-500 text-emerald-400 group-hover:text-white"
               : "bg-orange-600/20 group-hover:bg-orange-500 text-orange-400 group-hover:text-white"
           }`}
         >
