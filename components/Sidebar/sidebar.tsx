@@ -23,6 +23,8 @@ import {
 } from "lucide-react";
 import { Button, Avatar, Badge, ScrollShadow } from "@heroui/react";
 import { ThemeSwitch } from "@/components/theme-switch";
+import DatatableEmpleados from "@/components/DatatableEmpleados/datatableEmpleados";
+import ClienteRegistro from "@/components/ClienteRegistro/clienteRegistro";
 
 // Configuración de navegación
 const menuGroups = {
@@ -84,6 +86,7 @@ const cx = (...classes: Array<string | false | null | undefined>) =>
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [activeMenu, setActiveMenu] = useState("Home");
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
     Projects: true,
     Tasks: false,
@@ -187,9 +190,10 @@ export default function Sidebar() {
                 {menuGroups.overview.map((item) => (
                   <div key={item.name}>
                     <div
+                      onClick={() => setActiveMenu(item.name)}
                       className={cx(
                         itemClasses,
-                        item.active ? "bg-default-100" : "",
+                        activeMenu === item.name ? "bg-default-100" : "",
                         isCollapsed ? "justify-center" : ""
                       )}
                     >
@@ -197,7 +201,7 @@ export default function Sidebar() {
                       >
                         <item.icon
                           size={18}
-                          className={item.active ? "text-blue-900" : "text-default-400"}
+                          className={activeMenu === item.name ? "text-blue-900" : "text-default-400"}
                         />
                         {!isCollapsed && <span className={textClasses}>{item.name}</span>}
                       </div>
@@ -215,7 +219,10 @@ export default function Sidebar() {
                         {!isCollapsed && item.hasAction && (
                         <button
                           type="button"
-                          onClick={() => toggleSubmenu(item.name)}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            toggleSubmenu(item.name);
+                          }}
                           className="rounded p-1 hover:bg-default-200 dark:hover:bg-white/10"
                           aria-label={`Toggle ${item.name} submenu`}
                         >
@@ -366,6 +373,25 @@ export default function Sidebar() {
           onClick={toggleSidebar}
         />
       )}
+
+      <section
+        className={cx(
+          "pt-16 transition-[margin] duration-300 ease-in-out",
+          isCollapsed ? "lg:ml-20" : "lg:ml-72"
+        )}
+      >
+        <div className="p-4 lg:p-6">
+          {activeMenu === "Empleados" ? (
+            <DatatableEmpleados onAddNew={() => setActiveMenu("ClienteRegistro")} />
+          ) : activeMenu === "ClienteRegistro" ? (
+            <ClienteRegistro />
+          ) : (
+            <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
+              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">{activeMenu}</h1>
+            </div>
+          )}
+        </div>
+      </section>
     </>
   );
 }

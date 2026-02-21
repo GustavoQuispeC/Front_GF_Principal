@@ -359,7 +359,11 @@ const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
 
 type User = (typeof users)[0];
 
-export default function DatatableEmpleados() {
+interface DatatableEmpleadosProps {
+  onAddNew?: () => void;
+}
+
+export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
@@ -552,7 +556,7 @@ export default function DatatableEmpleados() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
+            <Button color="primary" endContent={<PlusIcon />} onPress={onAddNew}>
               Add New
             </Button>
           </div>
