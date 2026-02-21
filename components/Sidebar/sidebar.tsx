@@ -29,7 +29,7 @@ import ClienteRegistro from "@/components/ClienteRegistro/clienteRegistro";
 // Configuración de navegación
 const menuGroups = {
   overview: [
-    { name: "Home", icon: Home, active: true },
+    { name: "Inicio", icon: Home, active: true },
     {
       name: "Projects",
       icon: LayoutGrid,
@@ -184,7 +184,7 @@ export default function Sidebar() {
             {/* Overview Section */}
             <div>
               {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">Overview</p>
+                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">Descripción</p>
               )}
               <div className="space-y-1">
                 {menuGroups.overview.map((item) => (
@@ -340,13 +340,13 @@ export default function Sidebar() {
             <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
               <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
                 <Info size={18} />
-                {!isCollapsed && <span className={textClasses}>Help & Information</span>}
+                {!isCollapsed && <span className={textClasses}>Ayuda e Información</span>}
               </div>
             </div>
             <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
               <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
                 <LogOut size={18} />
-                {!isCollapsed && <span className={textClasses}>Log Out</span>}
+                {!isCollapsed && <span className={textClasses}>Cerrar Sesión</span>}
               </div>
             </div>
           </div>
