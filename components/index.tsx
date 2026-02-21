@@ -7,4 +7,5 @@ export { default as Marcas } from "./Marcas/marcas";
 export { default as Productos } from "./Productos/productos";
 export { default as SidebarComponent } from "./Sidebar/sidebar";
 export { default as ClienteRegistro} from "./ClienteRegistro/clienteRegistro"
-export { default as LoginEmpleado} from "./LoginEmpleado/loginEmpleado"
+export { default as LoginEmpleado} from "./LoginUsuario/loginUsuario"
+export { default as DatatableEmpleados} from "./DatatableEmpleados/datatableEmpleados"

@@ -47,7 +47,7 @@ const menuGroups = {
         { name: "Team tasks", href: "#" },
       ],
     },
-    { name: "Team", icon: Users },
+    { name: "Empleados", icon: Users },
     { name: "Tracker", icon: Rocket, badge: "New" },
   ],
   organization: [
@@ -208,7 +208,9 @@ export default function Sidebar() {
                           size="sm"
                           variant="flat"
                           className="text-[10px] font-bold"
-                        />
+                        >
+                          {item.badge}
+                        </Badge>
                       )}
                         {!isCollapsed && item.hasAction && (
                         <button

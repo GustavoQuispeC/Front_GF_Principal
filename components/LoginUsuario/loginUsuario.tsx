@@ -12,7 +12,8 @@ import {
   CardHeader,
 } from "@heroui/react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { loginUsuario } from "@/helpers/user.helpers";
+import { loginUsuario } from "@/helpers/usuario.helpers";
+
 
 type LoginPageProps = {
   forgotHref?: string;
@@ -20,10 +21,10 @@ type LoginPageProps = {
   storageKey?: string;
 };
 
-export default function LoginEmpleado({
+export default function LoginUsuario({
   forgotHref = "/intranet/recuperar-password",
   brandName = "Grupo Famet",
-  storageKey = "auth_empleado",
+  storageKey = "auth_usuario",
 }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
