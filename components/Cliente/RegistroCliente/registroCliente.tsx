@@ -114,7 +114,7 @@ function validate(data: ClienteFormData): FieldError {
   return errors;
 }
 
-export default function ClienteRegistro() {
+export default function RegistroCliente() {
   const [form, setForm] = useState<ClienteFormData>({
     nombre: "",
     apellido: "",

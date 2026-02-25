@@ -3,9 +3,14 @@
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { DrawerComponent } from "@/components";
+
+
+import { DrawerComponent, Footer, Navbar } from "@/components";
+
+
+
+
+
 
 export default function LayoutShell({
   children,

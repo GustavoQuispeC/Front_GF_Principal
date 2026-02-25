@@ -22,9 +22,9 @@ import {
   PanelLeftOpen,
 } from "lucide-react";
 import { Button, Avatar, Badge, ScrollShadow } from "@heroui/react";
-import { ThemeSwitch } from "@/components/theme-switch";
+import { ThemeSwitch } from "@/components/ui/theme-switch";
 import DatatableEmpleados from "@/components/DatatableEmpleados/datatableEmpleados";
-import ClienteRegistro from "@/components/ClienteRegistro/clienteRegistro";
+import ClienteRegistro from "@/components/Cliente/RegistroCliente/registroCliente";
 
 // Configuración de navegación
 const menuGroups = {

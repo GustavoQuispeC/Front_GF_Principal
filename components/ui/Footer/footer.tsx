@@ -97,10 +97,10 @@ export const Footer = () => {
                   <div className="h-px bg-gradient-to-r from-transparent via-slate-700 to-transparent" />
                 </li>
 
-                {/* Acceso al sistema — discreto, solo para empleados */}
+                {/* Acceso al sistema — discreto, solo para usuarios */}
                 <li>
                   <a
-                    href="/loginEmpleado"
+                    href="/loginUsuario"
                     className="group inline-flex items-center gap-2 text-slate-500 hover:text-orange-400 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 rounded px-1"
                   >
                     <LayoutDashboard className="w-3.5 h-3.5 group-hover:text-orange-400 transition-colors" />

@@ -41,12 +41,12 @@ const GoogleIcon = () => (
   </svg>
 );
 
-interface LoginModalProps {
+interface LoginClienteProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }
 
-export const LoginModal = ({ isOpen, onOpenChange }: LoginModalProps) => {
+export const LoginModal = ({ isOpen, onOpenChange }: LoginClienteProps) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
