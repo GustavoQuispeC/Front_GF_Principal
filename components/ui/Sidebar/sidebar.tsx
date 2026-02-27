@@ -23,8 +23,10 @@ import {
 } from "lucide-react";
 import { Button, Avatar, Badge, ScrollShadow } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
-import DatatableEmpleados from "@/components/DatatableEmpleados/datatableEmpleados";
+import DatatableEmpleados from "@/components/Empleado/DatatableEmpleados/datatableEmpleados";
 import ClienteRegistro from "@/components/Cliente/RegistroCliente/registroCliente";
+import RegistroCliente from "@/components/Cliente/RegistroCliente/registroCliente";
+import { COMPONENT_MAP } from "./COMPONENT_MAP";
 
 // Configuración de navegación
 const menuGroups = {
@@ -50,7 +52,7 @@ const menuGroups = {
       ],
     },
     { name: "Empleados", icon: Users },
-    { name: "Tracker", icon: Rocket, badge: "New" },
+    { name: "Usuarios", icon: Rocket},
   ],
   organization: [
     { name: "Cap Table", icon: Briefcase },
@@ -205,17 +207,7 @@ export default function Sidebar() {
                         />
                         {!isCollapsed && <span className={textClasses}>{item.name}</span>}
                       </div>
-                      {!isCollapsed && item.badge && (
-                        <Badge
-                          content={item.badge}
-                          color="default"
-                          size="sm"
-                          variant="flat"
-                          className="text-[10px] font-bold"
-                        >
-                          {item.badge}
-                        </Badge>
-                      )}
+                     
                         {!isCollapsed && item.hasAction && (
                         <button
                           type="button"
@@ -375,23 +367,32 @@ export default function Sidebar() {
       )}
 
       <section
-        className={cx(
-          "pt-16 transition-[margin] duration-300 ease-in-out",
-          isCollapsed ? "lg:ml-20" : "lg:ml-72"
-        )}
-      >
-        <div className="p-4 lg:p-6">
-          {activeMenu === "Empleados" ? (
-            <DatatableEmpleados onAddNew={() => setActiveMenu("ClienteRegistro")} />
-          ) : activeMenu === "ClienteRegistro" ? (
-            <ClienteRegistro />
-          ) : (
-            <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
-              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">{activeMenu}</h1>
-            </div>
-          )}
-        </div>
-      </section>
+  className={cx(
+    "pt-16 transition-[margin] duration-300 ease-in-out",
+    isCollapsed ? "lg:ml-20" : "lg:ml-72"
+  )}
+>
+  <div className="p-4 lg:p-6">
+    {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
+    {COMPONENT_MAP[activeMenu] ? (
+      // Si el componente existe en nuestro mapa, lo renderizamos
+      // Si necesitas pasar props específicas como 'onAddNew', puedes envolverlo en una función
+      activeMenu === "Empleados" ? (
+        <DatatableEmpleados onAddNew={() => setActiveMenu("ClienteRegistro")} />
+      ) : (
+        COMPONENT_MAP[activeMenu]
+      )
+    ) : (
+      // Fallback por si el menú no tiene un componente asignado todavía
+      <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
+        <h1 className="text-2xl font-bold text-blue-900 dark:text-white">
+          Contenido de {activeMenu}
+        </h1>
+        <p className="text-default-500">Próximamente...</p>
+      </div>
+    )}
+  </div>
+</section>
     </>
   );
 }

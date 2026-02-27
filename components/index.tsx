@@ -7,8 +7,9 @@ export { default as Marcas } from "./Marcas/marcas";
 export { default as Productos } from "./Productos/productos";
 export { default as SidebarComponent } from "./ui/Sidebar/sidebar";
 export { default as ClienteRegistro} from "./Cliente/RegistroCliente/registroCliente"
-export { default as LoginUsuario} from "./LoginUsuario/loginUsuario"
-export { default as DatatableEmpleados} from "./DatatableEmpleados/datatableEmpleados"
+export { default as LoginUsuario} from "./Usuario/LoginUsuario/loginUsuario"
+export { default as DatatableEmpleados} from "./Empleado/DatatableEmpleados/datatableEmpleados"
+export { default as DatatableUsuarios} from "./Usuario/DatatableUsuarios/datatableUsuarios"
 export { Footer } from "./ui/Footer/footer";
 export { Navbar } from "./ui/Navbar/navbar";
 

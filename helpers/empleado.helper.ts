@@ -2,7 +2,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export async function EmpleadosListar() {
   try {
-    const response = await fetch(`${apiUrl}/usuario`, {
+    const response = await fetch(`${apiUrl}/Empleados`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
