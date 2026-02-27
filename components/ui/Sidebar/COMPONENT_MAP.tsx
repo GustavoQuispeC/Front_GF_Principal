@@ -5,6 +5,7 @@ import RegistroCliente from "@/components/Cliente/RegistroCliente/registroClient
 export  const COMPONENT_MAP: Record<string, React.ReactNode> = {
   "Empleados": <DatatableEmpleados />,
   "Usuarios": <DatatableUsuarios />,
+  
   "ClienteRegistro": <RegistroCliente />,
   "Inicio": (
     <div className="p-6">

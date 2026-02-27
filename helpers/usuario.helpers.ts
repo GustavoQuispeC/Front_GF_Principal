@@ -1,5 +1,5 @@
 import { IUsuariosListar } from "@/types/IUsuariosListar";
-import { getAuthUser } from "./saveAuthData";
+import { getAuthUser } from "./authorization";
 
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -42,10 +42,9 @@ export async function UsuariosListar(): Promise<IUsuariosListar[]> {
     },
   });
 
-  if (!response.ok) {
+ if (!response.ok) {
     const body = await response.text().catch(() => "");
     throw new Error(`Error en la solicitud: ${response.status} ${response.statusText} ${body}`);
   }
-
   return response.json();
 }

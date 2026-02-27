@@ -1,3 +1,4 @@
+'use client';
 import { SidebarComponent } from "@/components";
 
 export default function DashboardPage() {

@@ -6,4 +6,5 @@ export interface IUsuariosListar {
     isActive:       boolean;
     roles:          string[];
     nombreEmpleado: null | string;
+    //fotoUrl:        null | string;
 }

@@ -2,6 +2,7 @@ export interface ILoginResponse {
     token:          string;
     email:          string;
     nombreCompleto: string;
+    fotoUrl:        string | null;
     expiresAt:      string;
 }
 

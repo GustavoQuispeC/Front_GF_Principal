@@ -1,7 +1,6 @@
 'use client';
 
-
-import DatatableUsuarios from "@/components/Usuario/DatatableUsuarios/datatableUsuarios";
+import { DatatableUsuarios } from "@/components";
 
 export default function DatatableUsuariosPage() {
     return (

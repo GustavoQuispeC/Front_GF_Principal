@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   LayoutGrid,
@@ -21,12 +21,24 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
 } from "lucide-react";
-import { Button, Avatar, Badge, ScrollShadow } from "@heroui/react";
+import {
+  Avatar,
+  Badge,
+  ScrollShadow,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  useDraggable,
+} from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import DatatableEmpleados from "@/components/Empleado/DatatableEmpleados/datatableEmpleados";
-import ClienteRegistro from "@/components/Cliente/RegistroCliente/registroCliente";
-import RegistroCliente from "@/components/Cliente/RegistroCliente/registroCliente";
 import { COMPONENT_MAP } from "./COMPONENT_MAP";
+import { getAuthUser, logout } from "@/helpers/authorization";
+import { IUserData } from "@/types/Auth/IAuth";
 
 // Configuración de navegación
 const menuGroups = {
@@ -52,7 +64,7 @@ const menuGroups = {
       ],
     },
     { name: "Empleados", icon: Users },
-    { name: "Usuarios", icon: Rocket},
+    { name: "Usuarios", icon: Rocket },
   ],
   organization: [
     { name: "Cap Table", icon: Briefcase },
@@ -79,14 +91,14 @@ const menuGroups = {
     { name: "HeroUI", initial: "HU" },
     { name: "Tailwind Variants", initial: "TV" },
     { name: "HeroUI Pro", initial: "HP" },
-  ]
+  ],
 };
 
 const cx = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(" ");
 
 export default function Sidebar() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeMenu, setActiveMenu] = useState("Home");
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
@@ -96,26 +108,70 @@ export default function Sidebar() {
     Settings: false,
   });
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  const toggleSidebar = () => setIsOpenSidebar(!isOpenSidebar);
   const toggleSubmenu = (name: string) => {
     setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
   };
 
-  // Clase común para los items del menú
-  const itemClasses = "flex items-center justify-between w-full px-3 py-2 rounded-lg transition-colors hover:bg-default-100 dark:hover:bg-white/10 group cursor-pointer";
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [usuario, setUsuario] = useState<IUserData | null>(null);
+  //const targetRef = React.useRef(null);
+  //const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
+
+  //! Carga los datos del usuario al montar el componente
+  useEffect(() => {
+  const data = getAuthUser();
+  setUsuario(data);
+}, []);
+
+  //! Función para manejar la confirmación de cierre de sesión
+  const handleConfirmLogout = () => {
+    logout(); // elimina el token y redirige a "/"
+  };
+  const CerrarSesionModal = () => {
+    return (
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Cerrar Sesión
+              </ModalHeader>
+              <ModalBody>
+                <p>¿Estás seguro de que deseas cerrar sesión?</p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cancelar
+                </Button>
+                {/* Este botón ejecuta la salida real */}
+                <Button color="primary" onPress={handleConfirmLogout}>
+                  Cerrar Sesión
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    );
+  };
+
+  //! Clase común para los items del menú
+  const itemClasses =
+    "flex items-center justify-between w-full px-3 py-2 rounded-lg transition-colors hover:bg-default-100 dark:hover:bg-white/10 group cursor-pointer";
   const textClasses = "text-blue-900 font-medium text-sm dark:text-white";
 
   return (
     <>
       {/* --- BOTÓN TOGGLE (MÓVIL) --- */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button 
-          isIconOnly 
-          variant="flat" 
+        <Button
+          isIconOnly
+          variant="flat"
           onPress={toggleSidebar}
           className="bg-white shadow-md dark:bg-slate-900"
         >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
+          {isOpenSidebar ? <X size={20} /> : <Menu size={20} />}
         </Button>
       </div>
 
@@ -126,20 +182,30 @@ export default function Sidebar() {
           "transition-[transform,width] duration-300 ease-in-out",
           "w-72 lg:translate-x-0",
           isCollapsed ? "lg:w-20" : "lg:w-72",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpenSidebar ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <ScrollShadow className={cx("h-full", isCollapsed ? "p-3" : "p-6")}>
           {/* Logo / Header */}
-          <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center mb-4" : "justify-between mb-6")}
+          <div
+            className={cx(
+              "flex items-center gap-3",
+              isCollapsed ? "justify-center mb-4" : "justify-between mb-6",
+            )}
           >
-            <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}
+            <div
+              className={cx(
+                "flex items-center gap-3",
+                isCollapsed ? "justify-center" : "",
+              )}
             >
               <div className="bg-black p-2 rounded-xl text-white dark:bg-white dark:text-slate-950">
                 <Rocket size={20} fill="white" />
               </div>
               {!isCollapsed && (
-                <span className="text-xl font-bold text-blue-900 dark:text-white">ACME</span>
+                <span className="text-xl font-bold text-blue-900 dark:text-white">
+                  Grupo Famet
+                </span>
               )}
             </div>
             {!isCollapsed && (
@@ -167,16 +233,27 @@ export default function Sidebar() {
           )}
 
           {/* User Profile */}
-              <div className={cx("flex items-center gap-3 mb-10", isCollapsed ? "justify-center" : "")}
+          <div
+            className={cx(
+              "flex items-center gap-3 mb-10",
+              isCollapsed ? "justify-center" : "",
+            )}
           >
             <Avatar
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+              src={usuario?.fotoUrl || undefined}
               className="w-10 h-10"
             />
             {!isCollapsed && (
               <div className="flex flex-col">
-                    <span className="text-blue-900 font-bold text-sm dark:text-white">John Doe</span>
-                    <span className="text-default-400 text-xs font-medium">Product Designer</span>
+                <span className="text-blue-900 font-bold text-sm dark:text-white">
+                  {usuario?.nombreCompleto || "Usuario"}
+                </span>
+                <span className="text-default-400 text-xs font-medium">
+                  {usuario?.email || "Sin correo"}
+                </span>
+                <span className="text-default-400 text-xs font-medium">
+                  {usuario?.rol}
+                </span>
               </div>
             )}
           </div>
@@ -186,7 +263,9 @@ export default function Sidebar() {
             {/* Overview Section */}
             <div>
               {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">Descripción</p>
+                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
+                  Descripción
+                </p>
               )}
               <div className="space-y-1">
                 {menuGroups.overview.map((item) => (
@@ -196,19 +275,29 @@ export default function Sidebar() {
                       className={cx(
                         itemClasses,
                         activeMenu === item.name ? "bg-default-100" : "",
-                        isCollapsed ? "justify-center" : ""
+                        isCollapsed ? "justify-center" : "",
                       )}
                     >
-                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}
+                      <div
+                        className={cx(
+                          "flex items-center gap-3",
+                          isCollapsed ? "justify-center" : "",
+                        )}
                       >
                         <item.icon
                           size={18}
-                          className={activeMenu === item.name ? "text-blue-900" : "text-default-400"}
+                          className={
+                            activeMenu === item.name
+                              ? "text-blue-900"
+                              : "text-default-400"
+                          }
                         />
-                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
+                        {!isCollapsed && (
+                          <span className={textClasses}>{item.name}</span>
+                        )}
                       </div>
-                     
-                        {!isCollapsed && item.hasAction && (
+
+                      {!isCollapsed && item.hasAction && (
                         <button
                           type="button"
                           onClick={(event) => {
@@ -224,7 +313,7 @@ export default function Sidebar() {
                               "transition-transform",
                               openMenus[item.name]
                                 ? "rotate-45 text-blue-900 dark:text-white"
-                                : "text-default-300"
+                                : "text-default-300",
                             )}
                           />
                         </button>
@@ -238,7 +327,10 @@ export default function Sidebar() {
                             href={child.href}
                             className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
                           >
-                            <ChevronRight size={12} className="text-default-400" />
+                            <ChevronRight
+                              size={12}
+                              className="text-default-400"
+                            />
                             {child.name}
                           </a>
                         ))}
@@ -252,15 +344,29 @@ export default function Sidebar() {
             {/* Organization Section */}
             <div>
               {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">Organization</p>
+                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
+                  Organization
+                </p>
               )}
               <div className="space-y-1">
                 {menuGroups.organization.map((item) => (
                   <div key={item.name}>
-                    <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
+                    <div
+                      className={cx(
+                        itemClasses,
+                        isCollapsed ? "justify-center" : "",
+                      )}
+                    >
+                      <div
+                        className={cx(
+                          "flex items-center gap-3",
+                          isCollapsed ? "justify-center" : "",
+                        )}
+                      >
                         <item.icon size={18} className="text-default-400" />
-                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
+                        {!isCollapsed && (
+                          <span className={textClasses}>{item.name}</span>
+                        )}
                       </div>
                       {!isCollapsed && item.badge && (
                         <span className="text-[10px] font-bold text-default-400 bg-default-100 px-2 py-0.5 rounded-full">
@@ -280,7 +386,7 @@ export default function Sidebar() {
                               "transition-transform",
                               openMenus[item.name]
                                 ? "rotate-45 text-blue-900 dark:text-white"
-                                : "text-default-300"
+                                : "text-default-300",
                             )}
                           />
                         </button>
@@ -294,7 +400,10 @@ export default function Sidebar() {
                             href={child.href}
                             className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
                           >
-                            <ChevronRight size={12} className="text-default-400" />
+                            <ChevronRight
+                              size={12}
+                              className="text-default-400"
+                            />
                             {child.name}
                           </a>
                         ))}
@@ -308,18 +417,31 @@ export default function Sidebar() {
             {/* Teams Section */}
             <div>
               {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">Your Teams</p>
+                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
+                  Your Teams
+                </p>
               )}
               <div className="space-y-1">
                 {menuGroups.teams.map((team) => (
-                  <div key={team.name} className={cx(itemClasses, isCollapsed ? "justify-center" : "")}
+                  <div
+                    key={team.name}
+                    className={cx(
+                      itemClasses,
+                      isCollapsed ? "justify-center" : "",
+                    )}
                   >
-                    <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}
+                    <div
+                      className={cx(
+                        "flex items-center gap-3",
+                        isCollapsed ? "justify-center" : "",
+                      )}
                     >
                       <div className="w-6 h-6 rounded flex items-center justify-center border border-divider text-[10px] font-bold text-default-500">
                         {team.initial}
                       </div>
-                      {!isCollapsed && <span className={textClasses}>{team.name}</span>}
+                      {!isCollapsed && (
+                        <span className={textClasses}>{team.name}</span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -329,18 +451,40 @@ export default function Sidebar() {
 
           {/* Footer Section */}
           <div className="mt-12 pt-6 border-t border-divider space-y-1">
-            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-              <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
+            <div
+              className={cx(itemClasses, isCollapsed ? "justify-center" : "")}
+            >
+              <div
+                className={cx(
+                  "flex items-center gap-3 text-default-400",
+                  isCollapsed ? "justify-center" : "",
+                )}
+              >
                 <Info size={18} />
-                {!isCollapsed && <span className={textClasses}>Ayuda e Información</span>}
+                {!isCollapsed && (
+                  <span className={textClasses}>Ayuda e Información</span>
+                )}
               </div>
             </div>
-            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-              <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
+            <div
+              className={cx(itemClasses, isCollapsed ? "justify-center" : "")}
+            >
+              <div
+                className={cx(
+                  "flex items-center gap-3 text-default-400 cursor-pointer",
+                  isCollapsed ? "justify-center" : "",
+                )}
+                onClick={onOpen} // <--- Abre el modal
+              >
                 <LogOut size={18} />
-                {!isCollapsed && <span className={textClasses}>Cerrar Sesión</span>}
+                {!isCollapsed && (
+                  <span className={textClasses}>Cerrar Sesión</span>
+                )}
               </div>
             </div>
+
+            {/* Renderiza el componente del Modal al final de tu Sidebar */}
+            <CerrarSesionModal />
           </div>
         </ScrollShadow>
       </aside>
@@ -352,7 +496,7 @@ export default function Sidebar() {
           "h-14 border-b border-divider bg-white/80 backdrop-blur",
           "flex items-center justify-end px-4",
           "dark:bg-slate-950/80 dark:border-white/10",
-          isCollapsed ? "lg:pl-20" : "lg:pl-72"
+          isCollapsed ? "lg:pl-20" : "lg:pl-72",
         )}
       >
         <ThemeSwitch />
@@ -367,32 +511,34 @@ export default function Sidebar() {
       )}
 
       <section
-  className={cx(
-    "pt-16 transition-[margin] duration-300 ease-in-out",
-    isCollapsed ? "lg:ml-20" : "lg:ml-72"
-  )}
->
-  <div className="p-4 lg:p-6">
-    {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
-    {COMPONENT_MAP[activeMenu] ? (
-      // Si el componente existe en nuestro mapa, lo renderizamos
-      // Si necesitas pasar props específicas como 'onAddNew', puedes envolverlo en una función
-      activeMenu === "Empleados" ? (
-        <DatatableEmpleados onAddNew={() => setActiveMenu("ClienteRegistro")} />
-      ) : (
-        COMPONENT_MAP[activeMenu]
-      )
-    ) : (
-      // Fallback por si el menú no tiene un componente asignado todavía
-      <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
-        <h1 className="text-2xl font-bold text-blue-900 dark:text-white">
-          Contenido de {activeMenu}
-        </h1>
-        <p className="text-default-500">Próximamente...</p>
-      </div>
-    )}
-  </div>
-</section>
+        className={cx(
+          "pt-16 transition-[margin] duration-300 ease-in-out",
+          isCollapsed ? "lg:ml-20" : "lg:ml-72",
+        )}
+      >
+        <div className="p-4 lg:p-6">
+          {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
+          {COMPONENT_MAP[activeMenu] ? (
+            // Si el componente existe en nuestro mapa, lo renderizamos
+            // Si necesitas pasar props específicas como 'onAddNew', puedes envolverlo en una función
+            activeMenu === "Empleados" ? (
+              <DatatableEmpleados
+                onAddNew={() => setActiveMenu("ClienteRegistro")}
+              />
+            ) : (
+              COMPONENT_MAP[activeMenu]
+            )
+          ) : (
+            // Fallback por si el menú no tiene un componente asignado todavía
+            <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
+              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">
+                Contenido de {activeMenu}
+              </h1>
+              <p className="text-default-500">Próximamente...</p>
+            </div>
+          )}
+        </div>
+      </section>
     </>
   );
 }
