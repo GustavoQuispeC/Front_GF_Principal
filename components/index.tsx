@@ -10,6 +10,7 @@ export { default as ClienteRegistro} from "./Cliente/RegistroCliente/registroCli
 export { default as LoginUsuario} from "./Usuario/LoginUsuario/loginUsuario"
 export { default as DatatableEmpleados} from "./Empleado/DatatableEmpleados/datatableEmpleados"
 export { default as DatatableUsuarios} from "./Usuario/DatatableUsuarios/datatableUsuarios"
+export { default as RegistrarEmpleados} from "./Empleado/RegistrarEmpleados/registrarEmpleados"
 export { Footer } from "./ui/Footer/footer";
 export { Navbar } from "./ui/Navbar/navbar";
 

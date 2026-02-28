@@ -20,8 +20,8 @@ import {
   User,
   Pagination,
 } from "@heroui/react";
-import { IUsuariosListar } from "@/types/IUsuariosListar";
-import { UsuariosListar } from "@/helpers/usuario.helpers";
+import { IListarUsuarios } from "@/types/IListarUsuarios";
+import { listarUsuarios } from "@/helpers/usuario.helpers";
 
 
 
@@ -176,7 +176,7 @@ interface DatatableUsuariosProps {
 
 //! ----- Componente principal del datatable de empleados -----
 export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) {
-  const [usuarios, setUsuarios] = useState<IUsuariosListar[]>([]);
+  const [usuarios, setUsuarios] = useState<IListarUsuarios[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] =useState<Selection>(
@@ -230,8 +230,8 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   const sortedItems = useMemo(() => {
   return [...items].sort((a, b) => {
     // Obtenemos el valor y aseguramos que no sea null para la comparación
-    const first = a[sortDescriptor.column as keyof IUsuariosListar] ?? "";
-    const second = b[sortDescriptor.column as keyof IUsuariosListar] ?? "";
+    const first = a[sortDescriptor.column as keyof IListarUsuarios] ?? "";
+    const second = b[sortDescriptor.column as keyof IListarUsuarios] ?? "";
     
     const cmp = first < second ? -1 : first > second ? 1 : 0;
     return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -239,8 +239,8 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
 }, [sortDescriptor, items]);
 
   //! ----- Función para renderizar el contenido de cada celda según la columna -----
-  const renderCell = React.useCallback((usuario: IUsuariosListar, columnKey: React.Key) => {
-    const cellValue = usuario[columnKey as keyof IUsuariosListar];
+  const renderCell = React.useCallback((usuario: IListarUsuarios, columnKey: React.Key) => {
+    const cellValue = usuario[columnKey as keyof IListarUsuarios];
 
     switch (columnKey) {
       case "nombreEmpleado":
@@ -443,7 +443,7 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   //! --- Funcion para obtener los empleados desde la API al montar el componente ---
   const fetchUsuarios = async ()=> {
     try {
-      const usuariosData = await UsuariosListar();
+      const usuariosData = await listarUsuarios();
       setUsuarios(usuariosData);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);

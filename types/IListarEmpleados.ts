@@ -22,3 +22,8 @@ export interface IEmpleadosListar {
     isActive:           boolean;
     createdAt:          Date;
 }
+
+export interface ITipoDocumentoListar {
+    id:     number;
+    nombre: string;
+}

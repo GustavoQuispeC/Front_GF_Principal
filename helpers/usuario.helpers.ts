@@ -1,4 +1,4 @@
-import { IUsuariosListar } from "@/types/IUsuariosListar";
+import { IListarUsuarios } from "@/types/IListarUsuarios";
 import { getAuthUser } from "./authorization";
 
 
@@ -29,7 +29,7 @@ export async function loginUsuario(email: string, password: string) {
 
 
 //! Función para listar usuarios, token requrido 
-export async function UsuariosListar(): Promise<IUsuariosListar[]> {
+export async function listarUsuarios(): Promise<IListarUsuarios[]> {
   const user = getAuthUser();
   const token = user?.token;
   if (!token) throw new Error("No hay token en localStorage: revisar");

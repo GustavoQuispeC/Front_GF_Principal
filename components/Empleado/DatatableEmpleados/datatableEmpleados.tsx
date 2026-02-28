@@ -20,8 +20,9 @@ import {
   User,
   Pagination,
 } from "@heroui/react";
-import { IEmpleadosListar } from "@/types/empleado";
-import { EmpleadosListar } from "@/helpers/empleado.helper";
+import { IEmpleadosListar } from "@/types/IListarEmpleados";
+import { ListarEmpleados } from "@/helpers/empleado.helper";
+
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -438,7 +439,7 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
   //! --- Funcion para obtener los empleados desde la API al montar el componente ---
   const fetchEmpleados = async ()=> {
     try {
-      const empleadosData = await EmpleadosListar();
+      const empleadosData = await ListarEmpleados();
       setEmpleados(empleadosData);
     } catch (error) {
       console.error("Error al obtener los empleados:", error);

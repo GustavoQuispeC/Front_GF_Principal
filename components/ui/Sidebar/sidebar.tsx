@@ -523,7 +523,7 @@ export default function Sidebar() {
             // Si necesitas pasar props específicas como 'onAddNew', puedes envolverlo en una función
             activeMenu === "Empleados" ? (
               <DatatableEmpleados
-                onAddNew={() => setActiveMenu("ClienteRegistro")}
+                onAddNew={() => setActiveMenu("RegistrarEmpleados")}
               />
             ) : (
               COMPONENT_MAP[activeMenu]
