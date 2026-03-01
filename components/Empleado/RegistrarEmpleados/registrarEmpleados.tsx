@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import {
   Input,
   Button,
@@ -11,6 +11,7 @@ import {
   Divider,
   Avatar,
   DatePicker,
+  Progress,
 } from "@heroui/react";
 import {
   User,
@@ -26,39 +27,44 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-import {
-  BancosListar,
-  EstadoCivilListar,
-  GenerosListar,
-  NivelesEducativosListar,
-  SistemaPensionesListar,
-  TipoDocumentoListar,
-  TiposContratoListar,
-  TiposJornadaListar,
-  TiposParentescoListar,
-} from "@/helpers/empleado.helper";
-import { IListarCargos } from "@/types/IListarCargos";
-import { listarCargos } from "@/helpers/cargo.helper";
 import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
+import { useUbigeo } from "@/hooks/useUbigeo";
+import { useCatalogos } from "@/hooks/useCatalogos";
+import { useCargos } from "@/hooks/useCargos";
+
+import { registrarEmpleado } from "@/helpers/empleado.helper";
+import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
+
 
 export default function RegistrarEmpleados() {
   const [preview, setPreview] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null); // 👈 guardamos el File
+
+  const { ubigeoData, loadingUbigeo } = useUbigeo();
+  const { catalogos, loading } = useCatalogos();
+  const { cargos } = useCargos();
+  const {
+    uploading,
+    progress,
+    error: uploadError,
+    uploadFile,
+  } = useFirebaseStorage();
+
   const [form, setForm] = useState<IRegistarEmpleado>({
     nombre: "",
     apellidos: "",
-    tipoDocumento: 0, 
+    tipoDocumento: 0,
     numeroDocumento: "",
     fechaNacimiento: "",
-    genero: 0, 
-    estadoCivil: 0, 
+    genero: 0,
+    estadoCivil: 0,
     nacionalidad: null,
     correo: null,
     telefonoMovil: null,
     direccion: null,
-    distrito: null,
-    provincia: null,
-    departamento: null,
+    distrito: "",
+    provincia: "",
+    departamento: "",
     contactoEmergenciaNombre: null,
     contactoEmergenciaParentesco: 0,
     contactoEmergenciaTelefono: null,
@@ -81,82 +87,23 @@ export default function RegistrarEmpleados() {
     observaciones: null,
   });
 
-  const [catalogos, setCatalogos] = useState({
-    TiposDocumentos: [] as any[],
-    Generos: [] as any[],
-    EstadosCiviles: [] as any[],
-    TiposCuentaBancaria: [] as any[],
-    SistemasPensiones: [] as any[],
-    NivelesEducativos: [] as any[],
-    TiposParentesco: [] as any[],
-    TiposContrato: [] as any[],
-    TiposJornada: [] as any[],
-  });
+  const handleDeptChange = (keys: any) => {
+    const valor = Array.from(keys)[0] as string;
+    setForm((prev) => ({
+      ...prev,
+      departamento: valor,
+      provincia: "",
+      distrito: "",
+    }));
+  };
 
-  const [cargos, setCargos] = useState<IListarCargos[]>([]);
-  //! Cargar catálogos al montar el componente
-  useEffect(() => {
-    async function cargarCatalogos() {
-      try {
-        setLoading(true);
-        const [
-          tiposDocumentos,
-          generos,
-          estadoCivil,
-          tiposCuentaBancaria,
-          sistemaPensiones,
-          nivelesEducativos,
-          tiposParentesco,
-          tiposContrato,
-          tiposJornada,
-        ] = await Promise.all([
-          TipoDocumentoListar(),
-          GenerosListar(),
-          EstadoCivilListar(),
-          BancosListar(),
-          SistemaPensionesListar(),
-          NivelesEducativosListar(),
-          TiposParentescoListar(),
-          TiposContratoListar(),
-          TiposJornadaListar(),
-        ]);
-
-        setCatalogos({
-          TiposDocumentos: tiposDocumentos || [],
-          Generos: generos || [],
-          EstadosCiviles: estadoCivil || [],
-          TiposCuentaBancaria: tiposCuentaBancaria || [],
-          SistemasPensiones: sistemaPensiones || [],
-          NivelesEducativos: nivelesEducativos || [],
-          TiposParentesco: tiposParentesco || [],
-          TiposContrato: tiposContrato || [],
-          TiposJornada: tiposJornada || [],
-        });
-      } catch (error) {
-        console.error("Error en la carga masiva de catálogos:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    cargarCatalogos();
-  }, []);
-
-  //! Cargar cargos para el select
-  useEffect(() => {
-    const cargarCargos = async () => {
-      try {
-        const response = await listarCargos();
-        setCargos(response || []);
-      } catch (error) {
-        console.error("Error al cargar cargos:", error);
-      }
-    };
-    cargarCargos();
-  }, []);
+  const handleProvChange = (keys: any) => {
+    const valor = Array.from(keys)[0] as string;
+    setForm((prev) => ({ ...prev, provincia: valor, distrito: "" }));
+  };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
-
     setForm((prev) => ({
       ...prev,
       [name]:
@@ -170,34 +117,37 @@ export default function RegistrarEmpleados() {
     }));
   };
 
-  //! Función genérica para actualizar campos del formulario
   const setField = (field: keyof IRegistarEmpleado, value: any) => {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  //! Manejo de imagen con preview
+  //! Solo genera preview local, no sube aún
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setSelectedFile(file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-        // si quieres guardar fotoUrl temporal:
-        // setField("fotoUrl", reader.result as string);
-      };
+      reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  //! Manejo de submit
-  const onSubmit = (e: React.FormEvent) => {
+  //! Al guardar: sube foto a Firebase → obtiene URL → envía todo al backend
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Payload:", form);
-    // aquí llamas tu API POST
-  };
+
+    let fotoUrl: string | null = form.fotoUrl;
+
+    if (selectedFile) {
+      const result = await uploadFile(selectedFile, "empleados");
+      if (!result) return; // si falla la subida, detiene el submit
+      fotoUrl = result.url;
+    }
+
+    const payload: IRegistarEmpleado = { ...form, fotoUrl };
+    console.log("Payload final hacia backend:", payload);
+    const response = await registrarEmpleado(payload);
+    console.log("Respuesta del backend:", response);
 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={onSubmit}>
@@ -236,14 +186,28 @@ export default function RegistrarEmpleados() {
               >
                 Subir Foto
               </Button>
+
+              {/* Progreso de subida */}
+              {uploading && (
+                <div className="w-full space-y-1">
+                  <Progress value={progress} size="sm" color="primary" />
+                  <p className="text-xs text-center text-default-500">
+                    {progress}%
+                  </p>
+                </div>
+              )}
+              {uploadError && (
+                <p className="text-xs text-danger text-center">{uploadError}</p>
+              )}
             </div>
 
-            {/* DATOS PERSONALES */}
+            {/* Datos Personales */}
             <div className="md:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="Nombres"
                 placeholder="Ej. Juan Carlos"
                 variant="bordered"
+                required
                 name="nombre"
                 value={form.nombre}
                 onChange={handleInputChange}
@@ -253,27 +217,26 @@ export default function RegistrarEmpleados() {
                 placeholder="Ej. Pérez García"
                 variant="bordered"
                 name="apellidos"
+                required
                 value={form.apellidos}
                 onChange={handleInputChange}
               />
-
               <Select
                 label="Tipo Documento"
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.TiposDocumentos}
+                required
                 variant="bordered"
                 selectedKeys={[String(form.tipoDocumento)]}
-                onSelectionChange={(keys) => {
-                  const v = Number(Array.from(keys)[0]);
-                  setField("tipoDocumento", Number.isFinite(v) ? v : 1);
-                }}
+                onSelectionChange={(keys) =>
+                  setField("tipoDocumento", Number(Array.from(keys)[0]))
+                }
               >
                 {(item: any) => (
                   <SelectItem key={item.id}>{item.nombre}</SelectItem>
                 )}
               </Select>
-
               <Input
                 label="Número Documento"
                 placeholder="12345678"
@@ -281,46 +244,44 @@ export default function RegistrarEmpleados() {
                 name="numeroDocumento"
                 value={form.numeroDocumento}
                 onChange={handleInputChange}
+                required
               />
-
               <DatePicker
                 className="w-full"
                 label="Fecha Nacimiento"
                 variant="bordered"
-                onChange={(val: any) => {
-                  const iso = val?.toString?.() ?? "";
-                  setField("fechaNacimiento", iso);
-                }}
+                isRequired
+                onChange={(val: any) =>
+                  setField("fechaNacimiento", val?.toString?.() ?? "")
+                }
               />
-
               <Select
                 label="Género"
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.Generos}
                 variant="bordered"
+                required
                 selectedKeys={[String(form.genero)]}
-                onSelectionChange={(keys) => {
-                  const v = Number(Array.from(keys)[0]);
-                  setField("genero", Number.isFinite(v) ? v : 1);
-                }}
+                onSelectionChange={(keys) =>
+                  setField("genero", Number(Array.from(keys)[0]))
+                }
               >
                 {(item: any) => (
                   <SelectItem key={item.id}>{item.nombre}</SelectItem>
                 )}
               </Select>
-
               <Select
                 label="Estado Civil"
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.EstadosCiviles}
                 variant="bordered"
+                required
                 selectedKeys={[String(form.estadoCivil)]}
-                onSelectionChange={(keys) => {
-                  const v = Number(Array.from(keys)[0]);
-                  setField("estadoCivil", Number.isFinite(v) ? v : 1);
-                }}
+                onSelectionChange={(keys) =>
+                  setField("estadoCivil", Number(Array.from(keys)[0]))
+                }
               >
                 {(item: any) => (
                   <SelectItem key={item.id}>{item.nombre}</SelectItem>
@@ -331,7 +292,6 @@ export default function RegistrarEmpleados() {
 
           <Divider className="my-8" />
 
-          {/* CONTACTO Y UBICACION */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
               label="Correo Electrónico"
@@ -370,29 +330,61 @@ export default function RegistrarEmpleados() {
               value={form.direccion ?? ""}
               onChange={handleInputChange}
             />
-            <Input
-              label="Distrito"
-              variant="bordered"
-              name="distrito"
-              value={form.distrito ?? ""}
-              onChange={handleInputChange}
-            />
-            <Input
-              label="Provincia"
-              placeholder="Lima"
-              variant="bordered"
-              name="provincia"
-              value={form.provincia ?? ""}
-              onChange={handleInputChange}
-            />
-            <Input
-              label="Departamento"
-              placeholder="Lima"
-              variant="bordered"
-              name="departamento"
-              value={form.departamento ?? ""}
-              onChange={handleInputChange}
-            />
+            <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Select
+                label="Departamento"
+                placeholder="Seleccione"
+                variant="bordered"
+                isLoading={loadingUbigeo}
+                selectedKeys={form.departamento ? [form.departamento] : []}
+                onSelectionChange={handleDeptChange}
+              >
+                {ubigeoData
+                  ? Object.keys(ubigeoData).map((d) => (
+                      <SelectItem key={d} textValue={d}>
+                        {d}
+                      </SelectItem>
+                    ))
+                  : []}
+              </Select>
+              <Select
+                label="Provincia"
+                placeholder="Seleccione"
+                variant="bordered"
+                isDisabled={!form.departamento}
+                selectedKeys={form.provincia ? [form.provincia] : []}
+                onSelectionChange={handleProvChange}
+              >
+                {form.departamento && ubigeoData?.[form.departamento]
+                  ? Object.keys(ubigeoData[form.departamento]).map((p) => (
+                      <SelectItem key={p} textValue={p}>
+                        {p}
+                      </SelectItem>
+                    ))
+                  : []}
+              </Select>
+              <Select
+                label="Distrito"
+                placeholder="Seleccione"
+                variant="bordered"
+                isDisabled={!form.provincia}
+                selectedKeys={form.distrito ? [form.distrito] : []}
+                onSelectionChange={(k) =>
+                  setField("distrito", Array.from(k)[0])
+                }
+              >
+                {form.provincia &&
+                ubigeoData?.[form.departamento]?.[form.provincia]
+                  ? Object.keys(
+                      ubigeoData[form.departamento][form.provincia],
+                    ).map((dist) => (
+                      <SelectItem key={dist} textValue={dist}>
+                        {dist}
+                      </SelectItem>
+                    ))
+                  : []}
+              </Select>
+            </div>
           </div>
 
           <Divider className="my-8" />
@@ -416,13 +408,12 @@ export default function RegistrarEmpleados() {
               items={catalogos.TiposParentesco}
               variant="bordered"
               selectedKeys={[String(form.contactoEmergenciaParentesco)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
+              onSelectionChange={(keys) =>
                 setField(
                   "contactoEmergenciaParentesco",
-                  Number.isFinite(v) ? v : 1,
-                );
-              }}
+                  Number(Array.from(keys)[0]),
+                )
+              }
             >
               {(item: any) => (
                 <SelectItem key={item.id}>{item.nombre}</SelectItem>
@@ -440,7 +431,6 @@ export default function RegistrarEmpleados() {
 
           <Divider className="my-8" />
 
-          {/* Información Laboral */}
           <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
             <Briefcase size={20} /> Datos Laborales
           </h3>
@@ -452,16 +442,14 @@ export default function RegistrarEmpleados() {
               items={cargos}
               variant="bordered"
               selectedKeys={[String(form.cargoId)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("cargoId", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("cargoId", Number(Array.from(keys)[0]))
+              }
             >
               {(item: any) => (
                 <SelectItem key={item.id}>{item.nombre}</SelectItem>
               )}
             </Select>
-
             <Input
               label="Salario"
               placeholder="0.00"
@@ -474,7 +462,6 @@ export default function RegistrarEmpleados() {
               value={String(form.salario)}
               onChange={handleInputChange}
             />
-
             <Input
               label="Profesión/Oficio"
               placeholder="Ingeniero de Sistemas"
@@ -483,7 +470,6 @@ export default function RegistrarEmpleados() {
               value={form.profesionOficio ?? ""}
               onChange={handleInputChange}
             />
-
             <Select
               label="Nivel Educativo"
               placeholder="Seleccione"
@@ -491,54 +477,46 @@ export default function RegistrarEmpleados() {
               items={catalogos.NivelesEducativos}
               variant="bordered"
               selectedKeys={[String(form.nivelEducativo)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("nivelEducativo", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("nivelEducativo", Number(Array.from(keys)[0]))
+              }
             >
               {(item: any) => (
                 <SelectItem key={item.id}>{item.nombre}</SelectItem>
               )}
             </Select>
-
             <Select
               label="Tipo Contrato"
               placeholder="Seleccione"
               items={catalogos.TiposContrato}
               variant="bordered"
               selectedKeys={[String(form.tipoContrato)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("tipoContrato", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("tipoContrato", Number(Array.from(keys)[0]))
+              }
             >
               {(item) => <SelectItem key={item.id}>{item.nombre}</SelectItem>}
             </Select>
-
             <Select
               label="Tipo Jornada"
               placeholder="Seleccione"
               items={catalogos.TiposJornada}
               variant="bordered"
               selectedKeys={[String(form.tipoJornada)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("tipoJornada", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("tipoJornada", Number(Array.from(keys)[0]))
+              }
             >
               {(item) => <SelectItem key={item.id}>{item.nombre}</SelectItem>}
             </Select>
-
             <DatePicker
               className="w-full"
               label="Fecha Ingreso"
               variant="bordered"
-              onChange={(val: any) => {
-                const iso = val?.toString?.() ?? "";
-                setField("fechaIngreso", iso);
-              }}
+              onChange={(val: any) =>
+                setField("fechaIngreso", val?.toString?.() ?? "")
+              }
             />
-
             <Input
               label="RUC (Opcional)"
               variant="bordered"
@@ -546,7 +524,6 @@ export default function RegistrarEmpleados() {
               value={form.ruc ?? ""}
               onChange={handleInputChange}
             />
-
             <Input
               label="Observaciones"
               variant="bordered"
@@ -559,7 +536,6 @@ export default function RegistrarEmpleados() {
 
           <Divider className="my-8" />
 
-          {/* FINANCIERO Y SEGURO*/}
           <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
             <Landmark size={20} /> Financiero y Seguros
           </h3>
@@ -572,21 +548,18 @@ export default function RegistrarEmpleados() {
               value={form.bancoNombre ?? ""}
               onChange={handleInputChange}
             />
-
             <Select
               label="Tipo de Cuenta"
               placeholder="Seleccione"
               items={catalogos.TiposCuentaBancaria}
               variant="bordered"
               selectedKeys={[String(form.tipoCuenta)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("tipoCuenta", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("tipoCuenta", Number(Array.from(keys)[0]))
+              }
             >
               {(item) => <SelectItem key={item.id}>{item.nombre}</SelectItem>}
             </Select>
-
             <Input
               label="Número de Cuenta"
               variant="bordered"
@@ -595,7 +568,6 @@ export default function RegistrarEmpleados() {
               value={form.numeroCuentaBancaria ?? ""}
               onChange={handleInputChange}
             />
-
             <Input
               label="CCI"
               variant="bordered"
@@ -603,7 +575,6 @@ export default function RegistrarEmpleados() {
               value={form.cci ?? ""}
               onChange={handleInputChange}
             />
-
             <Select
               label="Sistema de Pensiones"
               placeholder="Seleccione"
@@ -611,25 +582,22 @@ export default function RegistrarEmpleados() {
               items={catalogos.SistemasPensiones}
               variant="bordered"
               selectedKeys={[String(form.sistemaPensiones)]}
-              onSelectionChange={(keys) => {
-                const v = Number(Array.from(keys)[0]);
-                setField("sistemaPensiones", Number.isFinite(v) ? v : 1);
-              }}
+              onSelectionChange={(keys) =>
+                setField("sistemaPensiones", Number(Array.from(keys)[0]))
+              }
             >
               {(item: any) => (
                 <SelectItem key={item.id}>{item.nombre}</SelectItem>
               )}
             </Select>
-
             <Input
-              label="CUSPP-Cod.único de ident. del SPP "
+              label="CUSPP"
               placeholder="1234567890AB"
               variant="bordered"
               name="cuspp"
               value={form.cuspp ?? ""}
               onChange={handleInputChange}
             />
-
             <Input
               label="Número ESSalud"
               variant="bordered"
@@ -640,27 +608,28 @@ export default function RegistrarEmpleados() {
             />
           </div>
 
-        
-           <div className="mt-10 flex justify-end gap-3">
-            <Button 
-              color="default" 
+          <div className="mt-10 flex justify-end gap-3">
+            <Button
+              color="default"
               variant="flat"
-              className="min-w-[150px]" // Ancho fijo para ambos
+              className="min-w-[150px]"
               startContent={<ArrowLeft size={18} />}
             >
               Volver
             </Button>
             <Button
               color="primary"
-              className="min-w-[150px]" // Mismo ancho que el botón volver
+              className="min-w-[150px]"
               startContent={<Save size={18} />}
               type="submit"
+              isLoading={uploading}
             >
-              Guardar
+              {uploading ? "Subiendo..." : "Guardar"}
             </Button>
           </div>
         </CardBody>
       </Card>
     </form>
   );
+}
 }
