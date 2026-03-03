@@ -6,10 +6,12 @@ import {
 } from "@/components";
 
 export const COMPONENT_MAP: Record<string, React.ReactNode> = {
+  //! Menu empleados
   Empleados: <DatatableEmpleados />,
-  Usuarios: <DatatableUsuarios />,
-
   RegistrarEmpleados: <RegistrarEmpleados />,
+
+  //! Menu usuarios
+  Usuarios: <DatatableUsuarios />,
   CrearUsuario: <CrearUsuario />,
 
   Inicio: (
@@ -17,5 +19,5 @@ export const COMPONENT_MAP: Record<string, React.ReactNode> = {
       <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
     </div>
   ),
-  // Puedes seguir agregando más aquí
+  
 };

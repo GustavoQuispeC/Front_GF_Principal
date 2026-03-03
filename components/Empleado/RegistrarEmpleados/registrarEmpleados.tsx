@@ -12,6 +12,7 @@ import {
   Avatar,
   DatePicker,
   Progress,
+  NumberInput,
 } from "@heroui/react";
 import {
   User,
@@ -35,8 +36,12 @@ import { useCargos } from "@/hooks/useCargos";
 import { registrarEmpleado } from "@/helpers/empleado.helper";
 import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
 
+interface RegistrarEmpleadosProps {
+  onBack?: () => void; // Función opcional para manejar el regreso al listado
+}
 
-export default function RegistrarEmpleados() {
+
+export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // 👈 guardamos el File
 
@@ -227,7 +232,7 @@ export default function RegistrarEmpleados() {
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.TiposDocumentos}
-                required
+                isRequired
                 variant="bordered"
                 selectedKeys={[String(form.tipoDocumento)]}
                 onSelectionChange={(keys) =>
@@ -238,16 +243,21 @@ export default function RegistrarEmpleados() {
                   <SelectItem key={item.id}>{item.nombre}</SelectItem>
                 )}
               </Select>
-              <Input
+              <NumberInput
+                hideStepper
+                formatOptions={{ useGrouping: false }}
                 label="Número Documento"
                 placeholder="12345678"
                 variant="bordered"
-                name="numeroDocumento"
-                value={form.numeroDocumento}
-                onChange={handleInputChange}
-                required
+                maxLength={8}
+                value={form.numeroDocumento ? Number(form.numeroDocumento) : undefined}
+                onValueChange={(value) =>
+                  setField("numeroDocumento", Number.isNaN(value) ? "" : String(value))
+                }
+                isRequired
               />
               <DatePicker
+              showMonthAndYearPickers
                 className="w-full"
                 label="Fecha Nacimiento"
                 variant="bordered"
@@ -256,13 +266,14 @@ export default function RegistrarEmpleados() {
                   setField("fechaNacimiento", val?.toString?.() ?? "")
                 }
               />
+             
               <Select
                 label="Género"
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.Generos}
                 variant="bordered"
-                required
+                isRequired
                 selectedKeys={[String(form.genero)]}
                 onSelectionChange={(keys) =>
                   setField("genero", Number(Array.from(keys)[0]))
@@ -278,7 +289,7 @@ export default function RegistrarEmpleados() {
                 isLoading={loading}
                 items={catalogos.EstadosCiviles}
                 variant="bordered"
-                required
+                isRequired
                 selectedKeys={[String(form.estadoCivil)]}
                 onSelectionChange={(keys) =>
                   setField("estadoCivil", Number(Array.from(keys)[0]))
@@ -303,6 +314,7 @@ export default function RegistrarEmpleados() {
               name="correo"
               value={form.correo ?? ""}
               onChange={handleInputChange}
+              required
             />
             <Input
               label="Teléfono Móvil"
@@ -312,6 +324,7 @@ export default function RegistrarEmpleados() {
               name="telefonoMovil"
               value={form.telefonoMovil ?? ""}
               onChange={handleInputChange}
+              required
             />
             <Input
               label="Nacionalidad"
@@ -615,6 +628,7 @@ export default function RegistrarEmpleados() {
               variant="flat"
               className="min-w-[150px]"
               startContent={<ArrowLeft size={18} />}
+              onPress={onBack}
             >
               Volver
             </Button>

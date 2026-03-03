@@ -40,6 +40,7 @@ import DatatableUsuarios from "@/components/Usuario/DatatableUsuarios/datatableU
 import { COMPONENT_MAP } from "./COMPONENT_MAP";
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
+import { RegistrarEmpleados } from "@/components";
 
 // Configuración de navegación
 const menuGroups = {
@@ -517,7 +518,7 @@ export default function Sidebar() {
           isCollapsed ? "lg:ml-20" : "lg:ml-72",
         )}
       >
-        <div className="p-4 lg:p-6">
+       <div className="p-4 lg:p-6">
           {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
           {COMPONENT_MAP[activeMenu] ? (
             // Si el componente existe en nuestro mapa, lo renderizamos
@@ -530,6 +531,8 @@ export default function Sidebar() {
               <DatatableUsuarios
                 onAddNew={() => setActiveMenu("CrearUsuario")}
               />
+            ) : activeMenu === "RegistrarEmpleados" ? (
+              <RegistrarEmpleados onBack={() => setActiveMenu("Empleados")} />
             ) : (
               COMPONENT_MAP[activeMenu]
             )
