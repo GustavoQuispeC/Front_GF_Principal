@@ -148,6 +148,7 @@ export default function RegistrarEmpleados() {
     console.log("Payload final hacia backend:", payload);
     const response = await registrarEmpleado(payload);
     console.log("Respuesta del backend:", response);
+  };
 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={onSubmit}>
@@ -631,5 +632,4 @@ export default function RegistrarEmpleados() {
       </Card>
     </form>
   );
-}
 }

@@ -2,6 +2,7 @@ import {
   DatatableEmpleados,
   DatatableUsuarios,
   RegistrarEmpleados,
+  CrearUsuario,
 } from "@/components";
 
 export const COMPONENT_MAP: Record<string, React.ReactNode> = {
@@ -9,6 +10,7 @@ export const COMPONENT_MAP: Record<string, React.ReactNode> = {
   Usuarios: <DatatableUsuarios />,
 
   RegistrarEmpleados: <RegistrarEmpleados />,
+  CrearUsuario: <CrearUsuario />,
 
   Inicio: (
     <div className="p-6">

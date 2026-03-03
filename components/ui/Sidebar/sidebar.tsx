@@ -36,6 +36,7 @@ import {
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import DatatableEmpleados from "@/components/Empleado/DatatableEmpleados/datatableEmpleados";
+import DatatableUsuarios from "@/components/Usuario/DatatableUsuarios/datatableUsuarios";
 import { COMPONENT_MAP } from "./COMPONENT_MAP";
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
@@ -524,6 +525,10 @@ export default function Sidebar() {
             activeMenu === "Empleados" ? (
               <DatatableEmpleados
                 onAddNew={() => setActiveMenu("RegistrarEmpleados")}
+              />
+            ) : activeMenu === "Usuarios" ? (
+              <DatatableUsuarios
+                onAddNew={() => setActiveMenu("CrearUsuario")}
               />
             ) : (
               COMPONENT_MAP[activeMenu]
