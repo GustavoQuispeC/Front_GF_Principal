@@ -72,7 +72,7 @@ export async function registrarEmpleado(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(payload ),
   });
 
   if (!response.ok) {

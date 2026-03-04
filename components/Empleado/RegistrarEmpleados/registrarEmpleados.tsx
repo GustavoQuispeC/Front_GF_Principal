@@ -13,6 +13,8 @@ import {
   DatePicker,
   Progress,
   NumberInput,
+  Accordion,
+  AccordionItem,
 } from "@heroui/react";
 import {
   User,
@@ -32,7 +34,6 @@ import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
 import { useUbigeo } from "@/hooks/useUbigeo";
 import { useCatalogos } from "@/hooks/useCatalogos";
 import { useCargos } from "@/hooks/useCargos";
-
 import { registrarEmpleado } from "@/helpers/empleado.helper";
 import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
 
@@ -40,8 +41,9 @@ interface RegistrarEmpleadosProps {
   onBack?: () => void; // Función opcional para manejar el regreso al listado
 }
 
-
-export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) {
+export default function RegistrarEmpleados({
+  onBack,
+}: RegistrarEmpleadosProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // 👈 guardamos el File
 
@@ -92,6 +94,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     observaciones: null,
   });
 
+  //! Manejo de cambios en selects dependientes (Departamento → Provincia → Distrito)
   const handleDeptChange = (keys: any) => {
     const valor = Array.from(keys)[0] as string;
     setForm((prev) => ({
@@ -107,23 +110,48 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     setForm((prev) => ({ ...prev, provincia: valor, distrito: "" }));
   };
 
+  //! Manejo genérico de inputs (texto, número, email, etc.)
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
+
     setForm((prev) => ({
       ...prev,
-      [name]:
-        type === "number"
-          ? value === ""
-            ? 0
-            : Number(value)
-          : value === ""
-            ? null
-            : value,
+      [name]: type === "number" ? Number(value || 0) : value,
     }));
   };
 
   const setField = (field: keyof IRegistarEmpleado, value: any) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  //? Convierte la fecha del DatePicker a formato ISO compatible con .NET
+  const toDotNetDateTime = (value: any): string => {
+    if (!value) return "";
+
+    if (
+      typeof value.year === "number" &&
+      typeof value.month === "number" &&
+      typeof value.day === "number"
+    ) {
+      const year = String(value.year).padStart(4, "0");
+      const month = String(value.month).padStart(2, "0");
+      const day = String(value.day).padStart(2, "0");
+      return `${year}-${month}-${day}T00:00:00`;
+    }
+
+    const raw = value?.toString?.();
+    if (typeof raw === "string") {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+        return `${raw}T00:00:00`;
+      }
+
+      const parsed = new Date(raw);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toISOString();
+      }
+    }
+
+    return "";
   };
 
   //! Solo genera preview local, no sube aún
@@ -157,12 +185,15 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={onSubmit}>
-      <Card shadow="sm">
-        <CardBody className="p-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2 mb-6 text-blue-900">
-            <User size={24} /> Registro de Nuevo Empleado
-          </h2>
-
+      <Accordion  defaultExpandedKeys={["1"]}>
+        {/* Datos personales obligatorios */}
+        <AccordionItem
+          key="1"
+          aria-label="Accordion 1"
+          title="Registro de Nuevo Empleado"
+          startContent={<User size={20} className="text-blue-900" />}
+          classNames={{ title: "font-bold text-blue-900" }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {/* Foto */}
             <div className="flex flex-col items-center justify-center space-y-4 border-r pr-6">
@@ -212,7 +243,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Input
                 label="Nombres"
                 placeholder="Ej. Juan Carlos"
-                variant="bordered"
                 required
                 name="nombre"
                 value={form.nombre}
@@ -221,7 +251,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Input
                 label="Apellidos"
                 placeholder="Ej. Pérez García"
-                variant="bordered"
                 name="apellidos"
                 required
                 value={form.apellidos}
@@ -233,7 +262,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 isLoading={loading}
                 items={catalogos.TiposDocumentos}
                 isRequired
-                variant="bordered"
                 selectedKeys={[String(form.tipoDocumento)]}
                 onSelectionChange={(keys) =>
                   setField("tipoDocumento", Number(Array.from(keys)[0]))
@@ -248,31 +276,35 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 formatOptions={{ useGrouping: false }}
                 label="Número Documento"
                 placeholder="12345678"
-                variant="bordered"
                 maxLength={8}
-                value={form.numeroDocumento ? Number(form.numeroDocumento) : undefined}
+                value={
+                  form.numeroDocumento
+                    ? Number(form.numeroDocumento)
+                    : undefined
+                }
                 onValueChange={(value) =>
-                  setField("numeroDocumento", Number.isNaN(value) ? "" : String(value))
+                  setField(
+                    "numeroDocumento",
+                    Number.isNaN(value) ? "" : String(value),
+                  )
                 }
                 isRequired
               />
               <DatePicker
-              showMonthAndYearPickers
+                showMonthAndYearPickers
                 className="w-full"
                 label="Fecha Nacimiento"
-                variant="bordered"
                 isRequired
                 onChange={(val: any) =>
-                  setField("fechaNacimiento", val?.toString?.() ?? "")
+                  setField("fechaNacimiento", toDotNetDateTime(val))
                 }
               />
-             
+
               <Select
                 label="Género"
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.Generos}
-                variant="bordered"
                 isRequired
                 selectedKeys={[String(form.genero)]}
                 onSelectionChange={(keys) =>
@@ -288,7 +320,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={catalogos.EstadosCiviles}
-                variant="bordered"
                 isRequired
                 selectedKeys={[String(form.estadoCivil)]}
                 onSelectionChange={(keys) =>
@@ -299,17 +330,52 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   <SelectItem key={item.id}>{item.nombre}</SelectItem>
                 )}
               </Select>
+              <NumberInput
+                label="Salario"
+                isRequired
+                placeholder="0.00"
+                startContent={
+                  <div className="pointer-events-none flex items-center">
+                    <span className="text-default-400 text-small">S/</span>
+                  </div>
+                }
+                value={form.salario ? Number(form.salario) : undefined}
+                onValueChange={(value) =>
+                  setField("salario", Number.isNaN(value) ? "" : String(value))
+                }
+              />
+              <Select
+                label="Cargo"
+                isRequired
+                placeholder="Seleccione"
+                isLoading={loading}
+                items={cargos}
+                selectedKeys={[String(form.cargoId)]}
+                onSelectionChange={(keys) =>
+                  setField("cargoId", Number(Array.from(keys)[0]))
+                }
+              >
+                {(item: any) => (
+                  <SelectItem key={item.id}>{item.nombre}</SelectItem>
+                )}
+              </Select>
+              <DatePicker
+                showMonthAndYearPickers
+                isRequired
+                className="w-full"
+                label="Fecha Ingreso"
+                onChange={(val: any) =>
+                  setField("fechaIngreso", toDotNetDateTime(val))
+                }
+              />
             </div>
           </div>
-
-          <Divider className="my-8" />
-
+          <Divider className="my-6" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
               label="Correo Electrónico"
               type="email"
               placeholder="ejemplo@correo.com"
-              variant="bordered"
               startContent={<Mail size={18} />}
               name="correo"
               value={form.correo ?? ""}
@@ -319,7 +385,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Input
               label="Teléfono Móvil"
               placeholder="987654321"
-              variant="bordered"
               startContent={<Phone size={18} />}
               name="telefonoMovil"
               value={form.telefonoMovil ?? ""}
@@ -329,7 +394,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Input
               label="Nacionalidad"
               placeholder="Peruana"
-              variant="bordered"
               name="nacionalidad"
               value={form.nacionalidad ?? ""}
               onChange={handleInputChange}
@@ -337,7 +401,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Input
               label="Dirección"
               placeholder="Av. Principal 123"
-              variant="bordered"
               className="md:col-span-2"
               startContent={<MapPin size={18} />}
               name="direccion"
@@ -348,7 +411,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Select
                 label="Departamento"
                 placeholder="Seleccione"
-                variant="bordered"
                 isLoading={loadingUbigeo}
                 selectedKeys={form.departamento ? [form.departamento] : []}
                 onSelectionChange={handleDeptChange}
@@ -364,7 +426,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Select
                 label="Provincia"
                 placeholder="Seleccione"
-                variant="bordered"
                 isDisabled={!form.departamento}
                 selectedKeys={form.provincia ? [form.provincia] : []}
                 onSelectionChange={handleProvChange}
@@ -380,7 +441,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Select
                 label="Distrito"
                 placeholder="Seleccione"
-                variant="bordered"
                 isDisabled={!form.provincia}
                 selectedKeys={form.distrito ? [form.distrito] : []}
                 onSelectionChange={(k) =>
@@ -400,17 +460,19 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               </Select>
             </div>
           </div>
-
-          <Divider className="my-8" />
-
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-            <Phone size={20} /> Contacto de Emergencia
-          </h3>
+        </AccordionItem>
+        {/* Contacto de emergencia */}
+        <AccordionItem
+          key="2"
+          aria-label="Accordion 2"
+          title="Contacto de Emergencia"
+          startContent={<Phone size={20} className="text-blue-900" />}
+          classNames={{ title: "font-bold text-blue-900" }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
               label="Nombre"
               placeholder="Ej. María Pérez"
-              variant="bordered"
               name="contactoEmergenciaNombre"
               value={form.contactoEmergenciaNombre ?? ""}
               onChange={handleInputChange}
@@ -420,7 +482,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               placeholder="Seleccione"
               isLoading={loading}
               items={catalogos.TiposParentesco}
-              variant="bordered"
               selectedKeys={[String(form.contactoEmergenciaParentesco)]}
               onSelectionChange={(keys) =>
                 setField(
@@ -436,50 +497,24 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Input
               label="Teléfono"
               placeholder="999888777"
-              variant="bordered"
               name="contactoEmergenciaTelefono"
               value={form.contactoEmergenciaTelefono ?? ""}
               onChange={handleInputChange}
             />
           </div>
-
-          <Divider className="my-8" />
-
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-            <Briefcase size={20} /> Datos Laborales
-          </h3>
+        </AccordionItem>
+        {/* Datos laborales */}
+        <AccordionItem
+          key="3"
+          aria-label="Accordion 3"
+          title="Datos Laborales"
+          startContent={<Briefcase size={20} className="text-blue-900" />}
+          classNames={{ title: "font-bold text-blue-900" }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Select
-              label="Cargo"
-              placeholder="Seleccione"
-              isLoading={loading}
-              items={cargos}
-              variant="bordered"
-              selectedKeys={[String(form.cargoId)]}
-              onSelectionChange={(keys) =>
-                setField("cargoId", Number(Array.from(keys)[0]))
-              }
-            >
-              {(item: any) => (
-                <SelectItem key={item.id}>{item.nombre}</SelectItem>
-              )}
-            </Select>
-            <Input
-              label="Salario"
-              placeholder="0.00"
-              startContent={
-                <span className="text-default-400 text-small">S/</span>
-              }
-              type="number"
-              variant="bordered"
-              name="salario"
-              value={String(form.salario)}
-              onChange={handleInputChange}
-            />
             <Input
               label="Profesión/Oficio"
               placeholder="Ingeniero de Sistemas"
-              variant="bordered"
               name="profesionOficio"
               value={form.profesionOficio ?? ""}
               onChange={handleInputChange}
@@ -489,7 +524,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               placeholder="Seleccione"
               isLoading={loading}
               items={catalogos.NivelesEducativos}
-              variant="bordered"
               selectedKeys={[String(form.nivelEducativo)]}
               onSelectionChange={(keys) =>
                 setField("nivelEducativo", Number(Array.from(keys)[0]))
@@ -503,7 +537,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               label="Tipo Contrato"
               placeholder="Seleccione"
               items={catalogos.TiposContrato}
-              variant="bordered"
               selectedKeys={[String(form.tipoContrato)]}
               onSelectionChange={(keys) =>
                 setField("tipoContrato", Number(Array.from(keys)[0]))
@@ -515,7 +548,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               label="Tipo Jornada"
               placeholder="Seleccione"
               items={catalogos.TiposJornada}
-              variant="bordered"
               selectedKeys={[String(form.tipoJornada)]}
               onSelectionChange={(keys) =>
                 setField("tipoJornada", Number(Array.from(keys)[0]))
@@ -523,40 +555,32 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             >
               {(item) => <SelectItem key={item.id}>{item.nombre}</SelectItem>}
             </Select>
-            <DatePicker
-              className="w-full"
-              label="Fecha Ingreso"
-              variant="bordered"
-              onChange={(val: any) =>
-                setField("fechaIngreso", val?.toString?.() ?? "")
-              }
-            />
+
             <Input
               label="RUC (Opcional)"
-              variant="bordered"
               name="ruc"
               value={form.ruc ?? ""}
               onChange={handleInputChange}
             />
             <Input
               label="Observaciones"
-              variant="bordered"
               name="observaciones"
               value={form.observaciones ?? ""}
               onChange={handleInputChange}
               className="md:col-span-3"
             />
           </div>
-
-          <Divider className="my-8" />
-
-          <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-            <Landmark size={20} /> Financiero y Seguros
-          </h3>
+        </AccordionItem>
+        <AccordionItem
+          key="4"
+          aria-label="Accordion 4"
+          title="Financiero y Seguros"
+          startContent={<Landmark size={20} className="text-blue-900" />}
+          classNames={{ title: "font-bold text-blue-900" }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
               label="Banco"
-              variant="bordered"
               startContent={<CreditCard size={18} />}
               name="bancoNombre"
               value={form.bancoNombre ?? ""}
@@ -566,7 +590,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               label="Tipo de Cuenta"
               placeholder="Seleccione"
               items={catalogos.TiposCuentaBancaria}
-              variant="bordered"
               selectedKeys={[String(form.tipoCuenta)]}
               onSelectionChange={(keys) =>
                 setField("tipoCuenta", Number(Array.from(keys)[0]))
@@ -576,7 +599,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             </Select>
             <Input
               label="Número de Cuenta"
-              variant="bordered"
               startContent={<CreditCard size={18} />}
               name="numeroCuentaBancaria"
               value={form.numeroCuentaBancaria ?? ""}
@@ -584,7 +606,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             />
             <Input
               label="CCI"
-              variant="bordered"
               name="cci"
               value={form.cci ?? ""}
               onChange={handleInputChange}
@@ -594,7 +615,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               placeholder="Seleccione"
               isLoading={loading}
               items={catalogos.SistemasPensiones}
-              variant="bordered"
               selectedKeys={[String(form.sistemaPensiones)]}
               onSelectionChange={(keys) =>
                 setField("sistemaPensiones", Number(Array.from(keys)[0]))
@@ -607,43 +627,39 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Input
               label="CUSPP"
               placeholder="1234567890AB"
-              variant="bordered"
               name="cuspp"
               value={form.cuspp ?? ""}
               onChange={handleInputChange}
             />
             <Input
               label="Número ESSalud"
-              variant="bordered"
               startContent={<HeartPulse size={18} />}
               name="numeroESSalud"
               value={form.numeroESSalud ?? ""}
               onChange={handleInputChange}
             />
           </div>
-
-          <div className="mt-10 flex justify-end gap-3">
-            <Button
-              color="default"
-              variant="flat"
-              className="min-w-[150px]"
-              startContent={<ArrowLeft size={18} />}
-              onPress={onBack}
-            >
-              Volver
-            </Button>
-            <Button
-              color="primary"
-              className="min-w-[150px]"
-              startContent={<Save size={18} />}
-              type="submit"
-              isLoading={uploading}
-            >
-              {uploading ? "Subiendo..." : "Guardar"}
-            </Button>
-          </div>
-        </CardBody>
-      </Card>
+        </AccordionItem>
+      </Accordion>
+      <div className="mt-10 flex justify-end gap-3">
+        <Button
+          color="default"
+          className="min-w-[150px]"
+          startContent={<ArrowLeft size={18} />}
+          onPress={onBack}
+        >
+          Volver
+        </Button>
+        <Button
+          color="primary"
+          className="min-w-[150px]"
+          startContent={<Save size={18} />}
+          type="submit"
+          isLoading={uploading}
+        >
+          {uploading ? "Subiendo..." : "Guardar"}
+        </Button>
+      </div>
     </form>
   );
 }
