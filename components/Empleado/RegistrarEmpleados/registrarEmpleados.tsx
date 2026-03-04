@@ -36,6 +36,8 @@ import { useCatalogos } from "@/hooks/useCatalogos";
 import { useCargos } from "@/hooks/useCargos";
 import { registrarEmpleado } from "@/helpers/empleado.helper";
 import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
+import { toastPromise } from "@/helpers/toast.helper";
+
 
 interface RegistrarEmpleadosProps {
   onBack?: () => void; // Función opcional para manejar el regreso al listado
@@ -124,7 +126,7 @@ export default function RegistrarEmpleados({
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  //? Convierte la fecha del DatePicker a formato ISO compatible con .NET
+  //! Convierte la fecha del DatePicker a formato ISO compatible con .NET
   const toDotNetDateTime = (value: any): string => {
     if (!value) return "";
 
@@ -178,14 +180,61 @@ export default function RegistrarEmpleados({
     }
 
     const payload: IRegistarEmpleado = { ...form, fotoUrl };
-    console.log("Payload final hacia backend:", payload);
-    const response = await registrarEmpleado(payload);
-    console.log("Respuesta del backend:", response);
+     try {
+    await toastPromise(registrarEmpleado(payload), {
+      loading: "Registrando empleado...",
+      success: "Empleado registrado correctamente",
+      error: "Error al registrar el empleado",
+    });
+    limpiarFormulario();
+  } catch (_) {}
+  };
+
+  //! Limpiar inputs del formulario
+  const limpiarFormulario = () => {
+    setForm({
+      nombre: "",
+      apellidos: "",
+      tipoDocumento: 0,
+      numeroDocumento: "",
+      fechaNacimiento: "",
+      genero: 0,
+      estadoCivil: 0,
+      nacionalidad: null,
+      correo: null,
+      telefonoMovil: null,
+      direccion: null,
+      distrito: "",
+      provincia: "",
+      departamento: "",
+      contactoEmergenciaNombre: null,
+      contactoEmergenciaParentesco: 0,
+      contactoEmergenciaTelefono: null,
+      numeroCuentaBancaria: null,
+      bancoNombre: null,
+      tipoCuenta: 0,
+      cci: null,
+      ruc: null,
+      numeroESSalud: null,
+      sistemaPensiones: 0,
+      cuspp: null,
+      nivelEducativo: 0,
+      profesionOficio: null,
+      fotoUrl: null,
+      cargoId: 0,
+      salario: 0.0,
+      tipoContrato: 0,
+      tipoJornada: 0,
+      fechaIngreso: "",
+      observaciones: null,
+    });
+    setPreview(null);
+    setSelectedFile(null);
   };
 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={onSubmit}>
-      <Accordion  defaultExpandedKeys={["1"]}>
+      <Accordion selectionMode="multiple" defaultExpandedKeys={["1"]}>
         {/* Datos personales obligatorios */}
         <AccordionItem
           key="1"
@@ -262,7 +311,7 @@ export default function RegistrarEmpleados({
                 isLoading={loading}
                 items={catalogos.TiposDocumentos}
                 isRequired
-                selectedKeys={[String(form.tipoDocumento)]}
+                selectedKeys={form.tipoDocumento ? [String(form.tipoDocumento)] : []}
                 onSelectionChange={(keys) =>
                   setField("tipoDocumento", Number(Array.from(keys)[0]))
                 }
@@ -306,7 +355,7 @@ export default function RegistrarEmpleados({
                 isLoading={loading}
                 items={catalogos.Generos}
                 isRequired
-                selectedKeys={[String(form.genero)]}
+                selectedKeys={form.genero ? [String(form.genero)] : []}
                 onSelectionChange={(keys) =>
                   setField("genero", Number(Array.from(keys)[0]))
                 }
@@ -321,7 +370,7 @@ export default function RegistrarEmpleados({
                 isLoading={loading}
                 items={catalogos.EstadosCiviles}
                 isRequired
-                selectedKeys={[String(form.estadoCivil)]}
+                selectedKeys={form.estadoCivil ? [String(form.estadoCivil)] : []}
                 onSelectionChange={(keys) =>
                   setField("estadoCivil", Number(Array.from(keys)[0]))
                 }
@@ -350,7 +399,7 @@ export default function RegistrarEmpleados({
                 placeholder="Seleccione"
                 isLoading={loading}
                 items={cargos}
-                selectedKeys={[String(form.cargoId)]}
+                selectedKeys={form.cargoId ? [String(form.cargoId)] : []}
                 onSelectionChange={(keys) =>
                   setField("cargoId", Number(Array.from(keys)[0]))
                 }
@@ -524,7 +573,7 @@ export default function RegistrarEmpleados({
               placeholder="Seleccione"
               isLoading={loading}
               items={catalogos.NivelesEducativos}
-              selectedKeys={[String(form.nivelEducativo)]}
+              selectedKeys={form.nivelEducativo ? [String(form.nivelEducativo)] : []}
               onSelectionChange={(keys) =>
                 setField("nivelEducativo", Number(Array.from(keys)[0]))
               }
@@ -537,7 +586,7 @@ export default function RegistrarEmpleados({
               label="Tipo Contrato"
               placeholder="Seleccione"
               items={catalogos.TiposContrato}
-              selectedKeys={[String(form.tipoContrato)]}
+              selectedKeys={form.tipoContrato ? [String(form.tipoContrato)] : []}
               onSelectionChange={(keys) =>
                 setField("tipoContrato", Number(Array.from(keys)[0]))
               }
@@ -548,7 +597,7 @@ export default function RegistrarEmpleados({
               label="Tipo Jornada"
               placeholder="Seleccione"
               items={catalogos.TiposJornada}
-              selectedKeys={[String(form.tipoJornada)]}
+              selectedKeys={form.tipoJornada ? [String(form.tipoJornada)] : []}
               onSelectionChange={(keys) =>
                 setField("tipoJornada", Number(Array.from(keys)[0]))
               }
@@ -590,7 +639,7 @@ export default function RegistrarEmpleados({
               label="Tipo de Cuenta"
               placeholder="Seleccione"
               items={catalogos.TiposCuentaBancaria}
-              selectedKeys={[String(form.tipoCuenta)]}
+              selectedKeys={form.tipoCuenta ? [String(form.tipoCuenta)] : []}
               onSelectionChange={(keys) =>
                 setField("tipoCuenta", Number(Array.from(keys)[0]))
               }
@@ -615,7 +664,7 @@ export default function RegistrarEmpleados({
               placeholder="Seleccione"
               isLoading={loading}
               items={catalogos.SistemasPensiones}
-              selectedKeys={[String(form.sistemaPensiones)]}
+              selectedKeys={form.sistemaPensiones ? [String(form.sistemaPensiones)] : []}
               onSelectionChange={(keys) =>
                 setField("sistemaPensiones", Number(Array.from(keys)[0]))
               }

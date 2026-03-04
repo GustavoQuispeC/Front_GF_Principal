@@ -13,6 +13,7 @@ export { default as DatatableUsuarios} from "./Usuario/DatatableUsuarios/datatab
 export { default as RegistrarEmpleados} from "./Empleado/RegistrarEmpleados/registrarEmpleados"
 export { default as CrearUsuario} from "./Usuario/CrearUsuario/crearUsuario"
 export { Footer } from "./ui/Footer/footer";
+export { default as ToastProvider } from "./ui/ToastProvider/toast-provider";
 export { Navbar } from "./ui/Navbar/navbar";
 
 

@@ -2,8 +2,6 @@
 
 import React, { useMemo, useState } from "react";
 import {
-  addToast,
-  ToastProvider,
   Button,
   Input,
   Link,
@@ -13,7 +11,7 @@ import {
 } from "@heroui/react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { loginUsuario } from "@/helpers/usuario.helpers";
-
+import { toastError, toastSuccess } from "@/helpers/toast.helper";
 
 type LoginPageProps = {
   forgotHref?: string;
@@ -30,6 +28,7 @@ export default function LoginUsuario({
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const canSubmit = useMemo(() => {
     const emailOk = /\S+@\S+\.\S+/.test(email.trim());
@@ -42,34 +41,23 @@ export default function LoginUsuario({
 
     try {
       setIsLoading(true);
+      setErrorMsg(null); // limpia error anterior
 
       const payload = await loginUsuario(email.trim(), password);
 
-      // Guardar respuesta backend
       if (typeof window !== "undefined") {
         localStorage.setItem(storageKey, JSON.stringify(payload));
       }
 
-      // Toast éxito (top-right)
-      addToast({
-        title: "Inicio de sesión exitoso",
-        description: "Redirigiendo al dashboard...",
-        color: "success",
-      });
-
-      // Redirigir
+      toastSuccess("Inicio de sesión exitoso 🎉");
       window.location.assign("/dashboard");
     } catch (err: any) {
       const msg =
         err?.message ||
         "No se pudo iniciar sesión. Verifica tus credenciales e inténtalo nuevamente.";
 
-      // Toast error (top-right)
-      addToast({
-        title: "Error al iniciar sesión",
-        description: msg,
-        color: "danger",
-      });
+      setErrorMsg(msg);
+      toastError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -77,11 +65,6 @@ export default function LoginUsuario({
 
   return (
     <main className="min-h-[100svh] w-full bg-[#F4F4F4]">
-      {/* Toasts (top-right) */}
-      <div className="fixed z-[100]">
-        <ToastProvider placement="top-right" toastOffset={60} />
-      </div>
-
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-orange-600/15 blur-2xl" />
         <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-blue-600/10 blur-2xl" />
@@ -114,7 +97,9 @@ export default function LoginUsuario({
               <div className="h-1 w-full rounded-t-2xl bg-orange-600" />
 
               <CardHeader className="flex flex-col items-start gap-1 px-6 pt-6">
-                <h2 className="text-2xl font-bold text-[#11181C]">Iniciar sesión</h2>
+                <h2 className="text-2xl font-bold text-[#11181C]">
+                  Iniciar sesión
+                </h2>
                 <p className="text-sm text-default-500">
                   Ingresa tus credenciales para acceder.
                 </p>
@@ -125,16 +110,19 @@ export default function LoginUsuario({
                   <Input
                     isRequired
                     value={email}
-                    onValueChange={setEmail}
+                    onValueChange={(v) => { setEmail(v); setErrorMsg(null); }}
                     label="Correo electrónico"
                     labelPlacement="outside"
                     placeholder="ejemplo@correo.com"
                     variant="bordered"
                     type="email"
                     autoComplete="email"
-                    startContent={<Mail size={18} className="text-default-400" />}
+                    startContent={
+                      <Mail size={18} className="text-default-400" />
+                    }
                     classNames={{
-                      inputWrapper: "h-12 group-data-[focus=true]:border-blue-600",
+                      inputWrapper:
+                        "h-12 group-data-[focus=true]:border-blue-600",
                       label: "text-[#11181C] font-semibold",
                     }}
                   />
@@ -142,16 +130,19 @@ export default function LoginUsuario({
                   <Input
                     isRequired
                     value={password}
-                    onValueChange={setPassword}
+                    onValueChange={(v) => { setPassword(v); setErrorMsg(null); }}
                     label="Contraseña"
                     labelPlacement="outside"
                     placeholder="••••••••"
                     variant="bordered"
                     type={isVisible ? "text" : "password"}
                     autoComplete="current-password"
-                    startContent={<Lock size={18} className="text-default-400" />}
+                    startContent={
+                      <Lock size={18} className="text-default-400" />
+                    }
                     classNames={{
-                      inputWrapper: "h-12 group-data-[focus=true]:border-blue-600",
+                      inputWrapper:
+                        "h-12 group-data-[focus=true]:border-blue-600",
                       label: "text-[#11181C] font-semibold",
                     }}
                     endContent={
@@ -159,7 +150,11 @@ export default function LoginUsuario({
                         type="button"
                         onClick={() => setIsVisible((v) => !v)}
                         className="focus:outline-none"
-                        aria-label={isVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
+                        aria-label={
+                          isVisible
+                            ? "Ocultar contraseña"
+                            : "Mostrar contraseña"
+                        }
                       >
                         {isVisible ? (
                           <EyeOff size={20} className="text-default-400" />
@@ -188,6 +183,13 @@ export default function LoginUsuario({
                   >
                     INGRESAR
                   </Button>
+
+                  {errorMsg && (
+                    <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                      <span>⚠️</span>
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
                 </form>
               </CardBody>
             </Card>

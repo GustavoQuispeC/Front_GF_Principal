@@ -6,25 +6,27 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 //! Función para iniciar sesión de usuario
 export async function loginUsuario(email: string, password: string) {
-  try {
-    const response = await fetch(`${apiUrl}/Auth/login/usuario`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+  const response = await fetch(`${apiUrl}/Auth/login/usuario`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
 
-    if (!response.ok) {
-      throw new Error("Error en la solicitud: " + response.statusText);
-    }
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
 
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error al iniciar sesión:", error);
-    throw error;
+    const msg =
+      body?.error ||
+      body?.message ||
+      body?.title ||
+      `Error ${response.status}`;
+
+    throw new Error(msg); // mensaje real de la API
   }
+
+  return response.json();
 }
 
 

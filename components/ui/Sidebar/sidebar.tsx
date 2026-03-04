@@ -521,8 +521,6 @@ export default function Sidebar() {
        <div className="p-4 lg:p-6">
           {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
           {COMPONENT_MAP[activeMenu] ? (
-            // Si el componente existe en nuestro mapa, lo renderizamos
-            // Si necesitas pasar props específicas como 'onAddNew', puedes envolverlo en una función
             activeMenu === "Empleados" ? (
               <DatatableEmpleados
                 onAddNew={() => setActiveMenu("RegistrarEmpleados")}
