@@ -64,7 +64,7 @@ export default function LoginUsuario({
   };
 
   return (
-    <main className="min-h-[100svh] w-full bg-[#F4F4F4]">
+    <main className="min-h-[100svh] w-full bg-[#F4F4F4] dark:bg-gray-900">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-orange-600/15 blur-2xl" />
         <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-blue-600/10 blur-2xl" />
@@ -79,7 +79,7 @@ export default function LoginUsuario({
                 Acceso al sistema
               </div>
 
-              <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#11181C]">
+              <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#11181C] dark:text-white">
                 Bienvenido a {brandName}
               </h1>
 
