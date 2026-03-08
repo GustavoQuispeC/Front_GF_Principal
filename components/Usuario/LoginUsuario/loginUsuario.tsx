@@ -64,6 +64,7 @@ export default function LoginUsuario({
   };
 
   return (
+<<<<<<< HEAD
     <main className="relative min-h-[100svh] w-full overflow-hidden bg-[#F2F2F0] dark:bg-[#0E0E0E]">
 
       {/* ── Ambient blobs ─────────────────────────────────── */}
@@ -79,6 +80,12 @@ export default function LoginUsuario({
             backgroundSize: "40px 40px",
           }}
         />
+=======
+    <main className="min-h-[100svh] w-full bg-[#F4F4F4] dark:bg-gray-900">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-orange-600/15 blur-2xl" />
+        <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-blue-600/10 blur-2xl" />
+>>>>>>> 46162e0895973c48cc363c9dd9f24d4350e194b3
       </div>
 
       {/* ── Page layout ───────────────────────────────────── */}
@@ -127,6 +134,7 @@ export default function LoginUsuario({
                 </p>
               </div>
 
+<<<<<<< HEAD
               {/* Feature pills */}
               <ul className="flex flex-wrap gap-2">
                 {["Seguridad SSL", "2FA disponible", "Soporte 24/7"].map((f) => (
@@ -139,6 +147,15 @@ export default function LoginUsuario({
                   </li>
                 ))}
               </ul>
+=======
+              <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-[#11181C] dark:text-white">
+                Bienvenido a {brandName}
+              </h1>
+
+              <p className="mt-3 text-base leading-relaxed text-default-600">
+                Ingresa con tu correo y contraseña para continuar.
+              </p>
+>>>>>>> 46162e0895973c48cc363c9dd9f24d4350e194b3
             </div>
           </section>
 
