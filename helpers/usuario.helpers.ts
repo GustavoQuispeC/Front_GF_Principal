@@ -15,13 +15,19 @@ export async function loginUsuario(email: string, password: string) {
   });
 
   if (!response.ok) {
-    const body = await response.json().catch(() => null);
-
-    const msg =
-      body?.error ||
-      body?.message ||
-      body?.title ||
-      `Error ${response.status}`;
+    let msg = `Error ${response.status}`;
+    try {
+      const text = await response.text();
+      try {
+        const body = JSON.parse(text);
+        msg = body?.error || body?.message || body?.title || text;
+      } catch {
+        // Si no es JSON, usa el texto plano devuelto por el backend
+        msg = text || msg;
+      }
+    } catch {
+      // Ignorar fallback
+    }
 
     throw new Error(msg); // mensaje real de la API
   }
