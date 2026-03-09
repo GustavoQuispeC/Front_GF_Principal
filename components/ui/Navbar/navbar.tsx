@@ -20,8 +20,8 @@ import { Facebook, Instagram, LogIn, PackageSearch, UserCircle } from "lucide-re
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
-import { CartButton } from "../Drawer/drawer";
-import { LoginModal } from "@/components/Cliente/LoginCliente/loginCliente";
+import { CartButton } from "../drawer/drawer";
+import { LoginModal } from "@/components/cliente/login-cliente/login-cliente";
 // import { CartButton } from "./ui/CartButton/cartButton";
 // import { LoginModal } from "./LoginModal/loginModal";
 // import { CartButton } from "./ui/Drawer/drawer";

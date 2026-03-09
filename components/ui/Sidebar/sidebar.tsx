@@ -35,12 +35,13 @@ import {
   useDraggable,
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
-import DatatableEmpleados from "@/components/Empleado/DatatableEmpleados/datatableEmpleados";
-import DatatableUsuarios from "@/components/Usuario/DatatableUsuarios/datatableUsuarios";
-import { COMPONENT_MAP } from "./COMPONENT_MAP";
+import DatatableEmpleados from "@/components/empleado/datatable-empleados/datatable-empleados";
+import DatatableUsuarios from "@/components/usuario/datatable-usuarios/datatable-usuarios";
+
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
 import { RegistrarEmpleados } from "@/components";
+import { COMPONENT_MAP } from "./COMPONENT_MAP";
 
 // Configuración de navegación
 const menuGroups = {

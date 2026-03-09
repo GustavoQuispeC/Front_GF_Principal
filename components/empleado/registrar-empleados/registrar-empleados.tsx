@@ -31,11 +31,11 @@ import {
 } from "lucide-react";
 
 import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
-import { useUbigeo } from "@/hooks/useUbigeo";
-import { useCatalogos } from "@/hooks/useCatalogos";
-import { useCargos } from "@/hooks/useCargos";
+import { useUbigeo } from "@/hooks/use-ubigeo";
+import { useCatalogos } from "@/hooks/use-catalogos";
+import { useCargos } from "@/hooks/use-cargos";
 import { registrarEmpleado } from "@/helpers/empleado.helper";
-import { useFirebaseStorage } from "@/hooks/useFirebaseStorage";
+import { useFirebaseStorage } from "@/hooks/use-firebase-storage";
 import { toastPromise } from "@/helpers/toast.helper";
 
 
