@@ -14,25 +14,23 @@ export async function loginUsuario(email: string, password: string) {
     body: JSON.stringify({ email, password }),
   });
 
-  if (!response.ok) {
-    let msg = `Error ${response.status}`;
-    try {
-      const text = await response.text();
-      try {
-        const body = JSON.parse(text);
-        msg = body?.error || body?.message || body?.title || text;
-      } catch {
-        // Si no es JSON, usa el texto plano devuelto por el backend
-        msg = text || msg;
-      }
-    } catch {
-      // Ignorar fallback
-    }
+  const text = await response.text();
 
-    throw new Error(msg); // mensaje real de la API
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = text;
   }
 
-  return response.json();
+  if (!response.ok) {
+    const msg =
+      data?.error || data?.message || data?.title || text || "Error de autenticación";
+
+    throw new Error(msg);
+  }
+
+  return data;
 }
 
 
