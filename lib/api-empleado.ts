@@ -29,7 +29,10 @@ export async function apiEmpleado(
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    throw new Error(error?.message || "Error en la petición");
+    const msg =
+      error?.message || error?.error || error?.title || "Error en la petición";
+
+    throw new Error(msg);
   }
 
   return response.json();

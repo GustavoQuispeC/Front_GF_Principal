@@ -1,10 +1,6 @@
-import { getAuthUser, logout } from "@/helpers/authorization";
+import { getAuthUser } from "@/helpers/authorization";
 
-export async function apiCliente(
-  url: string,
-  options: RequestInit = {}
-) {
-
+export async function apiUsuario(url: string, options: RequestInit = {}) {
   const auth = getAuthUser();
 
   const headers: Record<string, string> = {
@@ -20,12 +16,6 @@ export async function apiCliente(
     ...options,
     headers,
   });
-
-  if (response.status === 401) {
-    logout();
-    window.location.href = "/";
-    throw new Error("Sesión expirada");
-  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);

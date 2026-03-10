@@ -9,7 +9,7 @@ import {
   TiposContratoListar,
   TiposJornadaListar,
   TiposParentescoListar,
-} from "@/helpers/empleado.helper";
+} from "@/helpers/catalogo.helper";
 
 interface Catalogos {
   TiposDocumentos: any[];

@@ -1,31 +1,13 @@
-import { getAuthUser, logout } from "@/helpers/authorization";
-
-export async function apiCliente(
-  url: string,
-  options: RequestInit = {}
-) {
-
-  const auth = getAuthUser();
-
+export async function apiCatalogo(url: string, options: RequestInit = {}) {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
 
-  if (auth?.token) {
-    headers.Authorization = `Bearer ${auth.token}`;
-  }
-
   const response = await fetch(url, {
     ...options,
     headers,
   });
-
-  if (response.status === 401) {
-    logout();
-    window.location.href = "/";
-    throw new Error("Sesión expirada");
-  }
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
