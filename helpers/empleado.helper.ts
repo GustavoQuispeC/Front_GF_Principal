@@ -1,26 +1,14 @@
 import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
 import { getAuthUser } from "./authorization";
+import { apiEmpleado } from "@/lib/api-empleado";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 //! Función para listar empleados
-export async function ListarEmpleados() {
-  try {
-    const response = await fetch(`${apiUrl}/Empleados`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error("Error en la solicitud: " + response.statusText);
-    }
-    const json = await response.json();
-    return json;
-  } catch (error) {
-    console.error("Error al obtener los empleados.", error);
-    throw error;
-  }
+export function ListarEmpleados() {
+  return apiEmpleado(`${apiUrl}/Empleados`, {
+    method: "GET",
+  });
 }
 
 //! Función base privada para evitar repetir el fetch y el manejo de errores
