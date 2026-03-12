@@ -6,8 +6,6 @@ import {
   Button,
   Select,
   SelectItem,
-  Card,
-  CardBody,
   Divider,
   Avatar,
   DatePicker,
@@ -28,6 +26,7 @@ import {
   Image as ImageIcon,
   Save,
   ArrowLeft,
+  Search,
 } from "lucide-react";
 
 import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
@@ -234,6 +233,22 @@ export default function RegistrarEmpleados({
 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={onSubmit}>
+       {/* Busqueda por DNI */}
+  <div className="flex items-end gap-3 mb-4">
+    <Input
+      label="Buscar Empleado por DNI"
+      size="sm"
+      maxLength={8}
+      className="max-w-xs"
+    />
+    <Button
+      color="primary"
+      variant="flat"
+      startContent={<Search size={18} />}
+    >
+      Buscar
+    </Button>
+  </div>
       <Accordion selectionMode="multiple" defaultExpandedKeys={["1"]}>
         {/* Datos personales obligatorios */}
         <AccordionItem
