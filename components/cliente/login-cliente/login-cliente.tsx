@@ -66,7 +66,7 @@ export const LoginModal = ({ isOpen, onOpenChange }: LoginClienteProps) => {
           <>
             <ModalHeader className="flex flex-col gap-1 pt-8 px-8">
               <h2 className="text-2xl font-bold text-black">
-                Bienvenido de nuevo
+                Bienvenido
               </h2>
               <p className="text-sm font-normal text-default-500">
                 Ingresa tus credenciales para acceder a tu cuenta
