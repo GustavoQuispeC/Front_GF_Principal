@@ -9,7 +9,7 @@ export const empleadoSchema = z.object({
   genero: z.number().min(1, "Seleccione un género"),
   estadoCivil: z.number().min(1, "Seleccione un estado civil"),
   nacionalidad: z.string().nullable(),
-  correo: z.string().email("Correo inválido").min(1, "El correo es obligatorio").nullable(),
+  correo: z.string().min(1, "El correo es obligatorio").email("Correo inválido").nullable(),
   telefonoMovil: z.string().min(1, "El teléfono es obligatorio").nullable(),
   direccion: z.string().nullable(),
   departamento: z.string(), // ← sin nullable

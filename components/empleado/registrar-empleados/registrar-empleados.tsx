@@ -53,8 +53,8 @@ const defaultValues: EmpleadoForm = {
   genero: 0,
   estadoCivil: 0,
   nacionalidad: null,
-  correo: null,
-  telefonoMovil: null,
+  correo: "",
+  telefonoMovil: "",
   direccion: null,
   distrito: "",
   provincia: "",
@@ -85,6 +85,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dniBusqueda, setDniBusqueda] = useState("");
+  const [resetKey, setResetKey] = useState(0);
   const { ubigeoData, loadingUbigeo } = useUbigeo();
   const { catalogos, loading } = useCatalogos();
   const { cargos } = useCargos();
@@ -100,6 +101,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
   } = useForm<EmpleadoForm>({
     resolver: zodResolver(empleadoSchema),
     defaultValues,
+    mode: "onTouched",
   });
   console.log("errors", errors);
   //! Observamos departamento y provincia para los selects dependientes
@@ -147,6 +149,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
         error: "Error al registrar el empleado",
       });
       reset(defaultValues);
+      setResetKey((k) => k + 1);
       setPreview(null);
       setSelectedFile(null);
       setDniBusqueda("");
@@ -308,6 +311,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <DatePicker
+                    key={resetKey}
                     showMonthAndYearPickers
                     className="w-full"
                     label="Fecha Nacimiento"
@@ -405,6 +409,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <DatePicker
+                    key={resetKey}
                     showMonthAndYearPickers
                     isRequired
                     className="w-full"
@@ -435,6 +440,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   isRequired
                   isInvalid={!!errors.correo}
                   errorMessage={errors.correo?.message}
+                  onBlur={field.onBlur}
                 />
               )}
             />
@@ -452,6 +458,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   isRequired
                   isInvalid={!!errors.telefonoMovil}
                   errorMessage={errors.telefonoMovil?.message}
+                  onBlur={field.onBlur}
                 />
               )}
             />
