@@ -19,7 +19,7 @@ import {
   User,
   Pagination,
 } from "@heroui/react";
-import { IEmpleadosListar } from "@/types/IListarEmpleados";
+import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
 import { ListarEmpleados } from "@/helpers/empleado.helper";
 
 //! --- Tipos para los íconos SVG ---
@@ -33,12 +33,7 @@ export function capitalize(s: string) {
 }
 
 //! --- Icono de más (+) ---
-export const PlusIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}: IconSvgProps) => {
+export const PlusIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -50,13 +45,7 @@ export const PlusIcon = ({
       width={size || width}
       {...props}
     >
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-      >
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}>
         <path d="M6 12h12" />
         <path d="M12 18V6" />
       </g>
@@ -65,12 +54,7 @@ export const PlusIcon = ({
 };
 
 //! --- Icono de tres puntos verticales ---
-export const VerticalDotsIcon = ({
-  size = 24,
-  width,
-  height,
-  ...props
-}: IconSvgProps) => {
+export const VerticalDotsIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -110,22 +94,13 @@ export const SearchIcon = (props: IconSvgProps) => {
         strokeLinejoin="round"
         strokeWidth="2"
       />
-      <path
-        d="M22 22L20 20"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
+      <path d="M22 22L20 20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
     </svg>
   );
 };
 
 //! --- Icono de flecha hacia abajo para dropdowns ---
-export const ChevronDownIcon = ({
-  strokeWidth = 1.5,
-  ...otherProps
-}: IconSvgProps) => {
+export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -191,15 +166,11 @@ interface DatatableEmpleadosProps {
 }
 
 //! ----- Componente principal del datatable de empleados -----
-export default function DatatableEmpleados({
-  onAddNew,
-}: DatatableEmpleadosProps) {
+export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps) {
   const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [visibleColumns, setVisibleColumns] = useState<Selection>(
-    new Set(INITIAL_VISIBLE_COLUMNS),
-  );
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -214,9 +185,7 @@ export default function DatatableEmpleados({
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columns.filter((column) =>
-      Array.from(visibleColumns).includes(column.uid),
-    );
+    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
   }, [visibleColumns]);
 
   //! --- Función para filtrar los empleados según el valor de búsqueda y el filtro de estado ---
@@ -225,19 +194,12 @@ export default function DatatableEmpleados({
 
     if (hasSearchFilter) {
       filteredEmpleados = filteredEmpleados.filter((empleados) =>
-        empleados.nombreCompleto
-          .toLowerCase()
-          .includes(filterValue.toLowerCase()),
+        empleados.nombreCompleto.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
-    if (
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-    ) {
+    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredEmpleados = filteredEmpleados.filter((empleados) =>
-        Array.from(statusFilter).includes(
-          empleados.isActive ? "true" : "false",
-        ),
+        Array.from(statusFilter).includes(empleados.isActive ? "true" : "false"),
       );
     }
 
@@ -256,12 +218,8 @@ export default function DatatableEmpleados({
   //! ----- Función para ordenar los elementos según la columna y dirección de ordenamiento -----
   const sortedItems = useMemo(() => {
     return [...items].sort((a: IEmpleadosListar, b: IEmpleadosListar) => {
-      const first = a[
-        sortDescriptor.column as keyof IEmpleadosListar
-      ] as number;
-      const second = b[
-        sortDescriptor.column as keyof IEmpleadosListar
-      ] as number;
+      const first = a[sortDescriptor.column as keyof IEmpleadosListar] as number;
+      const second = b[sortDescriptor.column as keyof IEmpleadosListar] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -269,67 +227,60 @@ export default function DatatableEmpleados({
   }, [sortDescriptor, items]);
 
   //! ----- Función para renderizar el contenido de cada celda según la columna -----
-  const renderCell = React.useCallback(
-    (empleados: IEmpleadosListar, columnKey: React.Key) => {
-      const cellValue = empleados[columnKey as keyof IEmpleadosListar];
+  const renderCell = React.useCallback((empleados: IEmpleadosListar, columnKey: React.Key) => {
+    const cellValue = empleados[columnKey as keyof IEmpleadosListar];
 
-      switch (columnKey) {
-        case "nombreCompleto":
-          return (
-            <User
-              avatarProps={{
-                radius: "lg",
-                src: empleados.fotoUrl || undefined,
-              }}
-              description={empleados.correo}
-              name={String(cellValue)}
-            >
-              {empleados.correo}
-            </User>
-          );
-        case "cargoActual":
-          return (
-            <div className="flex flex-col">
-              <p className="text-bold text-small capitalize">
-                {cellValue ? String(cellValue) : "Sin cargo asignado"}
-              </p>
-              <p className="text-bold text-tiny capitalize text-default-400">
-                {empleados.cargoActual}
-              </p>
-            </div>
-          );
-        case "isActive":
-          return (
-            <Chip
-              className="capitalize"
-              color={statusColorMap[empleados.isActive ? "true" : "false"]}
-              size="sm"
-              variant="flat"
-            >
-              {empleados.isActive ? "Activo" : "Inactivo"}
-            </Chip>
-          );
-        case "actions":
-          return (
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem key="view">Ver</DropdownItem>
-                <DropdownItem key="edit">Editar</DropdownItem>
-                <DropdownItem key="delete">Eliminar</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          );
-        default:
-          return cellValue;
-      }
-    },
-    [],
-  );
+    switch (columnKey) {
+      case "nombreCompleto":
+        return (
+          <User
+            avatarProps={{
+              radius: "lg",
+              src: empleados.fotoUrl || undefined,
+            }}
+            description={empleados.correo}
+            name={String(cellValue)}
+          >
+            {empleados.correo}
+          </User>
+        );
+      case "cargoActual":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{cellValue ? String(cellValue) : "Sin cargo asignado"}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">{empleados.cargoActual}</p>
+          </div>
+        );
+      case "isActive":
+        return (
+          <Chip
+            className="capitalize"
+            color={statusColorMap[empleados.isActive ? "true" : "false"]}
+            size="sm"
+            variant="flat"
+          >
+            {empleados.isActive ? "Activo" : "Inactivo"}
+          </Chip>
+        );
+      case "actions":
+        return (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button isIconOnly size="sm" variant="light">
+                <VerticalDotsIcon className="text-default-300" />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem key="view">Ver</DropdownItem>
+              <DropdownItem key="edit">Editar</DropdownItem>
+              <DropdownItem key="delete">Eliminar</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        );
+      default:
+        return cellValue;
+    }
+  }, []);
 
   //! ----- Funciones para manejar la paginación, cambio de filas por página, búsqueda y limpieza de filtros -----
   const onNextPage = React.useCallback(() => {
@@ -344,13 +295,10 @@ export default function DatatableEmpleados({
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setRowsPerPage(Number(e.target.value));
-      setPage(1);
-    },
-    [],
-  );
+  const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    setRowsPerPage(Number(e.target.value));
+    setPage(1);
+  }, []);
 
   // Función para manejar el cambio en el campo de búsqueda
   const onSearchChange = React.useCallback((value?: string) => {
@@ -383,10 +331,7 @@ export default function DatatableEmpleados({
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
                   Estado
                 </Button>
               </DropdownTrigger>
@@ -407,10 +352,7 @@ export default function DatatableEmpleados({
             </Dropdown>
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
+                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
                   Columnas
                 </Button>
               </DropdownTrigger>
@@ -429,19 +371,13 @@ export default function DatatableEmpleados({
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button
-              color="primary"
-              endContent={<PlusIcon />}
-              onPress={onAddNew}
-            >
+            <Button color="primary" endContent={<PlusIcon />} onPress={onAddNew}>
               Agregar Nuevo
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">
-            Total {empleados.length} empleados
-          </span>
+          <span className="text-default-400 text-small">Total {empleados.length} empleados</span>
           <label className="flex items-center text-default-400 text-small">
             Fila por página:
             <select
@@ -475,30 +411,12 @@ export default function DatatableEmpleados({
             ? "Todos los elementos seleccionados"
             : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
         </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
+        <Pagination isCompact showControls showShadow color="primary" page={page} total={pages} onChange={setPage} />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onPreviousPage}
-          >
+          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
             Anterior
           </Button>
-          <Button
-            isDisabled={pages === 1}
-            size="sm"
-            variant="flat"
-            onPress={onNextPage}
-          >
+          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
             Siguiente
           </Button>
         </div>
@@ -551,11 +469,7 @@ export default function DatatableEmpleados({
       <TableBody emptyContent={"No users found"} items={sortedItems}>
         {(item) => (
           <TableRow key={item.id}>
-            {(columnKey) => (
-              <TableCell>
-                {renderCell(item, columnKey) as React.ReactNode}
-              </TableCell>
-            )}
+            {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}
           </TableRow>
         )}
       </TableBody>

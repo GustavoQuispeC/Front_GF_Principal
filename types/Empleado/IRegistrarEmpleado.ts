@@ -1,0 +1,36 @@
+export interface IRegistarEmpleado {
+  nombre: string;
+  apellidos: string;
+  tipoDocumento: number;
+  numeroDocumento: string;
+  fechaNacimiento: string;
+  genero: number;
+  estadoCivil: number;
+  nacionalidad: string | null;
+  correo: string | null;
+  telefonoMovil: string | null;
+  direccion: string | null;
+  distrito: string;
+  provincia: string;
+  departamento: string;
+  contactoEmergenciaNombre: string | null;
+  contactoEmergenciaParentesco: number;
+  contactoEmergenciaTelefono: string | null;
+  numeroCuentaBancaria: string | null;
+  bancoNombre: string | null;
+  tipoCuenta: number;
+  cci: string | null;
+  ruc: string | null;
+  numeroESSalud: string | null;
+  sistemaPensiones: number;
+  cuspp: string | null;
+  nivelEducativo: number;
+  profesionOficio: string | null;
+  fotoUrl: string | null;
+  cargoId: number;
+  salario: number;
+  tipoContrato: number;
+  tipoJornada: number;
+  fechaIngreso: string;
+  observaciones: string | null;
+}

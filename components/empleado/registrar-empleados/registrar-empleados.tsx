@@ -13,6 +13,7 @@ import {
   NumberInput,
   Accordion,
   AccordionItem,
+  Chip,
 } from "@heroui/react";
 import {
   User,
@@ -28,7 +29,7 @@ import {
   ArrowLeft,
   Search,
 } from "lucide-react";
-import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
+import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
 import { useUbigeo } from "@/hooks/use-ubigeo";
 import { useCatalogos } from "@/hooks/use-catalogos";
 import { useCargos } from "@/hooks/use-cargos";
@@ -36,11 +37,14 @@ import { registrarEmpleado } from "@/helpers/empleado.helper";
 import { useFirebaseStorage } from "@/hooks/use-firebase-storage";
 import { toastPromise } from "@/helpers/toast.helper";
 import { useDni } from "@/hooks/use-dni";
+import { toDotNetDateTime } from "@/helpers/date.helper";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { EmpleadoForm, empleadoSchema } from "@/types/Empleado/empleado.schema";
 interface RegistrarEmpleadosProps {
   onBack?: () => void;
 }
 
-const defaultValues: IRegistarEmpleado = {
+const defaultValues: EmpleadoForm = {
   nombre: "",
   apellidos: "",
   tipoDocumento: 0,
@@ -93,31 +97,16 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     setValue,
     watch,
     formState: { errors },
-  } = useForm<IRegistarEmpleado>({ defaultValues });
-
-  // Observamos departamento y provincia para los selects dependientes
+  } = useForm<EmpleadoForm>({
+    resolver: zodResolver(empleadoSchema),
+    defaultValues,
+  });
+  console.log("errors", errors);
+  //! Observamos departamento y provincia para los selects dependientes
   const departamento = watch("departamento");
   const provincia = watch("provincia");
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
-  const toDotNetDateTime = (value: any): string => {
-    if (!value) return "";
-    if (typeof value.year === "number" && typeof value.month === "number" && typeof value.day === "number") {
-      const year = String(value.year).padStart(4, "0");
-      const month = String(value.month).padStart(2, "0");
-      const day = String(value.day).padStart(2, "0");
-      return `${year}-${month}-${day}T00:00:00`;
-    }
-    const raw = value?.toString?.();
-    if (typeof raw === "string") {
-      if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return `${raw}T00:00:00`;
-      const parsed = new Date(raw);
-      if (!Number.isNaN(parsed.getTime())) return parsed.toISOString();
-    }
-    return "";
-  };
-
-  // ── DNI ──────────────────────────────────────────────────────────────────────
+  //! ── DNI ──────────────────────────────────────────────────────────────────────
   const handleBuscarDni = async () => {
     if (!dniBusqueda.trim() || dniBusqueda.trim().length !== 8) return;
     const response = await consultarDni(dniBusqueda.trim());
@@ -128,7 +117,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     }
   };
 
-  // ── Imagen ───────────────────────────────────────────────────────────────────
+  //! ── Imagen ───────────────────────────────────────────────────────────────────
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -139,9 +128,9 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     }
   };
 
-  // ── Submit ───────────────────────────────────────────────────────────────────
-  const onSubmit = async (data: IRegistarEmpleado) => {
-    let fotoUrl: string | null = data.fotoUrl;
+  //! ── Submit ───────────────────────────────────────────────────────────────────
+  const onSubmit = async (data: EmpleadoForm) => {
+    let fotoUrl: string | null = data.fotoUrl ?? null;
 
     if (selectedFile) {
       const result = await uploadFile(selectedFile, "empleados");
@@ -167,29 +156,46 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
   return (
     <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={handleSubmit(onSubmit)}>
       {/* 🔍 BUSCADOR DNI */}
-      <div className="mb-4">
-        <div className="flex items-end gap-3">
+      <div className="flex flex-col gap-2 mb-6">
+        <p className="text-sm font-medium text-default-700">Búsqueda por DNI</p>
+
+        <div className="flex items-center gap-2">
           <Input
-            label="Buscar Empleado por DNI"
+            placeholder="Ingrese 8 dígitos"
             size="sm"
             maxLength={8}
-            className="max-w-xs"
+            className="max-w-[180px]"
             value={dniBusqueda}
-            onChange={(e) => setDniBusqueda(e.target.value)}
+            onChange={(e) => setDniBusqueda(e.target.value.replace(/\D/g, "").slice(0, 8))}
+            onKeyDown={(e) => e.key === "Enter" && handleBuscarDni()}
+            startContent={<Search size={15} className="text-default-400" />}
+            description={
+              dniBusqueda.length > 0 && dniBusqueda.length < 8 ? `Faltan ${8 - dniBusqueda.length} dígitos` : undefined
+            }
+            color={errorDni ? "danger" : "default"}
           />
           <Button
             color="primary"
-            variant="flat"
-            startContent={<Search size={18} />}
+            size="sm"
             onPress={handleBuscarDni}
             isLoading={loadingDni}
+            isDisabled={dniBusqueda.length !== 8}
           >
             Buscar
           </Button>
         </div>
 
-        {dniData?.nombreCompleto && !errorDni && <p className="text-sm text-primary mt-2">{dniData.nombreCompleto}</p>}
-        {errorDni && <p className="text-sm text-danger mt-2">DNI no encontrado</p>}
+        {dniData?.nombreCompleto && !errorDni && (
+          <Chip color="success" variant="flat" size="sm">
+            {dniData.nombreCompleto}
+          </Chip>
+        )}
+
+        {errorDni && (
+          <Chip color="danger" variant="flat" size="sm">
+            DNI no encontrado
+          </Chip>
+        )}
       </div>
 
       {/* 🧾 FORM */}
@@ -231,7 +237,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="nombre"
                 control={control}
-                rules={{ required: "El nombre es obligatorio" }}
                 render={({ field }) => (
                   <Input
                     {...field}
@@ -247,7 +252,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="apellidos"
                 control={control}
-                rules={{ required: "Los apellidos son obligatorios" }}
                 render={({ field }) => (
                   <Input
                     {...field}
@@ -263,7 +267,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="tipoDocumento"
                 control={control}
-                rules={{ validate: (v) => v !== 0 || "Seleccione un tipo de documento" }}
                 render={({ field }) => (
                   <Select
                     label="Tipo Documento"
@@ -284,7 +287,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="numeroDocumento"
                 control={control}
-                rules={{ required: "El número de documento es obligatorio" }}
                 render={({ field }) => (
                   <NumberInput
                     hideStepper
@@ -304,7 +306,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="fechaNacimiento"
                 control={control}
-                rules={{ required: "La fecha de nacimiento es obligatoria" }}
                 render={({ field }) => (
                   <DatePicker
                     showMonthAndYearPickers
@@ -321,7 +322,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="genero"
                 control={control}
-                rules={{ validate: (v) => v !== 0 || "Seleccione un género" }}
                 render={({ field }) => (
                   <Select
                     label="Género"
@@ -342,7 +342,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="estadoCivil"
                 control={control}
-                rules={{ validate: (v) => v !== 0 || "Seleccione un estado civil" }}
                 render={({ field }) => (
                   <Select
                     label="Estado Civil"
@@ -363,7 +362,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="salario"
                 control={control}
-                rules={{ validate: (v) => Number(v) > 0 || "El salario debe ser mayor a 0" }}
                 render={({ field }) => (
                   <NumberInput
                     label="Salario"
@@ -385,7 +383,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="cargoId"
                 control={control}
-                rules={{ validate: (v) => v !== 0 || "Seleccione un cargo" }}
                 render={({ field }) => (
                   <Select
                     label="Cargo"
@@ -406,7 +403,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               <Controller
                 name="fechaIngreso"
                 control={control}
-                rules={{ required: "La fecha de ingreso es obligatoria" }}
                 render={({ field }) => (
                   <DatePicker
                     showMonthAndYearPickers
@@ -428,10 +424,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Controller
               name="correo"
               control={control}
-              rules={{
-                required: "El correo es obligatorio",
-                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Correo inválido" },
-              }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -450,7 +442,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Controller
               name="telefonoMovil"
               control={control}
-              rules={{ required: "El teléfono es obligatorio" }}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -554,7 +545,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                     selectedKeys={field.value ? [field.value] : []}
                     onSelectionChange={(keys) => field.onChange(Array.from(keys)[0] as string)}
                   >
-                    {provincia && ubigeoData?.[departamento]?.[provincia]
+                    {provincia && departamento && ubigeoData?.[departamento]?.[provincia]
                       ? Object.keys(ubigeoData[departamento][provincia]).map((dist) => (
                           <SelectItem key={dist} textValue={dist}>
                             {dist}

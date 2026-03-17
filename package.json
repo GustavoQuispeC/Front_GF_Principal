@@ -52,6 +52,7 @@
     "@heroui/toast": "2.0.20",
     "@heroui/tooltip": "2.2.27",
     "@heroui/user": "2.2.25",
+    "@hookform/resolvers": "^5.2.2",
     "@react-aria/ssr": "3.9.10",
     "@react-aria/visually-hidden": "3.8.29",
     "clsx": "2.1.1",
@@ -67,7 +68,8 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.71.2",
-    "react-hot-toast": "^2.6.0"
+    "react-hot-toast": "^2.6.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "15.5.9",

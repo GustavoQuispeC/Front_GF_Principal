@@ -1,4 +1,4 @@
-import { IRegistarEmpleado } from "@/types/IRegistrarEmpleado";
+import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
 import { getAuthUser } from "./authorization";
 import { apiEmpleado } from "@/lib/api-empleado";
 
