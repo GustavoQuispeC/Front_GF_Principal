@@ -1,17 +1,16 @@
 import { z } from "zod";
 
 export const empleadoSchema = z.object({
-  nombre: z.string().trim().min(1, "El nombre es obligatorio"),
-  apellidos: z.string().trim().min(1, "Los apellidos son obligatorios"),
-
+  nombre: z.string().min(1, "El nombre es obligatorio"),
+  apellidos: z.string().min(1, "Los apellidos son obligatorios"),
   tipoDocumento: z.number().min(1, "Seleccione un tipo de documento"),
   numeroDocumento: z.string().length(8, "Debe tener 8 dígitos"),
   fechaNacimiento: z.string().min(1, "La fecha de nacimiento es obligatoria"),
   genero: z.number().min(1, "Seleccione un género"),
   estadoCivil: z.number().min(1, "Seleccione un estado civil"),
   nacionalidad: z.string().nullable(),
-  correo: z.string().trim().min(1, "El correo es obligatorio").email("Correo inválido"),
-  telefonoMovil: z.string().trim().min(1, "El teléfono es obligatorio"),
+  correo: z.string().min(1, "El correo es obligatorio").email("Correo inválido").nullable(),
+  telefonoMovil: z.string().min(1, "El teléfono es obligatorio").nullable(),
   direccion: z.string().nullable(),
   departamento: z.string(), // ← sin nullable
   provincia: z.string(), // ← sin nullable

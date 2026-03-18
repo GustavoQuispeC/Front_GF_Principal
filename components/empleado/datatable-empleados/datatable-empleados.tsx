@@ -172,7 +172,7 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
     column: "edad",
     direction: "ascending",
@@ -322,7 +322,7 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            placeholder="Buscar por nombre..."
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
@@ -445,7 +445,7 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
       bottomContent={bottomContent}
       bottomContentPlacement="outside"
       classNames={{
-        wrapper: "max-h-[382px]",
+        wrapper: "max-h-full",
       }}
       selectedKeys={selectedKeys}
       selectionMode="multiple"

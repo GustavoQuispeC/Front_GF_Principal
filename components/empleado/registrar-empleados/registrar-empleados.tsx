@@ -260,7 +260,9 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   <Input
                     {...field}
                     label="Nombres"
-                    placeholder="Ej. Juan Carlos"
+                    placeholder="EJ. JUAN CARLOS"
+                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    classNames={{ input: "uppercase" }}
                     isRequired
                     isInvalid={!!errors.nombre}
                     errorMessage={errors.nombre?.message}
@@ -275,7 +277,9 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   <Input
                     {...field}
                     label="Apellidos"
-                    placeholder="Ej. Pérez García"
+                    placeholder="EJ. PÉREZ GARCÍA"
+                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                    classNames={{ input: "uppercase" }}
                     isRequired
                     isInvalid={!!errors.apellidos}
                     errorMessage={errors.apellidos?.message}
@@ -489,7 +493,14 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               name="nacionalidad"
               control={control}
               render={({ field }) => (
-                <Input {...field} value={field.value ?? ""} label="Nacionalidad" placeholder="Peruana" />
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="Nacionalidad"
+                  placeholder="PERUANA"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  className="uppercase"
+                />
               )}
             />
 
@@ -501,9 +512,11 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   {...field}
                   value={field.value ?? ""}
                   label="Dirección"
-                  placeholder="Av. Principal 123"
+                  placeholder="AV. PRINCIPAL 123"
                   className="md:col-span-2"
+                  classNames={{ input: "uppercase" }}
                   startContent={<MapPin size={18} />}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
                 />
               )}
             />
@@ -604,7 +617,14 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               name="contactoEmergenciaNombre"
               control={control}
               render={({ field }) => (
-                <Input {...field} value={field.value ?? ""} label="Nombre" placeholder="Ej. María Pérez" />
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="Nombre"
+                  placeholder="Ej. MARÍA PÉREZ"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
+                />
               )}
             />
 
@@ -630,7 +650,13 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               name="contactoEmergenciaTelefono"
               control={control}
               render={({ field }) => (
-                <Input {...field} value={field.value ?? ""} label="Teléfono" placeholder="999888777" />
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="Teléfono"
+                  placeholder="999888777"
+                  onChange={(e) => field.onChange(e.target.value)}
+                />
               )}
             />
           </div>
@@ -653,7 +679,9 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   {...field}
                   value={field.value ?? ""}
                   label="Profesión/Oficio"
-                  placeholder="Ingeniero de Sistemas"
+                  placeholder="INGENIERO DE SISTEMAS"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
                 />
               )}
             />
@@ -713,14 +741,29 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
             <Controller
               name="ruc"
               control={control}
-              render={({ field }) => <Input {...field} value={field.value ?? ""} label="RUC (Opcional)" />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="RUC (Opcional)"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
+                />
+              )}
             />
 
             <Controller
               name="observaciones"
               control={control}
               render={({ field }) => (
-                <Input {...field} value={field.value ?? ""} label="Observaciones" className="md:col-span-3" />
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="Observaciones"
+                  className="md:col-span-3"
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
+                />
               )}
             />
           </div>
@@ -739,7 +782,14 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               name="bancoNombre"
               control={control}
               render={({ field }) => (
-                <Input {...field} value={field.value ?? ""} label="Banco" startContent={<CreditCard size={18} />} />
+                <Input
+                  {...field}
+                  value={field.value ?? ""}
+                  label="Banco"
+                  startContent={<CreditCard size={18} />}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
+                />
               )}
             />
 
@@ -769,6 +819,8 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   value={field.value ?? ""}
                   label="Número de Cuenta"
                   startContent={<CreditCard size={18} />}
+                  onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                  classNames={{ input: "uppercase" }}
                 />
               )}
             />
@@ -813,6 +865,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                   {...field}
                   value={field.value ?? ""}
                   label="Número ESSalud"
+                  placeholder="1234567890"
                   startContent={<HeartPulse size={18} />}
                 />
               )}
