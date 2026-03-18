@@ -14,6 +14,7 @@ import {
   Accordion,
   AccordionItem,
   Chip,
+  Form,
 } from "@heroui/react";
 import {
   User,
@@ -40,6 +41,7 @@ import { useDni } from "@/hooks/use-dni";
 import { toDotNetDateTime } from "@/helpers/date.helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmpleadoForm, empleadoSchema } from "@/types/Empleado/empleado.schema";
+
 interface RegistrarEmpleadosProps {
   onBack?: () => void;
 }
@@ -85,30 +87,34 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dniBusqueda, setDniBusqueda] = useState("");
+  // resetKey controla el remount de DatePickers y Selects para limpiarlos visualmente
   const [resetKey, setResetKey] = useState(0);
+
   const { ubigeoData, loadingUbigeo } = useUbigeo();
   const { catalogos, loading } = useCatalogos();
   const { cargos } = useCargos();
-  const { dniData, loadingDni, errorDni, consultarDni } = useDni();
+  const { dniData, loadingDni, errorDni, consultarDni, resetDni } = useDni();
   const { uploading, progress, error: uploadError, uploadFile } = useFirebaseStorage();
+
   const {
     control,
     handleSubmit,
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitted },
   } = useForm<EmpleadoForm>({
     resolver: zodResolver(empleadoSchema),
     defaultValues,
-    mode: "onTouched",
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    shouldFocusError: true,
   });
-  console.log("errors", errors);
-  //! Observamos departamento y provincia para los selects dependientes
+
   const departamento = watch("departamento");
   const provincia = watch("provincia");
 
-  //! ── DNI ──────────────────────────────────────────────────────────────────────
+  // ── DNI ──────────────────────────────────────────────────────────────────────
   const handleBuscarDni = async () => {
     if (!dniBusqueda.trim() || dniBusqueda.trim().length !== 8) return;
     const response = await consultarDni(dniBusqueda.trim());
@@ -119,7 +125,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     }
   };
 
-  //! ── Imagen ───────────────────────────────────────────────────────────────────
+  // ── Imagen ───────────────────────────────────────────────────────────────────
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -130,7 +136,21 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     }
   };
 
-  //! ── Submit ───────────────────────────────────────────────────────────────────
+  // ── Reset completo del formulario ────────────────────────────────────────────
+  const resetForm = () => {
+    reset(defaultValues);
+    // Incrementar resetKey fuerza el remount de DatePickers y Selects controlados por key
+    setResetKey((k) => k + 1);
+    setPreview(null);
+    setSelectedFile(null);
+    setDniBusqueda("");
+    resetDni();
+    // Limpiar el input file para que se pueda volver a seleccionar la misma imagen
+    const fileInput = document.getElementById("foto-input") as HTMLInputElement;
+    if (fileInput) fileInput.value = "";
+  };
+
+  // ── Submit ───────────────────────────────────────────────────────────────────
   const onSubmit = async (data: EmpleadoForm) => {
     let fotoUrl: string | null = data.fotoUrl ?? null;
 
@@ -148,16 +168,12 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
         success: "Empleado registrado correctamente",
         error: "Error al registrar el empleado",
       });
-      reset(defaultValues);
-      setResetKey((k) => k + 1);
-      setPreview(null);
-      setSelectedFile(null);
-      setDniBusqueda("");
+      resetForm();
     } catch (_) {}
   };
 
   return (
-    <form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={handleSubmit(onSubmit)}>
+    <Form className="max-w-5xl mx-auto p-4 space-y-8" onSubmit={handleSubmit(onSubmit)} validationBehavior="aria">
       {/* 🔍 BUSCADOR DNI */}
       <div className="flex flex-col gap-2 mb-6">
         <p className="text-sm font-medium text-default-700">Búsqueda por DNI</p>
@@ -188,12 +204,12 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
           </Button>
         </div>
 
+        {/* Chip de resultado DNI — se limpia con resetDni() en resetForm() */}
         {dniData?.nombreCompleto && !errorDni && (
           <Chip color="success" variant="flat" size="sm">
             {dniData.nombreCompleto}
           </Chip>
         )}
-
         {errorDni && (
           <Chip color="danger" variant="flat" size="sm">
             DNI no encontrado
@@ -272,6 +288,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`tipoDocumento-${resetKey}`}
                     label="Tipo Documento"
                     placeholder="Seleccione"
                     isLoading={loading}
@@ -292,6 +309,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <NumberInput
+                    key={`numeroDocumento-${resetKey}`}
                     hideStepper
                     formatOptions={{ useGrouping: false }}
                     label="Número Documento"
@@ -311,7 +329,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <DatePicker
-                    key={resetKey}
+                    key={`fechaNacimiento-${resetKey}`}
                     showMonthAndYearPickers
                     className="w-full"
                     label="Fecha Nacimiento"
@@ -328,6 +346,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`genero-${resetKey}`}
                     label="Género"
                     placeholder="Seleccione"
                     isLoading={loading}
@@ -348,6 +367,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`estadoCivil-${resetKey}`}
                     label="Estado Civil"
                     placeholder="Seleccione"
                     isLoading={loading}
@@ -368,6 +388,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <NumberInput
+                    key={`salario-${resetKey}`}
                     label="Salario"
                     isRequired
                     placeholder="0.00"
@@ -389,6 +410,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`cargoId-${resetKey}`}
                     label="Cargo"
                     isRequired
                     placeholder="Seleccione"
@@ -409,7 +431,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <DatePicker
-                    key={resetKey}
+                    key={`fechaIngreso-${resetKey}`}
                     showMonthAndYearPickers
                     isRequired
                     className="w-full"
@@ -493,6 +515,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`departamento-${resetKey}`}
                     label="Departamento"
                     placeholder="Seleccione"
                     isLoading={loadingUbigeo}
@@ -520,6 +543,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`provincia-${resetKey}`}
                     label="Provincia"
                     placeholder="Seleccione"
                     isDisabled={!departamento}
@@ -546,6 +570,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
                 control={control}
                 render={({ field }) => (
                   <Select
+                    key={`distrito-${resetKey}`}
                     label="Distrito"
                     placeholder="Seleccione"
                     isDisabled={!provincia}
@@ -588,11 +613,12 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`parentesco-${resetKey}`}
                   label="Parentesco"
                   placeholder="Seleccione"
                   isLoading={loading}
                   items={catalogos.TiposParentesco}
-                  selectedKeys={[String(field.value)]}
+                  selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
                   {(item: any) => <SelectItem key={item.id}>{item.nombre}</SelectItem>}
@@ -637,6 +663,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`nivelEducativo-${resetKey}`}
                   label="Nivel Educativo"
                   placeholder="Seleccione"
                   isLoading={loading}
@@ -654,6 +681,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`tipoContrato-${resetKey}`}
                   label="Tipo Contrato"
                   placeholder="Seleccione"
                   items={catalogos.TiposContrato}
@@ -670,6 +698,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`tipoJornada-${resetKey}`}
                   label="Tipo Jornada"
                   placeholder="Seleccione"
                   items={catalogos.TiposJornada}
@@ -719,6 +748,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`tipoCuenta-${resetKey}`}
                   label="Tipo de Cuenta"
                   placeholder="Seleccione"
                   items={catalogos.TiposCuentaBancaria}
@@ -754,6 +784,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
               control={control}
               render={({ field }) => (
                 <Select
+                  key={`sistemaPensiones-${resetKey}`}
                   label="Sistema de Pensiones"
                   placeholder="Seleccione"
                   isLoading={loading}
@@ -790,7 +821,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
         </AccordionItem>
       </Accordion>
 
-      <div className="mt-10 flex justify-end gap-3">
+      <div className="mt-10 flex w-full justify-end items-center gap-3">
         <Button color="default" className="min-w-[150px]" startContent={<ArrowLeft size={18} />} onPress={onBack}>
           Volver
         </Button>
@@ -804,6 +835,6 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
           {uploading ? "Subiendo..." : "Guardar"}
         </Button>
       </div>
-    </form>
+    </Form>
   );
 }

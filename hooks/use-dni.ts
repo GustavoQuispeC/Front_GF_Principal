@@ -2,7 +2,6 @@ import { buscarDni } from "@/helpers/dni.helper";
 import { IBuscarDni } from "@/types/IBuscarDni";
 import { useState } from "react";
 
-
 export function useDni() {
   const [dniData, setDniData] = useState<IBuscarDni | null>(null);
   const [loadingDni, setLoadingDni] = useState(false);
@@ -25,11 +24,17 @@ export function useDni() {
       setLoadingDni(false);
     }
   };
+  const resetDni = () => {
+    setDniData(null);
+    setErrorDni(null);
+    setLoadingDni(false);
+  };
 
   return {
     dniData,
     loadingDni,
     errorDni,
     consultarDni,
+    resetDni,
   };
 }
