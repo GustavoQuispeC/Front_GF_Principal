@@ -18,9 +18,15 @@ import {
   Chip,
   User,
   Pagination,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from "@heroui/react";
 import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
-import { ListarEmpleados } from "@/helpers/empleado.helper";
+import { eliminarEmpleado, ListarEmpleados } from "@/helpers/empleado.helper";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -179,6 +185,8 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
   });
 
   const [page, setPage] = useState(1);
+  const [empleadoAEliminar, setEmpleadoAEliminar] = useState<string | null>(null);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -273,7 +281,15 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
             <DropdownMenu>
               <DropdownItem key="view">Ver</DropdownItem>
               <DropdownItem key="edit">Editar</DropdownItem>
-              <DropdownItem key="delete">Eliminar</DropdownItem>
+              <DropdownItem
+                key="delete"
+                onClick={() => {
+                  setEmpleadoAEliminar(empleados.id);
+                  onOpen();
+                }}
+              >
+                Eliminar
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         );
@@ -438,41 +454,80 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
     fetchEmpleados();
   }, []);
 
+  //! Eliminar empleado
+  const confirmarEliminacion = async () => {
+    if (!empleadoAEliminar) return;
+
+    try {
+      await eliminarEmpleado(empleadoAEliminar);
+      await fetchEmpleados(); // refresca lista
+    } catch (error) {
+      console.error("Error al eliminar el empleado:", error);
+    } finally {
+      setEmpleadoAEliminar(null);
+      onOpenChange(); // cerrar modal
+    }
+  };
+
   return (
-    <Table
-      isHeaderSticky
-      aria-label="Example table with custom cells, pagination and sorting"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "max-h-full",
-      }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      <Table
+        isHeaderSticky
+        aria-label="Example table with custom cells, pagination and sorting"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        classNames={{
+          wrapper: "max-h-full",
+        }}
+        selectedKeys={selectedKeys}
+        selectionMode="multiple"
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody emptyContent={"No users found"} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item.id}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Confirmar eliminación</ModalHeader>
+
+              <ModalBody>
+                <p>¿Está seguro que desea eliminar el empleado?</p>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button variant="light" onPress={onClose}>
+                  Cancelar
+                </Button>
+                <Button color="danger" onPress={confirmarEliminacion}>
+                  Eliminar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

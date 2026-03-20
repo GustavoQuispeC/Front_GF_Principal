@@ -28,3 +28,16 @@ export async function registrarEmpleado(
     body: JSON.stringify(payload),
   });
 }
+
+//! Función para eliminar empleados, token y rol requrido
+export async function eliminarEmpleado(id: string): Promise<void> {
+  const user = getAuthUser();
+  const rol = user?.rol;
+  if (rol !== "Admin") {
+    throw new Error("No tienes permisos para eliminar empleados");
+  }
+
+  return apiEmpleado(`${apiUrl}/empleados/${id}`, {
+    method: "DELETE",
+  });
+}
