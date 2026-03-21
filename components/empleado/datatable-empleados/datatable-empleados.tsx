@@ -180,7 +180,7 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = useState(15);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
-    column: "edad",
+    column: "id",
     direction: "ascending",
   });
 
