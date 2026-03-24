@@ -1,13 +1,11 @@
-'use client';
+"use client";
 
-import { ClienteRegistro } from "@/components";
+import VerEmpleado from "@/components/empleado/ver-empleado/ver-empleado";
 
-
-
-export default function ClienteRegistroPage() {
+export default function ClienteVerPage() {
   return (
     <div>
-      <ClienteRegistro />
+      <VerEmpleado />
     </div>
   );
 }

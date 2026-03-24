@@ -40,9 +40,13 @@ import DatatableUsuarios from "@/components/usuario/datatable-usuarios/datatable
 
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
-import { RegistrarEmpleados } from "@/components";
-import { COMPONENT_MAP } from "./COMPONENT_MAP";
+import { CrearUsuario, RegistrarEmpleados } from "@/components";
+import DetalleEmpleado from "@/components/empleado/ver-empleado/ver-empleado";
 
+interface DatatableEmpleadosProps {
+  onAddNew?: () => void;
+  onViewEmpleado?: (id: number) => void; // 👈 clave
+}
 // Configuración de navegación
 const menuGroups = {
   overview: [
@@ -97,8 +101,7 @@ const menuGroups = {
   ],
 };
 
-const cx = (...classes: Array<string | false | null | undefined>) =>
-  classes.filter(Boolean).join(" ");
+const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
 
 export default function Sidebar() {
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
@@ -110,6 +113,7 @@ export default function Sidebar() {
     Analytics: false,
     Settings: false,
   });
+  const [empleadoId, setEmpleadoId] = useState<string | null>(null);
 
   const toggleSidebar = () => setIsOpenSidebar(!isOpenSidebar);
   const toggleSubmenu = (name: string) => {
@@ -123,9 +127,9 @@ export default function Sidebar() {
 
   //! Carga los datos del usuario al montar el componente
   useEffect(() => {
-  const data = getAuthUser();
-  setUsuario(data);
-}, []);
+    const data = getAuthUser();
+    setUsuario(data);
+  }, []);
 
   //! Función para manejar la confirmación de cierre de sesión
   const handleConfirmLogout = () => {
@@ -137,9 +141,7 @@ export default function Sidebar() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Cerrar Sesión
-              </ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Cerrar Sesión</ModalHeader>
               <ModalBody>
                 <p>¿Estás seguro de que deseas cerrar sesión?</p>
               </ModalBody>
@@ -168,12 +170,7 @@ export default function Sidebar() {
     <>
       {/* --- BOTÓN TOGGLE (MÓVIL) --- */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button
-          isIconOnly
-          variant="flat"
-          onPress={toggleSidebar}
-          className="bg-white shadow-md dark:bg-slate-900"
-        >
+        <Button isIconOnly variant="flat" onPress={toggleSidebar} className="bg-white shadow-md dark:bg-slate-900">
           {isOpenSidebar ? <X size={20} /> : <Menu size={20} />}
         </Button>
       </div>
@@ -190,26 +187,12 @@ export default function Sidebar() {
       >
         <ScrollShadow className={cx("h-full", isCollapsed ? "p-3" : "p-6")}>
           {/* Logo / Header */}
-          <div
-            className={cx(
-              "flex items-center gap-3",
-              isCollapsed ? "justify-center mb-4" : "justify-between mb-6",
-            )}
-          >
-            <div
-              className={cx(
-                "flex items-center gap-3",
-                isCollapsed ? "justify-center" : "",
-              )}
-            >
+          <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center mb-4" : "justify-between mb-6")}>
+            <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
               <div className="bg-black p-2 rounded-xl text-white dark:bg-white dark:text-slate-950">
                 <Rocket size={20} fill="white" />
               </div>
-              {!isCollapsed && (
-                <span className="text-xl font-bold text-blue-900 dark:text-white">
-                  Grupo Famet
-                </span>
-              )}
+              {!isCollapsed && <span className="text-xl font-bold text-blue-900 dark:text-white">Grupo Famet</span>}
             </div>
             {!isCollapsed && (
               <button
@@ -236,27 +219,15 @@ export default function Sidebar() {
           )}
 
           {/* User Profile */}
-          <div
-            className={cx(
-              "flex items-center gap-3 mb-10",
-              isCollapsed ? "justify-center" : "",
-            )}
-          >
-            <Avatar
-              src={usuario?.fotoUrl || undefined}
-              className="w-10 h-10"
-            />
+          <div className={cx("flex items-center gap-3 mb-10", isCollapsed ? "justify-center" : "")}>
+            <Avatar src={usuario?.fotoUrl || undefined} className="w-10 h-10" />
             {!isCollapsed && (
               <div className="flex flex-col">
                 <span className="text-blue-900 font-bold text-sm dark:text-white">
                   {usuario?.nombreCompleto || "Usuario"}
                 </span>
-                <span className="text-default-400 text-xs font-medium">
-                  {usuario?.email || "Sin correo"}
-                </span>
-                <span className="text-default-400 text-xs font-medium">
-                  {usuario?.rol}
-                </span>
+                <span className="text-default-400 text-xs font-medium">{usuario?.email || "Sin correo"}</span>
+                <span className="text-default-400 text-xs font-medium">{usuario?.rol}</span>
               </div>
             )}
           </div>
@@ -281,23 +252,12 @@ export default function Sidebar() {
                         isCollapsed ? "justify-center" : "",
                       )}
                     >
-                      <div
-                        className={cx(
-                          "flex items-center gap-3",
-                          isCollapsed ? "justify-center" : "",
-                        )}
-                      >
+                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
                         <item.icon
                           size={18}
-                          className={
-                            activeMenu === item.name
-                              ? "text-blue-900"
-                              : "text-default-400"
-                          }
+                          className={activeMenu === item.name ? "text-blue-900" : "text-default-400"}
                         />
-                        {!isCollapsed && (
-                          <span className={textClasses}>{item.name}</span>
-                        )}
+                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
                       </div>
 
                       {!isCollapsed && item.hasAction && (
@@ -314,9 +274,7 @@ export default function Sidebar() {
                             size={14}
                             className={cx(
                               "transition-transform",
-                              openMenus[item.name]
-                                ? "rotate-45 text-blue-900 dark:text-white"
-                                : "text-default-300",
+                              openMenus[item.name] ? "rotate-45 text-blue-900 dark:text-white" : "text-default-300",
                             )}
                           />
                         </button>
@@ -330,10 +288,7 @@ export default function Sidebar() {
                             href={child.href}
                             className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
                           >
-                            <ChevronRight
-                              size={12}
-                              className="text-default-400"
-                            />
+                            <ChevronRight size={12} className="text-default-400" />
                             {child.name}
                           </a>
                         ))}
@@ -354,22 +309,10 @@ export default function Sidebar() {
               <div className="space-y-1">
                 {menuGroups.organization.map((item) => (
                   <div key={item.name}>
-                    <div
-                      className={cx(
-                        itemClasses,
-                        isCollapsed ? "justify-center" : "",
-                      )}
-                    >
-                      <div
-                        className={cx(
-                          "flex items-center gap-3",
-                          isCollapsed ? "justify-center" : "",
-                        )}
-                      >
+                    <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
+                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
                         <item.icon size={18} className="text-default-400" />
-                        {!isCollapsed && (
-                          <span className={textClasses}>{item.name}</span>
-                        )}
+                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
                       </div>
                       {!isCollapsed && item.badge && (
                         <span className="text-[10px] font-bold text-default-400 bg-default-100 px-2 py-0.5 rounded-full">
@@ -387,9 +330,7 @@ export default function Sidebar() {
                             size={14}
                             className={cx(
                               "transition-transform",
-                              openMenus[item.name]
-                                ? "rotate-45 text-blue-900 dark:text-white"
-                                : "text-default-300",
+                              openMenus[item.name] ? "rotate-45 text-blue-900 dark:text-white" : "text-default-300",
                             )}
                           />
                         </button>
@@ -403,10 +344,7 @@ export default function Sidebar() {
                             href={child.href}
                             className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
                           >
-                            <ChevronRight
-                              size={12}
-                              className="text-default-400"
-                            />
+                            <ChevronRight size={12} className="text-default-400" />
                             {child.name}
                           </a>
                         ))}
@@ -426,25 +364,12 @@ export default function Sidebar() {
               )}
               <div className="space-y-1">
                 {menuGroups.teams.map((team) => (
-                  <div
-                    key={team.name}
-                    className={cx(
-                      itemClasses,
-                      isCollapsed ? "justify-center" : "",
-                    )}
-                  >
-                    <div
-                      className={cx(
-                        "flex items-center gap-3",
-                        isCollapsed ? "justify-center" : "",
-                      )}
-                    >
+                  <div key={team.name} className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
+                    <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
                       <div className="w-6 h-6 rounded flex items-center justify-center border border-divider text-[10px] font-bold text-default-500">
                         {team.initial}
                       </div>
-                      {!isCollapsed && (
-                        <span className={textClasses}>{team.name}</span>
-                      )}
+                      {!isCollapsed && <span className={textClasses}>{team.name}</span>}
                     </div>
                   </div>
                 ))}
@@ -454,24 +379,13 @@ export default function Sidebar() {
 
           {/* Footer Section */}
           <div className="mt-12 pt-6 border-t border-divider space-y-1">
-            <div
-              className={cx(itemClasses, isCollapsed ? "justify-center" : "")}
-            >
-              <div
-                className={cx(
-                  "flex items-center gap-3 text-default-400",
-                  isCollapsed ? "justify-center" : "",
-                )}
-              >
+            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
+              <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
                 <Info size={18} />
-                {!isCollapsed && (
-                  <span className={textClasses}>Ayuda e Información</span>
-                )}
+                {!isCollapsed && <span className={textClasses}>Ayuda e Información</span>}
               </div>
             </div>
-            <div
-              className={cx(itemClasses, isCollapsed ? "justify-center" : "")}
-            >
+            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
               <div
                 className={cx(
                   "flex items-center gap-3 text-default-400 cursor-pointer",
@@ -480,9 +394,7 @@ export default function Sidebar() {
                 onClick={onOpen} // <--- Abre el modal
               >
                 <LogOut size={18} />
-                {!isCollapsed && (
-                  <span className={textClasses}>Cerrar Sesión</span>
-                )}
+                {!isCollapsed && <span className={textClasses}>Cerrar Sesión</span>}
               </div>
             </div>
 
@@ -506,41 +418,50 @@ export default function Sidebar() {
       </div>
 
       {/* Overlay para móvil */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
-          onClick={toggleSidebar}
-        />
-      )}
+      {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden" onClick={toggleSidebar} />}
 
       <section
-        className={cx(
-          "pt-16 transition-[margin] duration-300 ease-in-out",
-          isCollapsed ? "lg:ml-20" : "lg:ml-72",
-        )}
+        className={cx("pt-16 transition-[margin] duration-300 ease-in-out", isCollapsed ? "lg:ml-20" : "lg:ml-72")}
       >
-       <div className="p-4 lg:p-6">
-          {/* RENDERIZADO DINÁMICO REESTRUCTURADO */}
-          {COMPONENT_MAP[activeMenu] ? (
-            activeMenu === "Empleados" ? (
-              <DatatableEmpleados
-                onAddNew={() => setActiveMenu("RegistrarEmpleados")}
-              />
-            ) : activeMenu === "Usuarios" ? (
-              <DatatableUsuarios
-                onAddNew={() => setActiveMenu("CrearUsuario")}
-              />
-            ) : activeMenu === "RegistrarEmpleados" ? (
-              <RegistrarEmpleados onBack={() => setActiveMenu("Empleados")} />
-            ) : (
-              COMPONENT_MAP[activeMenu]
-            )
-          ) : (
-            // Fallback por si el menú no tiene un componente asignado todavía
+        <div className="p-4 lg:p-6">
+          {/* INICIO */}
+          {activeMenu === "Inicio" && (
+            <div className="p-6">
+              <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
+            </div>
+          )}
+
+          {/* EMPLEADOS LISTADO */}
+          {activeMenu === "Empleados" && (
+            <DatatableEmpleados
+              onAddNew={() => setActiveMenu("RegistrarEmpleados")}
+              onViewEmpleado={(id) => {
+                setEmpleadoId(id);
+                setActiveMenu("DetalleEmpleado");
+              }}
+            />
+          )}
+
+          {/* DETALLE EMPLEADO 🔥 */}
+          {activeMenu === "DetalleEmpleado" && empleadoId && (
+            <DetalleEmpleado id={empleadoId} onVolver={() => setActiveMenu("Empleados")} />
+          )}
+
+          {/* REGISTRAR EMPLEADO */}
+          {activeMenu === "RegistrarEmpleados" && <RegistrarEmpleados onBack={() => setActiveMenu("Empleados")} />}
+
+          {/* USUARIOS */}
+          {activeMenu === "Usuarios" && <DatatableUsuarios onAddNew={() => setActiveMenu("CrearUsuario")} />}
+
+          {/* CREAR USUARIO */}
+          {activeMenu === "CrearUsuario" && <CrearUsuario />}
+
+          {/* FALLBACK */}
+          {!["Inicio", "Empleados", "DetalleEmpleado", "RegistrarEmpleados", "Usuarios", "CrearUsuario"].includes(
+            activeMenu,
+          ) && (
             <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
-              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">
-                Contenido de {activeMenu}
-              </h1>
+              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">Contenido de {activeMenu}</h1>
               <p className="text-default-500">Próximamente...</p>
             </div>
           )}

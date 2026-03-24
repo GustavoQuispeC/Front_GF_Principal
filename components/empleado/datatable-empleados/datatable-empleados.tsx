@@ -26,7 +26,8 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
-import { eliminarEmpleado, ListarEmpleados } from "@/helpers/empleado.helper";
+import { eliminarEmpleado, ListarEmpleados, VerEmpleado } from "@/helpers/empleado.helper";
+import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -169,10 +170,11 @@ const INITIAL_VISIBLE_COLUMNS = [
 
 interface DatatableEmpleadosProps {
   onAddNew?: () => void;
+  onViewEmpleado?: (id: string) => void;
 }
 
 //! ----- Componente principal del datatable de empleados -----
-export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps) {
+export default function DatatableEmpleados({ onAddNew, onViewEmpleado }: DatatableEmpleadosProps) {
   const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
@@ -279,7 +281,9 @@ export default function DatatableEmpleados({ onAddNew }: DatatableEmpleadosProps
               </Button>
             </DropdownTrigger>
             <DropdownMenu>
-              <DropdownItem key="view">Ver</DropdownItem>
+              <DropdownItem key="view" onClick={() => onViewEmpleado?.(empleados.id)}>
+                Ver
+              </DropdownItem>
               <DropdownItem key="edit">Editar</DropdownItem>
               <DropdownItem
                 key="delete"
