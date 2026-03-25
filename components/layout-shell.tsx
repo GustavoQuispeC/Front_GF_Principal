@@ -7,14 +7,13 @@ import { Button } from "@heroui/react"; // Usando tus componentes de UI
 import { DrawerComponent, Footer, Navbar } from "@/components";
 import { getAuthUser } from "@/helpers/authorization";
 
-
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  
+
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [showError, setShowError] = useState(false);
-  
+
   const hideMainChrome = pathname?.startsWith("/dashboard");
 
   useEffect(() => {
@@ -23,7 +22,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
 
       // 1. Verificación de Sesión
       if (!usuario || !usuario.token) {
-        router.push("/loginUsuario");
+        router.push("/login-usuario");
         return;
       }
 
@@ -48,8 +47,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4 text-center">
         <h1 className="text-2xl font-bold text-red-600 mb-2">Acceso Restringido</h1>
         <p className="text-gray-600 mb-6 max-w-md">
-          Usted no está autorizado para acceder a esta sección. 
-          Por favor, comuníquese con el <strong>Administrador de Sistemas</strong> para mayor información.
+          Usted no está autorizado para acceder a esta sección. Por favor, comuníquese con el{" "}
+          <strong>Administrador de Sistemas</strong> para mayor información.
         </p>
         <Button color="primary" onPress={() => router.push("/")}>
           Volver al Inicio
@@ -68,7 +67,12 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       {!hideMainChrome && <div className="bg-blue-800 px-6 py-3 gap-4" />}
       {!hideMainChrome && <Navbar />}
       {!hideMainChrome && <DrawerComponent />}
-      <main className={clsx("w-full flex-grow", hideMainChrome ? "p-0" : "mx-auto max-w-screen-2xl pt-1 px-4 sm:px-6 lg:px-8 2xl:px-12")}>
+      <main
+        className={clsx(
+          "w-full flex-grow",
+          hideMainChrome ? "p-0" : "mx-auto max-w-screen-2xl pt-1 px-4 sm:px-6 lg:px-8 2xl:px-12",
+        )}
+      >
         {children}
       </main>
       {!hideMainChrome && <Footer />}

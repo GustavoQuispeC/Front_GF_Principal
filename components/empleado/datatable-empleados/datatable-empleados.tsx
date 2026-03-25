@@ -28,6 +28,7 @@ import {
 import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
 import { eliminarEmpleado, ListarEmpleados, VerEmpleado } from "@/helpers/empleado.helper";
 import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
+import { useRouter } from "next/navigation";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -168,13 +169,8 @@ const INITIAL_VISIBLE_COLUMNS = [
   "actions",
 ];
 
-interface DatatableEmpleadosProps {
-  onAddNew?: () => void;
-  onViewEmpleado?: (id: string) => void;
-}
-
 //! ----- Componente principal del datatable de empleados -----
-export default function DatatableEmpleados({ onAddNew, onViewEmpleado }: DatatableEmpleadosProps) {
+export default function DatatableEmpleados() {
   const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
@@ -191,6 +187,8 @@ export default function DatatableEmpleados({ onAddNew, onViewEmpleado }: Datatab
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const hasSearchFilter = Boolean(filterValue);
+
+  const router = useRouter();
 
   const headerColumns = useMemo(() => {
     if (visibleColumns === "all") return columns;
@@ -281,10 +279,12 @@ export default function DatatableEmpleados({ onAddNew, onViewEmpleado }: Datatab
               </Button>
             </DropdownTrigger>
             <DropdownMenu>
-              <DropdownItem key="view" onClick={() => onViewEmpleado?.(empleados.id)}>
+              <DropdownItem key="view" onClick={() => router.push(`/dashboard/empleados/${empleados.id}`)}>
                 Ver
               </DropdownItem>
-              <DropdownItem key="edit">Editar</DropdownItem>
+              <DropdownItem key="edit" onClick={() => router.push(`/dashboard/empleados/${empleados.id}/editar`)}>
+                Editar
+              </DropdownItem>
               <DropdownItem
                 key="delete"
                 onClick={() => {
@@ -391,7 +391,7 @@ export default function DatatableEmpleados({ onAddNew, onViewEmpleado }: Datatab
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onPress={onAddNew}>
+            <Button color="primary" endContent={<PlusIcon />} onPress={() => router.push("/dashboard/empleados/nuevo")}>
               Agregar Nuevo
             </Button>
           </div>

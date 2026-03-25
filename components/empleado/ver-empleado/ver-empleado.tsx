@@ -13,12 +13,11 @@ import {
   CreditCard,
   HeartPulse,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// 👉 props correctas
 interface Props {
   id: string;
-  onVolver?: () => void;
 }
 
 const Section = ({ title, icon: Icon, children }: any) => (
@@ -38,9 +37,10 @@ const Item = ({ label, value }: any) => (
   </div>
 );
 
-export default function DetalleEmpleado({ id, onVolver }: Props) {
+export default function DetalleEmpleado({ id }: Props) {
   const [empleado, setEmpleado] = useState<IVerEmpleado | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const getEmpleado = async () => {
@@ -85,7 +85,7 @@ export default function DetalleEmpleado({ id, onVolver }: Props) {
 
         <div className="flex gap-2">
           <button
-            onClick={() => onVolver?.()}
+            onClick={() => router.push("/dashboard/datatable-empleados")}
             className="flex items-center gap-2 px-4 py-2 border rounded-xl hover:bg-gray-100"
           >
             <ArrowLeft size={16} /> Volver

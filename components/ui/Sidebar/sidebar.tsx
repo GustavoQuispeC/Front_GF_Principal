@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Home,
-  LayoutGrid,
-  CheckSquare,
   Users,
   Rocket,
-  Briefcase,
-  LineChart,
-  Gift,
-  Receipt,
-  Settings,
   Info,
   LogOut,
   Menu,
@@ -32,68 +25,54 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  useDraggable,
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
-import DatatableEmpleados from "@/components/empleado/datatable-empleados/datatable-empleados";
-import DatatableUsuarios from "@/components/usuario/datatable-usuarios/datatable-usuarios";
+import { usePathname, useRouter } from "next/navigation";
 
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
-import { CrearUsuario, RegistrarEmpleados } from "@/components";
-import DetalleEmpleado from "@/components/empleado/ver-empleado/ver-empleado";
 
-interface DatatableEmpleadosProps {
-  onAddNew?: () => void;
-  onViewEmpleado?: (id: number) => void; // 👈 clave
+interface SidebarProps {
+  children?: React.ReactNode;
 }
+
+type MenuChild = {
+  name: string;
+  href: string;
+};
+
+type MenuItem = {
+  name: string;
+  icon: React.ElementType;
+  href?: string;
+  hasAction?: boolean;
+  children?: MenuChild[];
+};
+
 // Configuración de navegación
 const menuGroups = {
   overview: [
-    { name: "Inicio", icon: Home, active: true },
+    { name: "Inicio", icon: Home, href: "/dashboard" },
     {
-      name: "Projects",
-      icon: LayoutGrid,
+      name: "Empleados",
+      icon: Users,
       hasAction: true,
       children: [
-        { name: "Active", href: "#" },
-        { name: "Archived", href: "#" },
-        { name: "Roadmap", href: "#" },
+        { name: "Listado", href: "/dashboard/datatable-empleados" },
+        { name: "Registrar", href: "/dashboard/empleados/nuevo" },
       ],
     },
     {
-      name: "Tasks",
-      icon: CheckSquare,
+      name: "Usuarios",
+      icon: Rocket,
       hasAction: true,
       children: [
-        { name: "My tasks", href: "#" },
-        { name: "Team tasks", href: "#" },
+        { name: "Listado", href: "/dashboard/datatable-usuarios" },
+        { name: "Registrar", href: "/dashboard/usuarios/nuevo" },
       ],
     },
-    { name: "Empleados", icon: Users },
-    { name: "Usuarios", icon: Rocket },
-  ],
-  organization: [
-    { name: "Cap Table", icon: Briefcase },
-    {
-      name: "Analytics",
-      icon: LineChart,
-      children: [
-        { name: "Traffic", href: "#" },
-        { name: "Retention", href: "#" },
-      ],
-    },
-    { name: "Perks", icon: Gift, badge: "3" },
-    { name: "Expenses", icon: Receipt },
-    {
-      name: "Settings",
-      icon: Settings,
-      children: [
-        { name: "Profile", href: "#" },
-        { name: "Billing", href: "#" },
-      ],
-    },
-  ],
+  ] as MenuItem[],
+  organization: [] as MenuItem[],
   teams: [
     { name: "HeroUI", initial: "HU" },
     { name: "Tailwind Variants", initial: "TV" },
@@ -103,17 +82,15 @@ const menuGroups = {
 
 const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
 
-export default function Sidebar() {
+export default function Sidebar({ children }: SidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("Home");
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-    Projects: true,
-    Tasks: false,
-    Analytics: false,
-    Settings: false,
+    Empleados: true,
+    Usuarios: false,
   });
-  const [empleadoId, setEmpleadoId] = useState<string | null>(null);
 
   const toggleSidebar = () => setIsOpenSidebar(!isOpenSidebar);
   const toggleSubmenu = (name: string) => {
@@ -122,14 +99,40 @@ export default function Sidebar() {
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [usuario, setUsuario] = useState<IUserData | null>(null);
-  //const targetRef = React.useRef(null);
-  //const { moveProps } = useDraggable({ targetRef, isDisabled: !isOpen });
+
+  const isRouteActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+  const activeParents = useMemo(() => {
+    const parents = new Set<string>();
+
+    menuGroups.overview.forEach((item) => {
+      if (item.children?.some((child) => isRouteActive(child.href))) {
+        parents.add(item.name);
+      }
+    });
+
+    return parents;
+  }, [pathname]);
 
   //! Carga los datos del usuario al montar el componente
   useEffect(() => {
     const data = getAuthUser();
     setUsuario(data);
   }, []);
+
+  useEffect(() => {
+    if (activeParents.size === 0) return;
+
+    setOpenMenus((prev) => {
+      const next = { ...prev };
+
+      activeParents.forEach((name) => {
+        next[name] = true;
+      });
+
+      return next;
+    });
+  }, [activeParents]);
 
   //! Función para manejar la confirmación de cierre de sesión
   const handleConfirmLogout = () => {
@@ -238,24 +241,34 @@ export default function Sidebar() {
             <div>
               {!isCollapsed && (
                 <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
-                  Descripción
+                  Dashboard
                 </p>
               )}
               <div className="space-y-1">
                 {menuGroups.overview.map((item) => (
                   <div key={item.name}>
                     <div
-                      onClick={() => setActiveMenu(item.name)}
+                      onClick={() => {
+                        if (item.href) {
+                          router.push(item.href);
+                          setIsOpenSidebar(false);
+                        }
+                      }}
                       className={cx(
                         itemClasses,
-                        activeMenu === item.name ? "bg-default-100" : "",
+                        (item.href && isRouteActive(item.href)) || activeParents.has(item.name) ? "bg-default-100" : "",
                         isCollapsed ? "justify-center" : "",
+                        item.href ? "cursor-pointer" : "",
                       )}
                     >
                       <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
                         <item.icon
                           size={18}
-                          className={activeMenu === item.name ? "text-blue-900" : "text-default-400"}
+                          className={
+                            (item.href && isRouteActive(item.href)) || activeParents.has(item.name)
+                              ? "text-blue-900"
+                              : "text-default-400"
+                          }
                         />
                         {!isCollapsed && <span className={textClasses}>{item.name}</span>}
                       </div>
@@ -283,70 +296,21 @@ export default function Sidebar() {
                     {!isCollapsed && item.children && openMenus[item.name] && (
                       <div className="ml-9 mt-1 space-y-1">
                         {item.children.map((child) => (
-                          <a
+                          <button
                             key={child.name}
-                            href={child.href}
+                            type="button"
+                            onClick={() => {
+                              router.push(child.href);
+                              setIsOpenSidebar(false);
+                            }}
                             className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
                           >
-                            <ChevronRight size={12} className="text-default-400" />
+                            <ChevronRight
+                              size={12}
+                              className={cx(isRouteActive(child.href) ? "text-blue-900" : "text-default-400")}
+                            />
                             {child.name}
-                          </a>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Organization Section */}
-            <div>
-              {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
-                  Organization
-                </p>
-              )}
-              <div className="space-y-1">
-                {menuGroups.organization.map((item) => (
-                  <div key={item.name}>
-                    <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
-                        <item.icon size={18} className="text-default-400" />
-                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
-                      </div>
-                      {!isCollapsed && item.badge && (
-                        <span className="text-[10px] font-bold text-default-400 bg-default-100 px-2 py-0.5 rounded-full">
-                          {item.badge}
-                        </span>
-                      )}
-                      {!isCollapsed && item.children && (
-                        <button
-                          type="button"
-                          onClick={() => toggleSubmenu(item.name)}
-                          className="rounded p-1 hover:bg-default-200 dark:hover:bg-white/10"
-                          aria-label={`Toggle ${item.name} submenu`}
-                        >
-                          <Plus
-                            size={14}
-                            className={cx(
-                              "transition-transform",
-                              openMenus[item.name] ? "rotate-45 text-blue-900 dark:text-white" : "text-default-300",
-                            )}
-                          />
-                        </button>
-                      )}
-                    </div>
-                    {!isCollapsed && item.children && openMenus[item.name] && (
-                      <div className="ml-9 mt-1 space-y-1">
-                        {item.children.map((child) => (
-                          <a
-                            key={child.name}
-                            href={child.href}
-                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
-                          >
-                            <ChevronRight size={12} className="text-default-400" />
-                            {child.name}
-                          </a>
+                          </button>
                         ))}
                       </div>
                     )}
@@ -418,54 +382,14 @@ export default function Sidebar() {
       </div>
 
       {/* Overlay para móvil */}
-      {isOpen && <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden" onClick={toggleSidebar} />}
+      {isOpenSidebar && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden" onClick={toggleSidebar} />
+      )}
 
       <section
         className={cx("pt-16 transition-[margin] duration-300 ease-in-out", isCollapsed ? "lg:ml-20" : "lg:ml-72")}
       >
-        <div className="p-4 lg:p-6">
-          {/* INICIO */}
-          {activeMenu === "Inicio" && (
-            <div className="p-6">
-              <h1 className="text-2xl font-bold">Bienvenido al Dashboard</h1>
-            </div>
-          )}
-
-          {/* EMPLEADOS LISTADO */}
-          {activeMenu === "Empleados" && (
-            <DatatableEmpleados
-              onAddNew={() => setActiveMenu("RegistrarEmpleados")}
-              onViewEmpleado={(id) => {
-                setEmpleadoId(id);
-                setActiveMenu("DetalleEmpleado");
-              }}
-            />
-          )}
-
-          {/* DETALLE EMPLEADO 🔥 */}
-          {activeMenu === "DetalleEmpleado" && empleadoId && (
-            <DetalleEmpleado id={empleadoId} onVolver={() => setActiveMenu("Empleados")} />
-          )}
-
-          {/* REGISTRAR EMPLEADO */}
-          {activeMenu === "RegistrarEmpleados" && <RegistrarEmpleados onBack={() => setActiveMenu("Empleados")} />}
-
-          {/* USUARIOS */}
-          {activeMenu === "Usuarios" && <DatatableUsuarios onAddNew={() => setActiveMenu("CrearUsuario")} />}
-
-          {/* CREAR USUARIO */}
-          {activeMenu === "CrearUsuario" && <CrearUsuario />}
-
-          {/* FALLBACK */}
-          {!["Inicio", "Empleados", "DetalleEmpleado", "RegistrarEmpleados", "Usuarios", "CrearUsuario"].includes(
-            activeMenu,
-          ) && (
-            <div className="rounded-xl border border-divider bg-white p-6 dark:bg-slate-900 dark:border-white/10">
-              <h1 className="text-2xl font-bold text-blue-900 dark:text-white">Contenido de {activeMenu}</h1>
-              <p className="text-default-500">Próximamente...</p>
-            </div>
-          )}
-        </div>
+        <div className="p-4 lg:p-6">{children}</div>
       </section>
     </>
   );
