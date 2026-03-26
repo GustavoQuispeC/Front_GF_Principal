@@ -188,7 +188,7 @@ export default function Sidebar({ children }: SidebarProps) {
                   "shrink-0 transition-colors",
                   isActive
                     ? "text-blue-900 dark:text-blue-400"
-                    : "text-default-400 group-hover:text-blue-900 dark:group-hover:text-blue-00",
+                    : "text-default-400 group-hover:text-blue-900 dark:group-hover:text-blue-400",
                 )}
               />
               {!isCollapsed && (
@@ -257,17 +257,19 @@ export default function Sidebar({ children }: SidebarProps) {
 
   return (
     <>
-      {/* ── Toggle móvil ── */}
+      {/* ── Botón hamburguesa — fijo a la IZQUIERDA, solo cuando sidebar cerrado ── */}
       <div className="lg:hidden fixed top-3 left-3 z-50">
-        <Button
-          isIconOnly
-          size="sm"
-          variant="flat"
-          onPress={() => setIsOpenSidebar(!isOpenSidebar)}
-          className="bg-white/90 backdrop-blur shadow-md border border-slate-200 dark:bg-slate-900/90 dark:border-slate-700"
-        >
-          {isOpenSidebar ? <X size={18} /> : <Menu size={18} />}
-        </Button>
+        {!isOpenSidebar && (
+          <Button
+            isIconOnly
+            size="sm"
+            variant="flat"
+            onPress={() => setIsOpenSidebar(true)}
+            className="bg-white/90 backdrop-blur shadow-md border border-slate-200 dark:bg-slate-900/90 dark:border-slate-700"
+          >
+            <Menu size={18} />
+          </Button>
+        )}
       </div>
 
       {/* ── Sidebar ── */}
@@ -275,7 +277,7 @@ export default function Sidebar({ children }: SidebarProps) {
         className={cx(
           "fixed top-0 left-0 h-full z-40 flex flex-col",
           "bg-white border-r border-divider",
-          "dark:bg-gray-950 dark:border-slate-800/60",
+          "dark:bg-slate-950 dark:border-slate-800/60",
           "transition-[transform,width] duration-300 ease-in-out",
           "w-64 lg:translate-x-0",
           isCollapsed ? "lg:w-[72px]" : "lg:w-64",
@@ -286,13 +288,10 @@ export default function Sidebar({ children }: SidebarProps) {
           {/* ── Logo / Header ── */}
           <div
             className={cx(
-              "flex items-center border-b border-divider dark:border-slate-800/60 shrink-0",
-              //!Altura fija para que el logo y el botón colapsar siempre ocupen el mismo espacio
-              "h-14",
+              "flex items-center border-b border-divider dark:border-slate-800/60 shrink-0 h-14",
               isCollapsed ? "justify-center px-3" : "justify-between px-4",
             )}
           >
-            {/* Logo visible cuando expandido */}
             {!isCollapsed && (
               <div className="flex items-center gap-2.5">
                 <div className="relative">
@@ -308,36 +307,46 @@ export default function Sidebar({ children }: SidebarProps) {
               </div>
             )}
 
-            {/* ✅ Botón colapsar/expandir — siempre visible, no detrás del logo */}
-            {isCollapsed ? (
-              // Modo colapsado: muestra ícono del logo que al hacer clic expande
-              <Tooltip
-                content="Expandir menú"
-                placement="right"
-                classNames={{
-                  content: "bg-blue-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setIsCollapsed(false)}
-                  className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900 hover:bg-blue-800 transition-colors shadow-md"
-                  aria-label="Expandir sidebar"
-                >
-                  <PanelLeftOpen size={16} className="text-white" />
-                </button>
-              </Tooltip>
-            ) : (
-              // Modo expandido: botón de colapsar a la derecha del logo
+            <div className="flex items-center gap-1">
+              {/* Botón X — solo en móvil, dentro del sidebar a la derecha */}
               <button
                 type="button"
-                onClick={() => setIsCollapsed(true)}
-                className="hidden lg:flex p-1.5 rounded-lg text-default-400 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/8 transition-colors"
-                aria-label="Colapsar sidebar"
+                onClick={() => setIsOpenSidebar(false)}
+                className="lg:hidden p-1.5 rounded-lg text-default-400 hover:bg-default-100 transition-colors"
+                aria-label="Cerrar sidebar"
               >
-                <PanelLeftClose size={16} />
+                <X size={18} />
               </button>
-            )}
+
+              {/* Botones colapsar/expandir — solo en desktop */}
+              {isCollapsed ? (
+                <Tooltip
+                  content="Expandir menú"
+                  placement="right"
+                  classNames={{
+                    content: "bg-blue-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setIsCollapsed(false)}
+                    className="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900 hover:bg-blue-800 transition-colors shadow-md"
+                    aria-label="Expandir sidebar"
+                  >
+                    <PanelLeftOpen size={16} className="text-white" />
+                  </button>
+                </Tooltip>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsCollapsed(true)}
+                  className="hidden lg:flex p-1.5 rounded-lg text-default-400 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/8 transition-colors"
+                  aria-label="Colapsar sidebar"
+                >
+                  <PanelLeftClose size={16} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* ── Perfil de usuario ── */}
@@ -437,7 +446,7 @@ export default function Sidebar({ children }: SidebarProps) {
               </div>
             </NavTooltip>
 
-            <NavTooltip label="Cerrar sesión">
+            <NavTooltip label="Cerrar Sesión">
               <div
                 onClick={onOpen}
                 className={cx(
@@ -527,7 +536,7 @@ export default function Sidebar({ children }: SidebarProps) {
       <section
         className={cx(
           "pt-14 min-h-screen transition-[margin] duration-300 ease-in-out",
-          "bg-slate-50 dark:bg-gray-950",
+          "bg-slate-50 dark:bg-slate-900",
           isCollapsed ? "lg:ml-[72px]" : "lg:ml-64",
         )}
       >
