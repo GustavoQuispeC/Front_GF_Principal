@@ -41,10 +41,7 @@ import { useDni } from "@/hooks/use-dni";
 import { toDotNetDateTime } from "@/helpers/date.helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmpleadoForm, empleadoSchema } from "@/types/Empleado/empleado.schema";
-
-interface RegistrarEmpleadosProps {
-  onBack?: () => void;
-}
+import { useRouter } from "next/navigation";
 
 const defaultValues: EmpleadoForm = {
   nombre: "",
@@ -83,13 +80,12 @@ const defaultValues: EmpleadoForm = {
   observaciones: null,
 };
 
-export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) {
+export default function RegistrarEmpleados() {
   const [preview, setPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [dniBusqueda, setDniBusqueda] = useState("");
   // resetKey controla el remount de DatePickers y Selects para limpiarlos visualmente
   const [resetKey, setResetKey] = useState(0);
-
   const { ubigeoData, loadingUbigeo } = useUbigeo();
   const { catalogos, loading } = useCatalogos();
   const { cargos } = useCargos();
@@ -110,6 +106,7 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
     reValidateMode: "onChange",
     shouldFocusError: true,
   });
+  const router = useRouter();
 
   const departamento = watch("departamento");
   const provincia = watch("provincia");
@@ -875,7 +872,12 @@ export default function RegistrarEmpleados({ onBack }: RegistrarEmpleadosProps) 
       </Accordion>
 
       <div className="mt-10 flex w-full justify-end items-center gap-3">
-        <Button color="default" className="min-w-[150px]" startContent={<ArrowLeft size={18} />} onPress={onBack}>
+        <Button
+          color="default"
+          className="min-w-[150px]"
+          startContent={<ArrowLeft size={18} />}
+          onPress={() => router.push("/dashboard/empleados/listar")}
+        >
           Volver
         </Button>
         <Button

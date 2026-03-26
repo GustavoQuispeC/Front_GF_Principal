@@ -9,14 +9,17 @@ import {
   LogOut,
   Menu,
   X,
-  Plus,
-  ChevronRight,
+  ChevronDown,
   PanelLeftClose,
   PanelLeftOpen,
+  UserCog,
+  LayoutDashboard,
+  ListFilter,
+  UserPlus,
+  HelpCircle,
 } from "lucide-react";
 import {
   Avatar,
-  Badge,
   ScrollShadow,
   Modal,
   ModalContent,
@@ -25,10 +28,11 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Tooltip,
+  Chip,
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { usePathname, useRouter } from "next/navigation";
-
 import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
 
@@ -39,40 +43,44 @@ interface SidebarProps {
 type MenuChild = {
   name: string;
   href: string;
+  icon: React.ElementType;
 };
 
 type MenuItem = {
   name: string;
   icon: React.ElementType;
   href?: string;
+  badge?: string;
   hasAction?: boolean;
   children?: MenuChild[];
 };
 
-// Configuración de navegación
 const menuGroups = {
   overview: [
-    { name: "Inicio", icon: Home, href: "/dashboard" },
+    {
+      name: "Inicio",
+      icon: LayoutDashboard,
+      href: "/dashboard",
+    },
     {
       name: "Empleados",
       icon: Users,
       hasAction: true,
       children: [
-        { name: "Listado", href: "/dashboard/datatable-empleados" },
-        { name: "Registrar", href: "/dashboard/empleados/nuevo" },
+        { name: "Listado", href: "/dashboard/empleados/listar", icon: ListFilter },
+        { name: "Registrar", href: "/dashboard/empleados/nuevo", icon: UserPlus },
       ],
     },
     {
       name: "Usuarios",
-      icon: Rocket,
+      icon: UserCog,
       hasAction: true,
       children: [
-        { name: "Listado", href: "/dashboard/datatable-usuarios" },
-        { name: "Registrar", href: "/dashboard/usuarios/nuevo" },
+        { name: "Listado", href: "/dashboard/usuarios/listar", icon: ListFilter },
+        { name: "Registrar", href: "/dashboard/usuarios/nuevo", icon: UserPlus },
       ],
     },
   ] as MenuItem[],
-  organization: [] as MenuItem[],
   teams: [
     { name: "HeroUI", initial: "HU" },
     { name: "Tailwind Variants", initial: "TV" },
@@ -92,11 +100,6 @@ export default function Sidebar({ children }: SidebarProps) {
     Usuarios: false,
   });
 
-  const toggleSidebar = () => setIsOpenSidebar(!isOpenSidebar);
-  const toggleSubmenu = (name: string) => {
-    setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
-  };
-
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [usuario, setUsuario] = useState<IUserData | null>(null);
 
@@ -104,17 +107,14 @@ export default function Sidebar({ children }: SidebarProps) {
 
   const activeParents = useMemo(() => {
     const parents = new Set<string>();
-
     menuGroups.overview.forEach((item) => {
       if (item.children?.some((child) => isRouteActive(child.href))) {
         parents.add(item.name);
       }
     });
-
     return parents;
   }, [pathname]);
 
-  //! Carga los datos del usuario al montar el componente
   useEffect(() => {
     const data = getAuthUser();
     setUsuario(data);
@@ -122,38 +122,377 @@ export default function Sidebar({ children }: SidebarProps) {
 
   useEffect(() => {
     if (activeParents.size === 0) return;
-
     setOpenMenus((prev) => {
       const next = { ...prev };
-
       activeParents.forEach((name) => {
         next[name] = true;
       });
-
       return next;
     });
   }, [activeParents]);
 
-  //! Función para manejar la confirmación de cierre de sesión
-  const handleConfirmLogout = () => {
-    logout(); // elimina el token y redirige a "/"
-  };
-  const CerrarSesionModal = () => {
+  const handleConfirmLogout = () => logout();
+
+  // ── Tooltip wrapper para modo colapsado ──────────────────────────────────────
+  const NavTooltip = ({ label, children }: { label: string; children: React.ReactNode }) =>
+    isCollapsed ? (
+      <Tooltip
+        content={label}
+        placement="right"
+        classNames={{
+          content: "bg-blue-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg",
+        }}
+      >
+        <span className="w-full">{children}</span>
+      </Tooltip>
+    ) : (
+      <>{children}</>
+    );
+
+  // ── Item de menú principal ────────────────────────────────────────────────────
+  const NavItem = ({ item }: { item: MenuItem }) => {
+    const isActive = (item.href && isRouteActive(item.href)) || activeParents.has(item.name);
+    const isMenuOpen = openMenus[item.name];
+
     return (
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <div>
+        <NavTooltip label={item.name}>
+          <div
+            onClick={() => {
+              if (item.href) {
+                router.push(item.href);
+                setIsOpenSidebar(false);
+              } else if (item.hasAction && !isCollapsed) {
+                setOpenMenus((prev) => ({
+                  ...prev,
+                  [item.name]: !prev[item.name],
+                }));
+              }
+            }}
+            className={cx(
+              "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer relative",
+              "transition-all duration-150 group",
+              isCollapsed ? "justify-center" : "justify-between",
+              isActive ? "bg-blue-50 dark:bg-blue-950/50" : "hover:bg-default-100 dark:hover:bg-white/8",
+            )}
+          >
+            {/* Indicador lateral naranja para ítem activo */}
+            {isActive && !isCollapsed && (
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-5 bg-orange-400 rounded-r-full" />
+            )}
+
+            <div className="flex items-center gap-3">
+              <item.icon
+                size={18}
+                className={cx(
+                  "shrink-0 transition-colors",
+                  isActive
+                    ? "text-blue-900 dark:text-blue-400"
+                    : "text-default-400 group-hover:text-blue-900 dark:group-hover:text-blue-00",
+                )}
+              />
+              {!isCollapsed && (
+                <span
+                  className={cx(
+                    "text-sm font-medium transition-colors",
+                    isActive ? "text-blue-900 dark:text-blue-300" : "text-blue-900 dark:text-slate-200",
+                  )}
+                >
+                  {item.name}
+                </span>
+              )}
+            </div>
+
+            {!isCollapsed && item.hasAction && (
+              <ChevronDown
+                size={14}
+                className={cx(
+                  "shrink-0 transition-transform duration-200",
+                  isMenuOpen ? "rotate-180 text-blue-900" : "text-default-400",
+                )}
+              />
+            )}
+          </div>
+        </NavTooltip>
+
+        {/* Submenú animado */}
+        {!isCollapsed && item.children && (
+          <div
+            className={cx(
+              "overflow-hidden transition-all duration-300 ease-in-out",
+              isMenuOpen ? "max-h-40 opacity-100 mt-1" : "max-h-0 opacity-0",
+            )}
+          >
+            <div className="ml-4 pl-3 border-l-2 border-blue-100 dark:border-blue-900/50 space-y-0.5">
+              {item.children.map((child) => {
+                const childActive = isRouteActive(child.href);
+                return (
+                  <button
+                    key={child.name}
+                    type="button"
+                    onClick={() => {
+                      router.push(child.href);
+                      setIsOpenSidebar(false);
+                    }}
+                    className={cx(
+                      "flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-xs font-medium",
+                      "transition-all duration-150",
+                      childActive
+                        ? "bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400"
+                        : "text-slate-500 hover:bg-slate-50 hover:text-blue-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-blue-300",
+                    )}
+                  >
+                    <child.icon size={13} className={childActive ? "text-orange-500" : "text-slate-400"} />
+                    {child.name}
+                    {childActive && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-orange-400" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {/* ── Toggle móvil ── */}
+      <div className="lg:hidden fixed top-3 left-3 z-50">
+        <Button
+          isIconOnly
+          size="sm"
+          variant="flat"
+          onPress={() => setIsOpenSidebar(!isOpenSidebar)}
+          className="bg-white/90 backdrop-blur shadow-md border border-slate-200 dark:bg-slate-900/90 dark:border-slate-700"
+        >
+          {isOpenSidebar ? <X size={18} /> : <Menu size={18} />}
+        </Button>
+      </div>
+
+      {/* ── Sidebar ── */}
+      <aside
+        className={cx(
+          "fixed top-0 left-0 h-full z-40 flex flex-col",
+          "bg-white border-r border-divider",
+          "dark:bg-gray-950 dark:border-slate-800/60",
+          "transition-[transform,width] duration-300 ease-in-out",
+          "w-64 lg:translate-x-0",
+          isCollapsed ? "lg:w-[72px]" : "lg:w-64",
+          isOpenSidebar ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <ScrollShadow className="flex flex-col h-full overflow-y-auto">
+          {/* ── Logo / Header ── */}
+          <div
+            className={cx(
+              "flex items-center border-b border-divider dark:border-slate-800/60 shrink-0",
+              //!Altura fija para que el logo y el botón colapsar siempre ocupen el mismo espacio
+              "h-14",
+              isCollapsed ? "justify-center px-3" : "justify-between px-4",
+            )}
+          >
+            {/* Logo visible cuando expandido */}
+            {!isCollapsed && (
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-xl bg-blue-900 flex items-center justify-center shadow-md">
+                    <Rocket size={16} className="text-white" fill="white" />
+                  </div>
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-orange-400 border-2 border-white dark:border-slate-950" />
+                </div>
+                <div>
+                  <span className="text-sm font-bold text-blue-900 dark:text-white tracking-tight">Grupo Famet</span>
+                  <p className="text-[10px] text-default-400 -mt-0.5">Sistema de Gestión</p>
+                </div>
+              </div>
+            )}
+
+            {/* ✅ Botón colapsar/expandir — siempre visible, no detrás del logo */}
+            {isCollapsed ? (
+              // Modo colapsado: muestra ícono del logo que al hacer clic expande
+              <Tooltip
+                content="Expandir menú"
+                placement="right"
+                classNames={{
+                  content: "bg-blue-900 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-lg",
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsCollapsed(false)}
+                  className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-900 hover:bg-blue-800 transition-colors shadow-md"
+                  aria-label="Expandir sidebar"
+                >
+                  <PanelLeftOpen size={16} className="text-white" />
+                </button>
+              </Tooltip>
+            ) : (
+              // Modo expandido: botón de colapsar a la derecha del logo
+              <button
+                type="button"
+                onClick={() => setIsCollapsed(true)}
+                className="hidden lg:flex p-1.5 rounded-lg text-default-400 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/8 transition-colors"
+                aria-label="Colapsar sidebar"
+              >
+                <PanelLeftClose size={16} />
+              </button>
+            )}
+          </div>
+
+          {/* ── Perfil de usuario ── */}
+          <div
+            className={cx(
+              "mx-3 my-3 rounded-xl p-3 shrink-0",
+              "bg-blue-50/60 dark:bg-blue-950/30",
+              "border border-blue-100/80 dark:border-blue-900/30",
+              isCollapsed ? "flex justify-center" : "flex items-center gap-3",
+            )}
+          >
+            <div className="relative shrink-0">
+              <Avatar
+                src={usuario?.fotoUrl || undefined}
+                className="w-9 h-9 ring-2 ring-blue-200 dark:ring-blue-800"
+                fallback={
+                  <div className="w-9 h-9 rounded-full bg-blue-900 flex items-center justify-center text-white text-sm font-bold">
+                    {usuario?.nombreCompleto?.charAt(0) ?? "U"}
+                  </div>
+                }
+              />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white dark:border-slate-950" />
+            </div>
+            {!isCollapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-bold text-blue-900 dark:text-white truncate">
+                  {usuario?.nombreCompleto ?? "Usuario"}
+                </p>
+                <p className="text-[10px] text-default-400 truncate">{usuario?.email ?? "Sin correo"}</p>
+                {usuario?.rol && (
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    className="mt-1 h-4 text-[10px] bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-400"
+                  >
+                    {usuario.rol}
+                  </Chip>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ── Navegación principal ── */}
+          <nav className="flex-1 px-3 pb-3 space-y-1">
+            {!isCollapsed && (
+              <p className="text-[10px] font-bold text-default-400 uppercase tracking-widest mb-2 px-1 dark:text-slate-600">
+                Dashboard
+              </p>
+            )}
+            {menuGroups.overview.map((item) => (
+              <NavItem key={item.name} item={item} />
+            ))}
+
+            {/* ── Sección Teams ── */}
+            {!isCollapsed && (
+              <p className="text-[10px] font-bold text-default-400 uppercase tracking-widest mt-6 mb-2 px-1 dark:text-slate-600">
+                Your Teams
+              </p>
+            )}
+            {isCollapsed && <div className="my-3 border-t border-divider dark:border-slate-800/60" />}
+            <div className="space-y-1">
+              {menuGroups.teams.map((team) => (
+                <NavTooltip key={team.name} label={team.name}>
+                  <div
+                    className={cx(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer",
+                      "hover:bg-default-100 dark:hover:bg-white/8 transition-colors group",
+                      isCollapsed ? "justify-center" : "",
+                    )}
+                  >
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center border border-divider text-[10px] font-bold text-default-500 bg-default-50 shrink-0">
+                      {team.initial}
+                    </div>
+                    {!isCollapsed && (
+                      <span className="text-sm font-medium text-blue-900 dark:text-slate-200">{team.name}</span>
+                    )}
+                  </div>
+                </NavTooltip>
+              ))}
+            </div>
+          </nav>
+
+          {/* ── Footer ── */}
+          <div className="px-3 pb-4 pt-3 border-t border-divider dark:border-slate-800/60 space-y-1 shrink-0">
+            <NavTooltip label="Ayuda e Información">
+              <div
+                className={cx(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer",
+                  "hover:bg-default-100 dark:hover:bg-white/8 transition-colors group",
+                  isCollapsed ? "justify-center" : "",
+                )}
+              >
+                <Info size={17} className="shrink-0 text-default-400 group-hover:text-blue-900 transition-colors" />
+                {!isCollapsed && (
+                  <span className="text-sm font-medium text-blue-900 dark:text-slate-300">Ayuda e Información</span>
+                )}
+              </div>
+            </NavTooltip>
+
+            <NavTooltip label="Cerrar sesión">
+              <div
+                onClick={onOpen}
+                className={cx(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer",
+                  "hover:bg-red-50 dark:hover:bg-red-500/8 transition-colors group",
+                  isCollapsed ? "justify-center" : "",
+                )}
+              >
+                <LogOut size={17} className="shrink-0 text-default-400 group-hover:text-red-500 transition-colors" />
+                {!isCollapsed && (
+                  <span className="text-sm font-medium text-blue-900 group-hover:text-red-500 dark:text-slate-300 transition-colors">
+                    Cerrar Sesión
+                  </span>
+                )}
+              </div>
+            </NavTooltip>
+
+            {/* Theme switch */}
+            {!isCollapsed ? (
+              <div className="flex items-center justify-between px-3 py-2 mt-1">
+                <span className="text-xs text-default-400">Tema</span>
+                <ThemeSwitch />
+              </div>
+            ) : (
+              <NavTooltip label="Cambiar tema">
+                <div className="flex justify-center py-1">
+                  <ThemeSwitch />
+                </div>
+              </NavTooltip>
+            )}
+          </div>
+        </ScrollShadow>
+      </aside>
+
+      {/* ── Modal cerrar sesión ── */}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="sm">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Cerrar Sesión</ModalHeader>
+              <ModalHeader className="flex items-center gap-2 text-blue-900 dark:text-white">
+                <div className="p-2 bg-red-50 rounded-lg dark:bg-red-500/10">
+                  <LogOut size={16} className="text-red-500" />
+                </div>
+                Cerrar Sesión
+              </ModalHeader>
               <ModalBody>
-                <p>¿Estás seguro de que deseas cerrar sesión?</p>
+                <p className="text-sm text-default-500">
+                  ¿Estás seguro de que deseas cerrar sesión? Tu sesión actual se cerrará.
+                </p>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
+                <Button size="sm" variant="flat" onPress={onClose}>
                   Cancelar
                 </Button>
-                {/* Este botón ejecuta la salida real */}
-                <Button color="primary" onPress={handleConfirmLogout}>
+                <Button size="sm" color="danger" onPress={handleConfirmLogout}>
                   Cerrar Sesión
                 </Button>
               </ModalFooter>
@@ -161,233 +500,36 @@ export default function Sidebar({ children }: SidebarProps) {
           )}
         </ModalContent>
       </Modal>
-    );
-  };
 
-  //! Clase común para los items del menú
-  const itemClasses =
-    "flex items-center justify-between w-full px-3 py-2 rounded-lg transition-colors hover:bg-default-100 dark:hover:bg-white/10 group cursor-pointer";
-  const textClasses = "text-blue-900 font-medium text-sm dark:text-white";
+      {/* ── Overlay móvil ── */}
+      {isOpenSidebar && (
+        <div
+          className="fixed inset-0 bg-black/30 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setIsOpenSidebar(false)}
+        />
+      )}
 
-  return (
-    <>
-      {/* --- BOTÓN TOGGLE (MÓVIL) --- */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
-        <Button isIconOnly variant="flat" onPress={toggleSidebar} className="bg-white shadow-md dark:bg-slate-900">
-          {isOpenSidebar ? <X size={20} /> : <Menu size={20} />}
-        </Button>
-      </div>
-
-      {/* --- SIDEBAR CONTAINER --- */}
-      <aside
-        className={cx(
-          "fixed top-0 left-0 h-full bg-white border-r border-divider z-40 dark:bg-slate-950 dark:border-white/10",
-          "transition-[transform,width] duration-300 ease-in-out",
-          "w-72 lg:translate-x-0",
-          isCollapsed ? "lg:w-20" : "lg:w-72",
-          isOpenSidebar ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        <ScrollShadow className={cx("h-full", isCollapsed ? "p-3" : "p-6")}>
-          {/* Logo / Header */}
-          <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center mb-4" : "justify-between mb-6")}>
-            <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
-              <div className="bg-black p-2 rounded-xl text-white dark:bg-white dark:text-slate-950">
-                <Rocket size={20} fill="white" />
-              </div>
-              {!isCollapsed && <span className="text-xl font-bold text-blue-900 dark:text-white">Grupo Famet</span>}
-            </div>
-            {!isCollapsed && (
-              <button
-                type="button"
-                onClick={() => setIsCollapsed(true)}
-                className="hidden lg:inline-flex items-center justify-center rounded-md p-2 text-default-400 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
-                aria-label="Collapse sidebar"
-              >
-                <PanelLeftClose size={18} />
-              </button>
-            )}
-          </div>
-          {isCollapsed && (
-            <div className="mb-6 flex justify-center">
-              <button
-                type="button"
-                onClick={() => setIsCollapsed(false)}
-                className="hidden lg:inline-flex items-center justify-center rounded-md p-2 text-default-400 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
-                aria-label="Expand sidebar"
-              >
-                <PanelLeftOpen size={18} />
-              </button>
-            </div>
-          )}
-
-          {/* User Profile */}
-          <div className={cx("flex items-center gap-3 mb-10", isCollapsed ? "justify-center" : "")}>
-            <Avatar src={usuario?.fotoUrl || undefined} className="w-10 h-10" />
-            {!isCollapsed && (
-              <div className="flex flex-col">
-                <span className="text-blue-900 font-bold text-sm dark:text-white">
-                  {usuario?.nombreCompleto || "Usuario"}
-                </span>
-                <span className="text-default-400 text-xs font-medium">{usuario?.email || "Sin correo"}</span>
-                <span className="text-default-400 text-xs font-medium">{usuario?.rol}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Navigation Groups */}
-          <nav className="space-y-8">
-            {/* Overview Section */}
-            <div>
-              {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
-                  Dashboard
-                </p>
-              )}
-              <div className="space-y-1">
-                {menuGroups.overview.map((item) => (
-                  <div key={item.name}>
-                    <div
-                      onClick={() => {
-                        if (item.href) {
-                          router.push(item.href);
-                          setIsOpenSidebar(false);
-                        }
-                      }}
-                      className={cx(
-                        itemClasses,
-                        (item.href && isRouteActive(item.href)) || activeParents.has(item.name) ? "bg-default-100" : "",
-                        isCollapsed ? "justify-center" : "",
-                        item.href ? "cursor-pointer" : "",
-                      )}
-                    >
-                      <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
-                        <item.icon
-                          size={18}
-                          className={
-                            (item.href && isRouteActive(item.href)) || activeParents.has(item.name)
-                              ? "text-blue-900"
-                              : "text-default-400"
-                          }
-                        />
-                        {!isCollapsed && <span className={textClasses}>{item.name}</span>}
-                      </div>
-
-                      {!isCollapsed && item.hasAction && (
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            toggleSubmenu(item.name);
-                          }}
-                          className="rounded p-1 hover:bg-default-200 dark:hover:bg-white/10"
-                          aria-label={`Toggle ${item.name} submenu`}
-                        >
-                          <Plus
-                            size={14}
-                            className={cx(
-                              "transition-transform",
-                              openMenus[item.name] ? "rotate-45 text-blue-900 dark:text-white" : "text-default-300",
-                            )}
-                          />
-                        </button>
-                      )}
-                    </div>
-                    {!isCollapsed && item.children && openMenus[item.name] && (
-                      <div className="ml-9 mt-1 space-y-1">
-                        {item.children.map((child) => (
-                          <button
-                            key={child.name}
-                            type="button"
-                            onClick={() => {
-                              router.push(child.href);
-                              setIsOpenSidebar(false);
-                            }}
-                            className="flex items-center gap-2 rounded-md px-2 py-1.5 text-xs font-medium text-default-500 hover:bg-default-100 hover:text-blue-900 dark:hover:bg-white/10 dark:hover:text-white"
-                          >
-                            <ChevronRight
-                              size={12}
-                              className={cx(isRouteActive(child.href) ? "text-blue-900" : "text-default-400")}
-                            />
-                            {child.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Teams Section */}
-            <div>
-              {!isCollapsed && (
-                <p className="text-[10px] uppercase font-bold text-default-400 mb-3 ml-3 tracking-wider dark:text-white/50">
-                  Your Teams
-                </p>
-              )}
-              <div className="space-y-1">
-                {menuGroups.teams.map((team) => (
-                  <div key={team.name} className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-                    <div className={cx("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
-                      <div className="w-6 h-6 rounded flex items-center justify-center border border-divider text-[10px] font-bold text-default-500">
-                        {team.initial}
-                      </div>
-                      {!isCollapsed && <span className={textClasses}>{team.name}</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </nav>
-
-          {/* Footer Section */}
-          <div className="mt-12 pt-6 border-t border-divider space-y-1">
-            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-              <div className={cx("flex items-center gap-3 text-default-400", isCollapsed ? "justify-center" : "")}>
-                <Info size={18} />
-                {!isCollapsed && <span className={textClasses}>Ayuda e Información</span>}
-              </div>
-            </div>
-            <div className={cx(itemClasses, isCollapsed ? "justify-center" : "")}>
-              <div
-                className={cx(
-                  "flex items-center gap-3 text-default-400 cursor-pointer",
-                  isCollapsed ? "justify-center" : "",
-                )}
-                onClick={onOpen} // <--- Abre el modal
-              >
-                <LogOut size={18} />
-                {!isCollapsed && <span className={textClasses}>Cerrar Sesión</span>}
-              </div>
-            </div>
-
-            {/* Renderiza el componente del Modal al final de tu Sidebar */}
-            <CerrarSesionModal />
-          </div>
-        </ScrollShadow>
-      </aside>
-
-      {/* --- TOP BAR (PAGE) --- */}
+      {/* ── Top bar ── */}
       <div
         className={cx(
-          "fixed top-0 right-0 left-0 z-30",
-          "h-14 border-b border-divider bg-white/80 backdrop-blur",
-          "flex items-center justify-end px-4",
-          "dark:bg-slate-950/80 dark:border-white/10",
-          isCollapsed ? "lg:pl-20" : "lg:pl-72",
+          "fixed top-0 right-0 left-0 z-30 h-14",
+          "border-b border-divider bg-white/80 backdrop-blur-md",
+          "flex items-center justify-end px-4 gap-3",
+          "dark:bg-slate-950/80 dark:border-slate-800/60",
+          "transition-[padding] duration-300 ease-in-out",
+          isCollapsed ? "lg:pl-[88px]" : "lg:pl-[272px]",
         )}
       >
         <ThemeSwitch />
       </div>
 
-      {/* Overlay para móvil */}
-      {isOpenSidebar && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden" onClick={toggleSidebar} />
-      )}
-
+      {/* ── Contenido principal ── */}
       <section
-        className={cx("pt-16 transition-[margin] duration-300 ease-in-out", isCollapsed ? "lg:ml-20" : "lg:ml-72")}
+        className={cx(
+          "pt-14 min-h-screen transition-[margin] duration-300 ease-in-out",
+          "bg-slate-50 dark:bg-gray-950",
+          isCollapsed ? "lg:ml-[72px]" : "lg:ml-64",
+        )}
       >
         <div className="p-4 lg:p-6">{children}</div>
       </section>

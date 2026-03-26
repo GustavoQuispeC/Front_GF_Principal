@@ -2,6 +2,6 @@
 
 import { DatatableEmpleados } from "@/components";
 
-export default function DatatableEmpleadosPage() {
+export default function ListarEmpleadosPage() {
   return <DatatableEmpleados />;
 }

@@ -1,17 +1,22 @@
 "use client";
 import { VerEmpleado as fetchEmpleado } from "@/helpers/empleado.helper";
 import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
+import { Avatar, Badge, Button, Card, CardBody, CardHeader, Chip, Divider, Skeleton } from "@heroui/react";
 import {
   ArrowLeft,
   Download,
   User,
   Mail,
-  Phone,
   MapPin,
   Briefcase,
   Landmark,
   CreditCard,
   HeartPulse,
+  Phone,
+  Building2,
+  IdCard,
+  Calendar,
+  BadgeCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,23 +25,75 @@ interface Props {
   id: string;
 }
 
-const Section = ({ title, icon: Icon, children }: any) => (
-  <div className="bg-white rounded-2xl shadow p-4">
-    <div className="flex items-center gap-2 mb-3">
-      <Icon className="w-5 h-5 text-blue-600" />
-      <h2 className="font-semibold text-lg">{title}</h2>
-    </div>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">{children}</div>
+// ── Subcomponentes ────────────────────────────────────────────────────────────
+
+const SectionCard = ({
+  title,
+  icon: Icon,
+  children,
+  className = "",
+}: {
+  title: string;
+  icon: any;
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <Card className={`border border-default-100 shadow-none rounded-xl ${className}`} radius="lg">
+    <CardHeader className="px-4 pt-4 pb-0 gap-2">
+      <div className="flex items-center gap-2">
+        <div className="p-1.5 bg-primary-50 rounded-lg">
+          <Icon className="w-4 h-4 text-primary-600" />
+        </div>
+        <h2 className="text-sm font-semibold text-default-700 uppercase tracking-wide">{title}</h2>
+      </div>
+    </CardHeader>
+    <Divider className="mt-3" />
+    <CardBody className="px-4 py-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">{children}</div>
+    </CardBody>
+  </Card>
+);
+
+const Field = ({ label, value }: { label: string; value?: string | number | null }) => (
+  <div className="flex flex-col gap-0.5">
+    <span className="text-xs text-default-400 font-medium uppercase tracking-wider">{label}</span>
+    <span className="text-sm text-default-700 font-medium">
+      {value ?? <span className="text-default-300 italic">—</span>}
+    </span>
   </div>
 );
 
-const Item = ({ label, value }: any) => (
-  <div>
-    <p className="text-gray-500">{label}</p>
-    <p className="font-medium">{value || "-"}</p>
+// ── Skeleton de carga ─────────────────────────────────────────────────────────
+const LoadingSkeleton = () => (
+  <div className="p-4 md:p-6 space-y-4 max-w-6xl mx-auto">
+    <Card className="shadow-none border border-default-100 rounded-2xl">
+      <CardBody className="p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Skeleton className="w-20 h-24 rounded-xl" />
+          <div className="flex flex-col gap-2 flex-1">
+            <Skeleton className="h-6 w-48 rounded-lg" />
+            <Skeleton className="h-4 w-32 rounded-lg" />
+            <Skeleton className="h-5 w-20 rounded-full mt-1" />
+          </div>
+        </div>
+      </CardBody>
+    </Card>
+    {[1, 2, 3, 4].map((i) => (
+      <Card key={i} className="shadow-none border border-default-100 rounded-xl">
+        <CardBody className="p-4 space-y-3">
+          <Skeleton className="h-4 w-36 rounded-lg" />
+          <div className="grid grid-cols-2 gap-4">
+            {[1, 2, 3, 4].map((j) => (
+              <Skeleton key={j} className="h-10 rounded-lg" />
+            ))}
+          </div>
+        </CardBody>
+      </Card>
+    ))}
   </div>
 );
 
+// ── Componente principal ──────────────────────────────────────────────────────
 export default function DetalleEmpleado({ id }: Props) {
   const [empleado, setEmpleado] = useState<IVerEmpleado | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,100 +110,161 @@ export default function DetalleEmpleado({ id }: Props) {
         setLoading(false);
       }
     };
-
     getEmpleado();
   }, [id]);
 
-  if (loading) {
-    return <p>Cargando empleado...</p>;
-  }
+  if (loading) return <LoadingSkeleton />;
 
   if (!empleado) {
-    return <p>No se encontró el empleado</p>;
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-3">
+        <User className="w-10 h-10 text-default-300" />
+        <p className="text-default-500 text-sm">No se encontró el empleado</p>
+        <Button
+          size="sm"
+          variant="flat"
+          startContent={<ArrowLeft size={14} />}
+          onPress={() => router.push("/dashboard/empleados/listar")}
+        >
+          Volver
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-4">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <img
-            src={empleado.fotoUrl ?? "/avatar.png"}
-            alt="foto"
-            className="w-16 h-16 rounded-full object-cover border"
-          />
-          <div>
-            <h1 className="text-xl font-bold">{empleado.nombreCompleto}</h1>
-            <p className="text-sm text-gray-500">
-              {empleado.codigoEmpleado} • {empleado.cargoActual}
-            </p>
+    <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4">
+      {/* ── Header Card ── */}
+      <Card className="shadow-none border border-default-100 rounded-2xl">
+        <CardBody className="p-4 md:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+            {/* Foto + info */}
+            <div className="flex items-start gap-4">
+              {/* Avatar rectangular tipo carnet empresarial */}
+              <div className="relative shrink-0">
+                <img
+                  src={empleado.fotoUrl ?? "/avatar.png"}
+                  alt={empleado.nombreCompleto}
+                  className="w-20 h-24 rounded-xl object-cover border-2 border-default-200"
+                />
+                {/* Badge de estado sobre la foto */}
+                <span
+                  className={`absolute -bottom-1.5 -right-1.5 w-4 h-4 rounded-full border-2 border-white ${
+                    empleado.isActive ? "bg-success-500" : "bg-danger-500"
+                  }`}
+                />
+              </div>
+
+              {/* Datos principales */}
+              <div className="flex flex-col gap-1">
+                <h1 className="text-lg md:text-xl font-bold text-default-900 leading-tight">
+                  {empleado.nombreCompleto}
+                </h1>
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-default-500">
+                  <span className="flex items-center gap-1">
+                    <IdCard size={12} />
+                    {empleado.codigoEmpleado}
+                  </span>
+                  <span className="text-default-300">•</span>
+                  <span className="flex items-center gap-1">
+                    <Briefcase size={12} />
+                    {empleado.cargoActual ?? "Sin cargo"}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  <Chip
+                    size="sm"
+                    variant="flat"
+                    color={empleado.isActive ? "success" : "danger"}
+                    startContent={<BadgeCheck size={12} />}
+                  >
+                    {empleado.isActive ? "Activo" : "Inactivo"}
+                  </Chip>
+                  {empleado.tipoContrato && (
+                    <Chip size="sm" variant="flat" color="default">
+                      {empleado.tipoContrato}
+                    </Chip>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Botones de acción */}
+            <div className="flex gap-2 sm:self-start">
+              <Button
+                size="sm"
+                variant="bordered"
+                startContent={<ArrowLeft size={14} />}
+                onPress={() => router.push("/dashboard/empleados/listar")}
+                className="text-xs"
+              >
+                Volver
+              </Button>
+              <Button size="sm" color="primary" startContent={<Download size={14} />} className="text-xs">
+                Exportar
+              </Button>
+            </div>
           </div>
-        </div>
+        </CardBody>
+      </Card>
 
-        <div className="flex gap-2">
-          <button
-            onClick={() => router.push("/dashboard/datatable-empleados")}
-            className="flex items-center gap-2 px-4 py-2 border rounded-xl hover:bg-gray-100"
-          >
-            <ArrowLeft size={16} /> Volver
-          </button>
-
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700">
-            <Download size={16} /> Exportar
-          </button>
-        </div>
-      </div>
-
-      {/* Grid */}
+      {/* ── Grid de secciones ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Section title="Datos personales" icon={User}>
-          <Item label="Nombre" value={empleado.nombre} />
-          <Item label="Apellidos" value={empleado.apellidos} />
-          <Item label="Género" value={empleado.genero} />
-          <Item label="Estado civil" value={empleado.estadoCivil} />
-          <Item label="Fecha nacimiento" value={empleado.fechaNacimiento} />
-          <Item label="Edad" value={empleado.edad} />
-          <Item label="Nacionalidad" value={empleado.nacionalidad} />
-        </Section>
+        {/* Datos personales */}
+        <SectionCard title="Datos personales" icon={User}>
+          <Field label="Nombres" value={empleado.nombre} />
+          <Field label="Apellidos" value={empleado.apellidos} />
+          <Field label="Género" value={empleado.genero} />
+          <Field label="Estado civil" value={empleado.estadoCivil} />
+          <Field label="Fecha de nacimiento" value={empleado.fechaNacimiento} />
+          <Field label="Edad" value={empleado.edad ? `${empleado.edad} años` : null} />
+          <Field label="Nacionalidad" value={empleado.nacionalidad} />
+        </SectionCard>
 
-        <Section title="Contacto" icon={Mail}>
-          <Item label="Correo" value={empleado.correo} />
-          <Item label="Teléfono" value={empleado.telefonoMovil} />
-        </Section>
+        {/* Contacto */}
+        <SectionCard title="Contacto" icon={Mail}>
+          <Field label="Correo electrónico" value={empleado.correo} />
+          <Field label="Teléfono móvil" value={empleado.telefonoMovil} />
+        </SectionCard>
 
-        <Section title="Ubicación" icon={MapPin}>
-          <Item label="Dirección" value={empleado.direccion} />
-          <Item label="Departamento" value={empleado.departamento} />
-          <Item label="Provincia" value={empleado.provincia} />
-          <Item label="Distrito" value={empleado.distrito} />
-        </Section>
+        {/* Ubicación */}
+        <SectionCard title="Ubicación" icon={MapPin}>
+          <Field label="Dirección" value={empleado.direccion} />
+          <Field label="Departamento" value={empleado.departamento} />
+          <Field label="Provincia" value={empleado.provincia} />
+          <Field label="Distrito" value={empleado.distrito} />
+        </SectionCard>
 
-        <Section title="Contacto de emergencia" icon={HeartPulse}>
-          <Item label="Nombre" value={empleado.contactoEmergenciaNombre} />
-          <Item label="Teléfono" value={empleado.contactoEmergenciaTelefono} />
-          <Item label="Parentesco" value={empleado.contactoEmergenciaParentesco} />
-        </Section>
+        {/* Contacto de emergencia */}
+        <SectionCard title="Contacto de emergencia" icon={Phone}>
+          <Field label="Nombre" value={empleado.contactoEmergenciaNombre} />
+          <Field label="Teléfono" value={empleado.contactoEmergenciaTelefono} />
+          <Field label="Parentesco" value={empleado.contactoEmergenciaParentesco} />
+        </SectionCard>
 
-        <Section title="Información laboral" icon={Briefcase}>
-          <Item label="Cargo" value={empleado.cargoActual} />
-          <Item label="Salario" value={`S/ ${empleado.salarioActual}`} />
-          <Item label="Contrato" value={empleado.tipoContrato} />
-          <Item label="Jornada" value={empleado.tipoJornada} />
-          <Item label="Ingreso" value={empleado.fechaIngresoActual} />
-        </Section>
+        {/* Información laboral — ocupa todo el ancho */}
+        <SectionCard title="Información laboral" icon={Briefcase} className="lg:col-span-2">
+          <Field label="Cargo" value={empleado.cargoActual} />
+          <Field label="Salario" value={empleado.salarioActual ? `S/ ${empleado.salarioActual}` : null} />
+          <Field label="Tipo de contrato" value={empleado.tipoContrato} />
+          <Field label="Tipo de jornada" value={empleado.tipoJornada} />
+          <Field label="Fecha de ingreso" value={empleado.fechaIngresoActual} />
+        </SectionCard>
 
-        <Section title="Datos bancarios" icon={Landmark}>
-          <Item label="Banco" value={empleado.bancoNombre} />
-          <Item label="Cuenta" value={empleado.numeroCuentaBancaria} />
-          <Item label="CCI" value={empleado.cci} />
-          <Item label="Tipo cuenta" value={empleado.tipoCuenta} />
-        </Section>
+        {/* Datos bancarios */}
+        <SectionCard title="Datos bancarios" icon={Landmark}>
+          <Field label="Banco" value={empleado.bancoNombre} />
+          <Field label="Número de cuenta" value={empleado.numeroCuentaBancaria} />
+          <Field label="CCI" value={empleado.cci} />
+          <Field label="Tipo de cuenta" value={empleado.tipoCuenta} />
+        </SectionCard>
 
-        <Section title="Sistema de pensiones" icon={CreditCard}>
-          <Item label="Sistema" value={empleado.sistemaPensiones} />
-          <Item label="CUSPP" value={empleado.cuspp} />
-          <Item label="ESSALUD" value={empleado.numeroEssalud} />
-        </Section>
+        {/* Pensiones y salud */}
+        <SectionCard title="Pensiones y salud" icon={HeartPulse}>
+          <Field label="Sistema de pensiones" value={empleado.sistemaPensiones} />
+          <Field label="CUSPP" value={empleado.cuspp} />
+          <Field label="N° EsSalud" value={empleado.numeroEssalud} />
+        </SectionCard>
       </div>
     </div>
   );

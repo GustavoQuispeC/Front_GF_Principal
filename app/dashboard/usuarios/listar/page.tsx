@@ -1,9 +1,7 @@
-'use client';
+"use client";
 
 import { DatatableUsuarios } from "@/components";
 
 export default function DatatableUsuariosPage() {
-    return (
-      <DatatableUsuarios />
-    );
+  return <DatatableUsuarios />;
 }
