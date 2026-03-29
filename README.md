@@ -1,53 +1,74 @@
-# Next.js & HeroUI Template
+# Front GF Principal
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+Frontend principal construido con Next.js, TypeScript, Tailwind CSS y HeroUI.
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+El proyecto usa App Router y esta organizado para separar rutas, componentes reutilizables, hooks, configuracion, tipos y consumo de APIs.
 
-## Technologies Used
+## Stack
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+- Next.js 15
+- React 18
+- TypeScript
+- Tailwind CSS 4
+- HeroUI
+- React Hook Form
+- Zod
+- Firebase
 
-## How to Use
-
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
-
-```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
-```
-
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
-
-```bash
-npm install
-```
-
-### Run the development server
+## Scripts
 
 ```bash
 npm run dev
+npm run build
+npm run start
+npm run lint
 ```
 
-### Setup pnpm (optional)
+## Estructura
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
-
-```bash
-public-hoist-pattern[]=*@heroui/*
+```text
+app/          Rutas, layouts y paginas del sistema
+components/   Componentes de UI y componentes por dominio
+config/       Configuracion global del proyecto
+helpers/      Funciones auxiliares y logica de apoyo
+hooks/        Custom hooks
+lib/          Clientes y funciones para consumo de APIs
+public/       Archivos estaticos
+styles/       Estilos globales
+types/        Tipos, interfaces y esquemas
 ```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
+## Modulos visibles en la estructura actual
 
-## License
+- Inicio
+- About
+- Blog
+- Pricing
+- Docs
+- Login de usuario
+- Registro de cliente
+- Dashboard
+- Gestion de empleados
+- Gestion de usuarios
 
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
+## Requisitos
+
+- Node.js 20 o superior
+- npm
+
+## Variables de entorno
+
+El proyecto usa un archivo `.env.local` para configuracion local. Antes de iniciar, define ahi las variables necesarias, por ejemplo credenciales de Firebase y endpoints del backend si aplican.
+
+## Flujo de trabajo local
+
+1. Instala dependencias con `npm install`.
+2. Configura las variables en `.env.local`.
+3. Inicia el entorno con `npm run dev`.
+4. Abre `http://localhost:3000`.
+
+## Notas
+
+- El proyecto tiene una base modular por dominio dentro de `components/`.
+- La aplicacion usa alias `@/*` definido en `tsconfig.json`.
+- Si vas a trabajar en equipo, conviene versionar un solo lockfile del gestor que realmente uses.

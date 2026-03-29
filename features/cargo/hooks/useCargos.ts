@@ -1,28 +1,31 @@
 import { useState, useEffect } from "react";
-import { listarCargos } from "@/helpers/cargo.helper";
+
 import { IListarCargos } from "@/types/IListarCargos";
+import { listarCargos } from "@/features/cargo/cargo.service";
 
 export function useCargos() {
   const [cargos, setCargos] = useState<IListarCargos[]>([]);
-  const [loadingCargos, setLoadingCargos] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function cargarCargos() {
+    const cargarCargos = async () => {
       try {
-        setLoadingCargos(true);
+        setLoading(true);
+        setError(null);
+
         const response = await listarCargos();
-        setCargos(response || []);
+        setCargos(response ?? []);
       } catch (err) {
         console.error("Error al cargar cargos:", err);
         setError("Error al cargar los cargos");
       } finally {
-        setLoadingCargos(false);
+        setLoading(false);
       }
-    }
+    };
 
     cargarCargos();
   }, []);
 
-  return { cargos, loadingCargos, error };
+  return { cargos, loading, error };
 }

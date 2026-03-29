@@ -32,8 +32,7 @@ import {
 } from "lucide-react";
 import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
 import { useUbigeo } from "@/hooks/use-ubigeo";
-import { useCatalogos } from "@/hooks/use-catalogos";
-import { useCargos } from "@/hooks/use-cargos";
+import { useCatalogos } from "@/features/catalogo/hooks/useCatalogos";
 import { registrarEmpleado } from "@/helpers/empleado.helper";
 import { useFirebaseStorage } from "@/hooks/use-firebase-storage";
 import { toastPromise } from "@/helpers/toast.helper";
@@ -42,6 +41,7 @@ import { toDotNetDateTime } from "@/helpers/date.helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EmpleadoForm, empleadoSchema } from "@/types/Empleado/empleado.schema";
 import { useRouter } from "next/navigation";
+import { useCargos } from "@/features/cargo/hooks/useCargos";
 
 const defaultValues: EmpleadoForm = {
   nombre: "",
@@ -293,7 +293,7 @@ export default function RegistrarEmpleados() {
                     label="Tipo Documento"
                     placeholder="Seleccione"
                     isLoading={loading}
-                    items={catalogos.TiposDocumentos}
+                    items={catalogos.tiposDocumentos}
                     isRequired
                     selectedKeys={field.value ? [String(field.value)] : []}
                     onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
@@ -351,7 +351,7 @@ export default function RegistrarEmpleados() {
                     label="Género"
                     placeholder="Seleccione"
                     isLoading={loading}
-                    items={catalogos.Generos}
+                    items={catalogos.generos}
                     isRequired
                     selectedKeys={field.value ? [String(field.value)] : []}
                     onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
@@ -372,7 +372,7 @@ export default function RegistrarEmpleados() {
                     label="Estado Civil"
                     placeholder="Seleccione"
                     isLoading={loading}
-                    items={catalogos.EstadosCiviles}
+                    items={catalogos.estadosCiviles}
                     isRequired
                     selectedKeys={field.value ? [String(field.value)] : []}
                     onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
@@ -634,7 +634,7 @@ export default function RegistrarEmpleados() {
                   label="Parentesco"
                   placeholder="Seleccione"
                   isLoading={loading}
-                  items={catalogos.TiposParentesco}
+                  items={catalogos.tiposParentesco}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
@@ -692,7 +692,7 @@ export default function RegistrarEmpleados() {
                   label="Nivel Educativo"
                   placeholder="Seleccione"
                   isLoading={loading}
-                  items={catalogos.NivelesEducativos}
+                  items={catalogos.nivelesEducativos}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
@@ -709,7 +709,7 @@ export default function RegistrarEmpleados() {
                   key={`tipoContrato-${resetKey}`}
                   label="Tipo Contrato"
                   placeholder="Seleccione"
-                  items={catalogos.TiposContrato}
+                  items={catalogos.tiposContrato}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
@@ -726,7 +726,7 @@ export default function RegistrarEmpleados() {
                   key={`tipoJornada-${resetKey}`}
                   label="Tipo Jornada"
                   placeholder="Seleccione"
-                  items={catalogos.TiposJornada}
+                  items={catalogos.tiposJornada}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
@@ -798,7 +798,7 @@ export default function RegistrarEmpleados() {
                   key={`tipoCuenta-${resetKey}`}
                   label="Tipo de Cuenta"
                   placeholder="Seleccione"
-                  items={catalogos.TiposCuentaBancaria}
+                  items={catalogos.tiposCuentaBancaria}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
@@ -837,7 +837,7 @@ export default function RegistrarEmpleados() {
                   label="Sistema de Pensiones"
                   placeholder="Seleccione"
                   isLoading={loading}
-                  items={catalogos.SistemasPensiones}
+                  items={catalogos.sistemasPensiones}
                   selectedKeys={field.value ? [String(field.value)] : []}
                   onSelectionChange={(keys) => field.onChange(Number(Array.from(keys)[0]))}
                 >
