@@ -1,10 +1,6 @@
-import { getAuthUser, logout } from "@/helpers/authorization";
+import { getAuthUser, logout } from "@/shared/auth/auth.service";
 
-export async function apiCliente(
-  url: string,
-  options: RequestInit = {}
-) {
-
+export async function apiCliente(url: string, options: RequestInit = {}) {
   const auth = getAuthUser();
 
   const headers: Record<string, string> = {
@@ -29,8 +25,7 @@ export async function apiCliente(
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    const msg =
-      error?.message || error?.error || error?.title || "Error en la petición";
+    const msg = error?.message || error?.error || error?.title || "Error en la petición";
 
     throw new Error(msg);
   }

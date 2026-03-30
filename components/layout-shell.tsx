@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { Button } from "@heroui/react"; // Usando tus componentes de UI
 import { DrawerComponent, Footer, Navbar } from "@/components";
-import { getAuthUser } from "@/helpers/authorization";
+import { getAuthUser } from "@/shared/auth/auth.service";
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

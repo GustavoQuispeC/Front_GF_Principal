@@ -1,10 +1,6 @@
-import { getAuthUser } from "@/helpers/authorization";
+import { getAuthUser } from "@/shared/auth/auth.service";
 
-export async function apiCargo(
-  url: string,
-  options: RequestInit = {}
-) {
-
+export async function apiCargo(url: string, options: RequestInit = {}) {
   const auth = getAuthUser();
 
   const headers: Record<string, string> = {
@@ -23,8 +19,7 @@ export async function apiCargo(
 
   if (!response.ok) {
     const error = await response.json().catch(() => null);
-    const msg =
-      error?.message || error?.error || error?.title || "Error en la petición";
+    const msg = error?.message || error?.error || error?.title || "Error en la petición";
 
     throw new Error(msg);
   }

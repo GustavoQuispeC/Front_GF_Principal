@@ -1,7 +1,7 @@
 "use client";
-import { VerEmpleado as fetchEmpleado } from "@/helpers/empleado.helper";
+import { VerEmpleado as fetchEmpleado } from "@/features/empleado/empleado.service";
 import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
-import { Avatar, Badge, Button, Card, CardBody, CardHeader, Chip, Divider, Skeleton } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader, Chip, Divider, Skeleton } from "@heroui/react";
 import {
   ArrowLeft,
   Download,
@@ -10,7 +10,6 @@ import {
   MapPin,
   Briefcase,
   Landmark,
-  CreditCard,
   HeartPulse,
   Phone,
   Building2,

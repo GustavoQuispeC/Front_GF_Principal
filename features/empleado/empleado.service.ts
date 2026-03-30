@@ -1,10 +1,8 @@
-import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
-import { getAuthUser } from "./authorization";
 import { apiEmpleado } from "@/lib/api-empleado";
+import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
 import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
 //! Función para listar empleados
 export function ListarEmpleados() {
   return apiEmpleado(`${apiUrl}/Empleados`, {
@@ -19,33 +17,19 @@ export async function VerEmpleado(id: string): Promise<IVerEmpleado> {
   });
 }
 
+//! Función para eliminar empleados, token y rol requrido
+export async function eliminarEmpleado(id: string): Promise<void> {
+  return apiEmpleado(`${apiUrl}/empleados/${id}`, {
+    method: "DELETE",
+  });
+}
+
 //! Función para registrar empleados, token y rol requrido
 export async function registrarEmpleado(
   payload: IRegistarEmpleado, // recibe del formulario
 ): Promise<IRegistarEmpleado> {
-  const user = getAuthUser();
-
-  const rol = user?.rol;
-
-  if (rol !== "Admin" && rol !== "Supervisor") {
-    throw new Error("No tienes permisos para registrar empleados");
-  }
-
   return apiEmpleado(`${apiUrl}/empleados`, {
     method: "POST",
     body: JSON.stringify(payload),
-  });
-}
-
-//! Función para eliminar empleados, token y rol requrido
-export async function eliminarEmpleado(id: string): Promise<void> {
-  const user = getAuthUser();
-  const rol = user?.rol;
-  if (rol !== "Admin") {
-    throw new Error("No tienes permisos para eliminar empleados");
-  }
-
-  return apiEmpleado(`${apiUrl}/empleados/${id}`, {
-    method: "DELETE",
   });
 }

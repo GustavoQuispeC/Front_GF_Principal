@@ -33,8 +33,8 @@ import {
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { usePathname, useRouter } from "next/navigation";
-import { getAuthUser, logout } from "@/helpers/authorization";
 import { IUserData } from "@/types/Auth/IAuth";
+import { getAuthUser, logout } from "@/shared/auth/auth.service";
 
 interface SidebarProps {
   children?: React.ReactNode;

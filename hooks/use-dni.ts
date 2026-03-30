@@ -1,4 +1,4 @@
-import { buscarDni } from "@/helpers/dni.helper";
+import { buscarDni } from "@/features/identidad/identidad.service";
 import { IBuscarDni } from "@/types/IBuscarDni";
 import { useState } from "react";
 

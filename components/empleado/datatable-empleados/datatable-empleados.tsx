@@ -26,9 +26,8 @@ import {
   ModalFooter,
 } from "@heroui/react";
 import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
-import { eliminarEmpleado, ListarEmpleados, VerEmpleado } from "@/helpers/empleado.helper";
-import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
 import { useRouter } from "next/navigation";
+import { eliminarEmpleado, ListarEmpleados } from "@/features/empleado/empleado.service";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {

@@ -3,8 +3,9 @@
 import React, { useMemo, useState } from "react";
 import { Button, Input, Link, Card, CardBody, Divider } from "@heroui/react";
 import { Eye, EyeOff, Mail, Lock, Building2, AlertCircle, ChevronRight } from "lucide-react";
-import { loginUsuario } from "@/helpers/usuario.helpers";
-import { toastError, toastSuccess } from "@/helpers/toast.helper";
+
+import { loginUsuario } from "@/features/usuario/usuario.service";
+import { toastError, toastSuccess } from "@/shared/utils/toast";
 
 type LoginPageProps = {
   forgotHref?: string;
@@ -17,7 +18,6 @@ export default function LoginUsuario({
   brandName = "Grupo Famet",
   storageKey = "auth_usuario",
 }: LoginPageProps) {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
@@ -35,7 +35,6 @@ export default function LoginUsuario({
     if (!canSubmit) return;
 
     try {
-
       setIsLoading(true);
       setErrorMsg(null);
 
@@ -48,15 +47,12 @@ export default function LoginUsuario({
       toastSuccess("Bienvenido al sistema");
 
       window.location.assign("/dashboard");
-
     } catch (err: any) {
-
       const msg = err?.message || "Credenciales inválidas";
 
       setErrorMsg(msg);
 
       toastError(msg);
-
     } finally {
       setIsLoading(false);
     }
@@ -77,47 +73,37 @@ export default function LoginUsuario({
   };
 
   return (
-
-    <main className="relative flex min-h-screen items-center justify-center px-4 py-12 overflow-hidden
+    <main
+      className="relative flex min-h-screen items-center justify-center px-4 py-12 overflow-hidden
     bg-gradient-to-br from-blue-900 via-blue-950 to-black
-    dark:from-black dark:via-neutral-950 dark:to-black">
-
+    dark:from-black dark:via-neutral-950 dark:to-black"
+    >
       {/* glow decor */}
 
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-orange-600/20 rounded-full blur-[120px]" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-md">
-
         {/* Brand */}
 
         <div className="mb-10 text-center">
-
-          <div className="inline-flex h-16 w-16 items-center justify-center
-          rounded-2xl bg-orange-600 shadow-xl shadow-orange-600/30 mb-4">
-
+          <div
+            className="inline-flex h-16 w-16 items-center justify-center
+          rounded-2xl bg-orange-600 shadow-xl shadow-orange-600/30 mb-4"
+          >
             <Building2 size={30} className="text-white" />
-
           </div>
 
-          <h1 className="text-3xl font-bold text-white">
-            Portal Corporativo
-          </h1>
+          <h1 className="text-3xl font-bold text-white">Portal Corporativo</h1>
 
-          <p className="text-sm text-neutral-300 mt-2 font-medium">
-            {brandName} • Acceso de Empleados
-          </p>
-
+          <p className="text-sm text-neutral-300 mt-2 font-medium">{brandName} • Acceso de Empleados</p>
         </div>
 
         {/* Card */}
 
         <Card className="border-none bg-white shadow-2xl dark:bg-neutral-900">
-
           <CardBody className="p-8 space-y-6">
-
             <form onSubmit={handleSubmit} className="space-y-6">
-
               <Input
                 label="Correo Electrónico"
                 placeholder="usuario@empresa.com"
@@ -134,7 +120,6 @@ export default function LoginUsuario({
               />
 
               <div>
-
                 <Input
                   label="Contraseña"
                   placeholder="Ingrese su contraseña"
@@ -148,7 +133,6 @@ export default function LoginUsuario({
                   }}
                   startContent={<Lock size={18} className="text-neutral-400" />}
                   endContent={
-
                     <button
                       type="button"
                       className="text-neutral-400 hover:text-orange-600 transition"
@@ -156,38 +140,29 @@ export default function LoginUsuario({
                     >
                       {isVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
-
                   }
                   classNames={inputClass}
                 />
 
                 <div className="flex justify-end pt-2">
-
-                  <Link
-                    href={forgotHref}
-                    className="text-xs font-semibold text-orange-600 hover:underline"
-                  >
+                  <Link href={forgotHref} className="text-xs font-semibold text-orange-600 hover:underline">
                     ¿Olvidó su contraseña?
                   </Link>
-
                 </div>
-
               </div>
 
               {errorMsg && (
-
-                <div className="flex gap-2 items-center
+                <div
+                  className="flex gap-2 items-center
                 bg-red-50 text-red-700
                 dark:bg-red-950/40 dark:text-red-400
                 border border-red-200 dark:border-red-900
-                rounded-lg p-3 text-sm">
-
+                rounded-lg p-3 text-sm"
+                >
                   <AlertCircle size={16} />
 
                   {errorMsg}
-
                 </div>
-
               )}
 
               <Button
@@ -210,35 +185,24 @@ export default function LoginUsuario({
                 active:scale-[0.98]
                 "
               >
-
                 {isLoading ? "Autenticando..." : "Iniciar Sesión"}
-
               </Button>
-
             </form>
-
           </CardBody>
-
         </Card>
 
         {/* Footer */}
 
         <div className="mt-8 flex flex-col items-center gap-4 text-center">
-
           <Divider className="w-1/3 opacity-40" />
 
-          <p className="text-[11px] uppercase tracking-widest text-neutral-400">
-            Sistema Corporativo Seguro
-          </p>
+          <p className="text-[11px] uppercase tracking-widest text-neutral-400">Sistema Corporativo Seguro</p>
 
           <p className="text-[10px] text-neutral-500">
             © {new Date().getFullYear()} {brandName}
           </p>
-
         </div>
-
       </div>
-
     </main>
   );
 }
