@@ -1,6 +1,6 @@
-'use client';
-import type {SVGProps} from "react";
-import type {Selection, ChipProps, SortDescriptor} from "@heroui/react";
+"use client";
+import type { SVGProps } from "react";
+import type { Selection, ChipProps, SortDescriptor } from "@heroui/react";
 
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -21,9 +21,7 @@ import {
   Pagination,
 } from "@heroui/react";
 import { IListarUsuarios } from "@/types/IListarUsuarios";
-import { listarUsuarios } from "@/helpers/usuario.helpers";
-
-
+import { listarUsuarios } from "@/features/usuario/usuario.service";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -36,7 +34,7 @@ export function capitalize(s: string) {
 }
 
 //! --- Icono de más (+) ---
-export const PlusIcon = ({size = 24, width, height, ...props}: IconSvgProps) => {
+export const PlusIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -48,13 +46,7 @@ export const PlusIcon = ({size = 24, width, height, ...props}: IconSvgProps) => 
       width={size || width}
       {...props}
     >
-      <g
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={1.5}
-      >
+      <g fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}>
         <path d="M6 12h12" />
         <path d="M12 18V6" />
       </g>
@@ -63,7 +55,7 @@ export const PlusIcon = ({size = 24, width, height, ...props}: IconSvgProps) => 
 };
 
 //! --- Icono de tres puntos verticales ---
-export const VerticalDotsIcon = ({size = 24, width, height, ...props}: IconSvgProps) => {
+export const VerticalDotsIcon = ({ size = 24, width, height, ...props }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -103,19 +95,13 @@ export const SearchIcon = (props: IconSvgProps) => {
         strokeLinejoin="round"
         strokeWidth="2"
       />
-      <path
-        d="M22 22L20 20"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-      />
+      <path d="M22 22L20 20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
     </svg>
   );
 };
 
 //! --- Icono de flecha hacia abajo para dropdowns ---
-export const ChevronDownIcon = ({strokeWidth = 1.5, ...otherProps}: IconSvgProps) => {
+export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }: IconSvgProps) => {
   return (
     <svg
       aria-hidden="true"
@@ -141,22 +127,20 @@ export const ChevronDownIcon = ({strokeWidth = 1.5, ...otherProps}: IconSvgProps
 
 //! ----- Configuración de columnas, datos de ejemplo y opciones de estado para el datatable ---
 export const columns = [
-    {name: "NUMERO DOCUMENTO", uid: "numeroDocumento"},
-  {name: "NOMBRE COMPLETO", uid: "nombreEmpleado", sortable: true},
-  {name: "CORREO", uid: "email", sortable: true},
-  {name: "ESTADO", uid: "isActive", sortable: true},
-  {name: "ROL", uid: "roles", sortable: true},
-  {name: "ACCIONES", uid: "actions"},
+  { name: "NUMERO DOCUMENTO", uid: "numeroDocumento" },
+  { name: "NOMBRE COMPLETO", uid: "nombreEmpleado", sortable: true },
+  { name: "CORREO", uid: "email", sortable: true },
+  { name: "ESTADO", uid: "isActive", sortable: true },
+  { name: "ROL", uid: "roles", sortable: true },
+  { name: "ACCIONES", uid: "actions" },
 ];
 
 //! Opciones de estado para el filtro
 export const statusOptions = [
-  {name: "Activo", uid: "true"},
-  {name: "Inactivo", uid: "false"},
+  { name: "Activo", uid: "true" },
+  { name: "Inactivo", uid: "false" },
   // {name: "Vacaciones", uid: "vacation"},
 ];
-
-
 
 //! ----- Mapeo de estado a colores para los chips de estado en la tabla ---
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -166,9 +150,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 };
 
 //! ----- Configuración de columnas, datos de ejemplo y opciones de estado para el datatable ---
-const INITIAL_VISIBLE_COLUMNS = ["numeroDocumento", "nombreEmpleado","email", "isActive","roles", "actions"];
-
-
+const INITIAL_VISIBLE_COLUMNS = ["numeroDocumento", "nombreEmpleado", "email", "isActive", "roles", "actions"];
 
 interface DatatableUsuariosProps {
   onAddNew?: () => void;
@@ -179,9 +161,7 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   const [usuarios, setUsuarios] = useState<IListarUsuarios[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
-  const [visibleColumns, setVisibleColumns] =useState<Selection>(
-    new Set(INITIAL_VISIBLE_COLUMNS), 
-  );
+  const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
@@ -210,12 +190,12 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
     }
     if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
       filteredUsuarios = filteredUsuarios.filter((usuario) =>
-        Array.from(statusFilter).includes(usuario.isActive ? "true" : "false" ),
+        Array.from(statusFilter).includes(usuario.isActive ? "true" : "false"),
       );
     }
 
     return filteredUsuarios;
-  }, [usuarios , filterValue, statusFilter]);
+  }, [usuarios, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage) || 1;
 
@@ -228,15 +208,15 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
 
   //! ----- Función para ordenar los elementos según la columna y dirección de ordenamiento -----
   const sortedItems = useMemo(() => {
-  return [...items].sort((a, b) => {
-    // Obtenemos el valor y aseguramos que no sea null para la comparación
-    const first = a[sortDescriptor.column as keyof IListarUsuarios] ?? "";
-    const second = b[sortDescriptor.column as keyof IListarUsuarios] ?? "";
-    
-    const cmp = first < second ? -1 : first > second ? 1 : 0;
-    return sortDescriptor.direction === "descending" ? -cmp : cmp;
-  });
-}, [sortDescriptor, items]);
+    return [...items].sort((a, b) => {
+      // Obtenemos el valor y aseguramos que no sea null para la comparación
+      const first = a[sortDescriptor.column as keyof IListarUsuarios] ?? "";
+      const second = b[sortDescriptor.column as keyof IListarUsuarios] ?? "";
+
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+      return sortDescriptor.direction === "descending" ? -cmp : cmp;
+    });
+  }, [sortDescriptor, items]);
 
   //! ----- Función para renderizar el contenido de cada celda según la columna -----
   const renderCell = React.useCallback((usuario: IListarUsuarios, columnKey: React.Key) => {
@@ -254,19 +234,22 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
           </User>
         );
       case "roles":
-  return (
-    <div className="flex flex-col">
-      {/* Usamos .join() para convertir el array en texto legible */}
-      <p className="text-bold text-small capitalize">
-        {usuario.roles && usuario.roles.length > 0 
-          ? usuario.roles.join(", ") 
-          : "Sin rol asignado"}
-      </p>
-    </div>
-  );
+        return (
+          <div className="flex flex-col">
+            {/* Usamos .join() para convertir el array en texto legible */}
+            <p className="text-bold text-small capitalize">
+              {usuario.roles && usuario.roles.length > 0 ? usuario.roles.join(", ") : "Sin rol asignado"}
+            </p>
+          </div>
+        );
       case "isActive":
         return (
-          <Chip className="capitalize" color={statusColorMap[usuario.isActive ? "true" : "false"]} size="sm" variant="flat">
+          <Chip
+            className="capitalize"
+            color={statusColorMap[usuario.isActive ? "true" : "false"]}
+            size="sm"
+            variant="flat"
+          >
             {usuario.isActive ? "Activo" : "Inactivo"}
           </Chip>
         );
@@ -389,7 +372,7 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
           <label className="flex items-center text-default-400 text-small">
             Fila por página:
             <select
-            value={rowsPerPage}
+              value={rowsPerPage}
               className="bg-transparent outline-solid outline-transparent text-default-400 text-small"
               onChange={onRowsPerPageChange}
             >
@@ -419,15 +402,7 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
             ? "Todos los elementos seleccionados"
             : `${selectedKeys.size} de ${filteredItems.length} seleccionados`}
         </span>
-        <Pagination
-          isCompact
-          showControls
-          showShadow
-          color="primary"
-          page={page}
-          total={pages}
-          onChange={setPage}
-        />
+        <Pagination isCompact showControls showShadow color="primary" page={page} total={pages} onChange={setPage} />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
           <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
             Anterior
@@ -441,15 +416,14 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   }, [selectedKeys, usuarios.length, page, pages, hasSearchFilter]);
 
   //! --- Funcion para obtener los empleados desde la API al montar el componente ---
-  const fetchUsuarios = async ()=> {
+  const fetchUsuarios = async () => {
     try {
       const usuariosData = await listarUsuarios();
       setUsuarios(usuariosData);
     } catch (error) {
       console.error("Error al obtener los usuarios:", error);
-
     }
-  }
+  };
   //!montar el componente y obtener los usuarios
   useEffect(() => {
     fetchUsuarios();
