@@ -4,14 +4,14 @@ import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 //! Función para listar empleados
-export function ListarEmpleados() {
+export function listarEmpleados() {
   return apiEmpleado(`${apiUrl}/Empleados`, {
     method: "GET",
   });
 }
 
 //! Listar empleado por ID
-export async function VerEmpleado(id: string): Promise<IVerEmpleado> {
+export async function verEmpleado(id: string): Promise<IVerEmpleado> {
   return apiEmpleado(`${apiUrl}/Empleados/${id}`, {
     method: "GET",
   });

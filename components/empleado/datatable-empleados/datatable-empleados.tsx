@@ -27,7 +27,8 @@ import {
 } from "@heroui/react";
 import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
 import { useRouter } from "next/navigation";
-import { eliminarEmpleado, ListarEmpleados } from "@/features/empleado/empleado.service";
+import { eliminarEmpleado } from "@/features/empleado/empleado.logic";
+import { useEmpleados } from "@/features/empleado/hook/useEmpleados";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -170,7 +171,6 @@ const INITIAL_VISIBLE_COLUMNS = [
 
 //! ----- Componente principal del datatable de empleados -----
 export default function DatatableEmpleados() {
-  const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -180,7 +180,7 @@ export default function DatatableEmpleados() {
     column: "id",
     direction: "ascending",
   });
-
+  const { empleados, loading, error, refetch } = useEmpleados();
   const [page, setPage] = useState(1);
   const [empleadoAEliminar, setEmpleadoAEliminar] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -443,27 +443,13 @@ export default function DatatableEmpleados() {
     );
   }, [selectedKeys, empleados.length, page, pages, hasSearchFilter]);
 
-  //! --- Funcion para obtener los empleados desde la API al montar el componente ---
-  const fetchEmpleados = async () => {
-    try {
-      const empleadosData = await ListarEmpleados();
-      setEmpleados(empleadosData);
-    } catch (error) {
-      console.error("Error al obtener los empleados:", error);
-    }
-  };
-  //!montar el componente y obtener los empleados
-  useEffect(() => {
-    fetchEmpleados();
-  }, []);
-
   //! Eliminar empleado
   const confirmarEliminacion = async () => {
     if (!empleadoAEliminar) return;
 
     try {
       await eliminarEmpleado(empleadoAEliminar);
-      await fetchEmpleados(); // refresca lista
+      await refetch(); // Refrescar la lista de empleados después de eliminar
     } catch (error) {
       console.error("Error al eliminar el empleado:", error);
     } finally {
@@ -501,7 +487,12 @@ export default function DatatableEmpleados() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No users found"} items={sortedItems}>
+        <TableBody
+          items={sortedItems}
+          isLoading={loading}
+          loadingContent={<span>Cargando empleados...</span>}
+          emptyContent={loading ? "Cargando..." : "No hay empleados"}
+        >
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}

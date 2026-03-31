@@ -1,5 +1,6 @@
 "use client";
-import { VerEmpleado as fetchEmpleado } from "@/features/empleado/empleado.service";
+
+import { useEmpleado } from "@/features/empleado/hook/useEmpleado";
 import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
 import { Button, Card, CardBody, CardHeader, Chip, Divider, Skeleton } from "@heroui/react";
 import {
@@ -12,13 +13,10 @@ import {
   Landmark,
   HeartPulse,
   Phone,
-  Building2,
   IdCard,
-  Calendar,
   BadgeCheck,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface Props {
   id: string;
@@ -94,26 +92,22 @@ const LoadingSkeleton = () => (
 
 // ── Componente principal ──────────────────────────────────────────────────────
 export default function DetalleEmpleado({ id }: Props) {
-  const [empleado, setEmpleado] = useState<IVerEmpleado | null>(null);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  useEffect(() => {
-    const getEmpleado = async () => {
-      try {
-        const data = await fetchEmpleado(id);
-        setEmpleado(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getEmpleado();
-  }, [id]);
+  const { empleado, loading, error } = useEmpleado(id);
 
   if (loading) return <LoadingSkeleton />;
 
+  // Manejo de errores
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 gap-3">
+        <p className="text-danger text-sm">{error}</p>
+        <Button onPress={() => router.push("/dashboard/empleados/listar")}>Volver</Button>
+      </div>
+    );
+  }
+
+  // Si no se encuentra el empleado (por ejemplo, ID inválido o eliminado)
   if (!empleado) {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-3">
