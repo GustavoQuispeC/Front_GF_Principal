@@ -1,9 +1,9 @@
-import { IListarUsuarios } from "@/features/usuario/usuario.types";
 import { useCallback, useEffect, useState } from "react";
 import { listarUsuarios } from "../usuario.logic";
+import { ListarUsuarios } from "../usuario.types";
 
 export function useUsuarios() {
-  const [usuarios, setUsuarios] = useState<IListarUsuarios[]>([]);
+  const [usuarios, setUsuarios] = useState<ListarUsuarios[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

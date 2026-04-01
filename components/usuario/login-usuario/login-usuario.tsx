@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { Button, Input, Link, Card, CardBody, Divider } from "@heroui/react";
 import { Eye, EyeOff, Mail, Lock, Building2, AlertCircle, ChevronRight } from "lucide-react";
 
-import { loginUsuario } from "@/features/usuario/usuario.service";
+import { loginUsuarioApi } from "@/features/usuario/usuario.service";
 import { toastError, toastSuccess } from "@/shared/utils/toast";
 
 type LoginPageProps = {
@@ -38,7 +38,7 @@ export default function LoginUsuario({
       setIsLoading(true);
       setErrorMsg(null);
 
-      const payload = await loginUsuario(email.trim(), password);
+      const payload = await loginUsuarioApi(email.trim(), password);
 
       if (typeof window !== "undefined") {
         localStorage.setItem(storageKey, JSON.stringify(payload));

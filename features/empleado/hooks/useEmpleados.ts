@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { listarEmpleados } from "../empleado.service";
-import { IEmpleadosListar } from "@/features/empleado/empleado.types";
+import { EmpleadosListar } from "../empleado.types";
+import { listarEmpleadosApi } from "../empleado.service";
 
 export function useEmpleados() {
-  const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);
+  const [empleados, setEmpleados] = useState<EmpleadosListar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -12,7 +12,7 @@ export function useEmpleados() {
       setLoading(true);
       setError(null);
 
-      const data = await listarEmpleados();
+      const data = await listarEmpleadosApi();
       setEmpleados(data ?? []);
     } catch (err) {
       console.error("Error al obtener empleados:", err);
