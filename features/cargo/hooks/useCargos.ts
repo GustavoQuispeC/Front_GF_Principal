@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-
-import { IListarCargos } from "@/types/IListarCargos";
-import { listarCargos } from "@/features/cargo/cargo.service";
+import { ListarCargos } from "../cargo.types";
+import { listarCargos } from "../cargo.logic";
 
 export function useCargos() {
-  const [cargos, setCargos] = useState<IListarCargos[]>([]);
+  const [cargos, setCargos] = useState<ListarCargos[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

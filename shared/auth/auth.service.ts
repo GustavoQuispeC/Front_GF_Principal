@@ -1,4 +1,4 @@
-import { ILoginResponse, IUserData } from "@/types/Auth/IAuth";
+import { ILoginResponse, IUserData } from "@/shared/auth/types/IAuth";
 import { jwtDecode } from "jwt-decode";
 
 const AUTH_KEY = "auth_usuario";

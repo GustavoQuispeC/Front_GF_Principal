@@ -1,9 +1,9 @@
 import { apiDni } from "@/lib/api-dni";
-import { IBuscarDni } from "@/types/IBuscarDni";
+import { BuscarDni } from ".";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-export async function buscarDni(dni: string): Promise<IBuscarDni> {
+export async function buscarDni(dni: string): Promise<BuscarDni> {
   const url = `${apiUrl}/dni/${dni}`;
   return apiDni(url);
 }

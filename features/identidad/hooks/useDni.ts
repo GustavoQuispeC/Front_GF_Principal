@@ -1,5 +1,5 @@
 import { buscarDni } from "@/features/identidad/identidad.service";
-import { IBuscarDni } from "@/types/IBuscarDni";
+import { IBuscarDni } from "@/features/identidad/identidad.types";
 import { useState } from "react";
 
 export function useDni() {

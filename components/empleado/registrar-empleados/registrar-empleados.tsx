@@ -30,20 +30,16 @@ import {
   ArrowLeft,
   Search,
 } from "lucide-react";
-import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
-import { useUbigeo } from "@/hooks/use-ubigeo";
-import { useCatalogos } from "@/features/catalogo/hooks/useCatalogos";
-import { useFirebaseStorage } from "@/hooks/use-firebase-storage";
-
-import { useDni } from "@/hooks/use-dni";
-
+import { useUbigeo } from "@/shared/hooks/useUbigeo";
+import { useFirebaseStorage } from "@/shared/hooks/useFirebaseStorage";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { EmpleadoForm, empleadoSchema } from "@/types/Empleado/empleado.schema";
 import { useRouter } from "next/navigation";
 import { useCargos } from "@/features/cargo/hooks/useCargos";
-import { registrarEmpleado } from "@/features/empleado/empleado.service";
 import { toastPromise } from "@/shared/utils/toast";
 import { toDotNetDateTime } from "@/shared/utils/date";
+import { RegistarEmpleado, registrarEmpleado, empleadoSchema, EmpleadoForm } from "@/features/empleado";
+import { useDni } from "@/features/identidad";
+import { useCatalogos } from "@/features/catalogo";
 
 const defaultValues: EmpleadoForm = {
   nombre: "",
@@ -159,7 +155,7 @@ export default function RegistrarEmpleados() {
       fotoUrl = result.url;
     }
 
-    const payload: IRegistarEmpleado = { ...data, fotoUrl };
+    const payload: RegistarEmpleado = { ...data, fotoUrl };
 
     try {
       await toastPromise(registrarEmpleado(payload), {

@@ -1,8 +1,7 @@
 "use client";
 import type { SVGProps } from "react";
 import type { Selection, ChipProps, SortDescriptor } from "@heroui/react";
-
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -20,8 +19,7 @@ import {
   User,
   Pagination,
 } from "@heroui/react";
-import { IListarUsuarios } from "@/types/IListarUsuarios";
-import { listarUsuarios } from "@/features/usuario/usuario.service";
+import { ListarUsuarios, useUsuarios } from "@/features/usuario";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -158,7 +156,7 @@ interface DatatableUsuariosProps {
 
 //! ----- Componente principal del datatable de empleados -----
 export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) {
-  const [usuarios, setUsuarios] = useState<IListarUsuarios[]>([]);
+  // const [usuarios, setUsuarios] = useState<IListarUsuarios[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -170,6 +168,7 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   });
 
   const [page, setPage] = useState(1);
+  const { usuarios, loading, error, refetch } = useUsuarios();
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -210,8 +209,8 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   const sortedItems = useMemo(() => {
     return [...items].sort((a, b) => {
       // Obtenemos el valor y aseguramos que no sea null para la comparación
-      const first = a[sortDescriptor.column as keyof IListarUsuarios] ?? "";
-      const second = b[sortDescriptor.column as keyof IListarUsuarios] ?? "";
+      const first = a[sortDescriptor.column as keyof ListarUsuarios] ?? "";
+      const second = b[sortDescriptor.column as keyof ListarUsuarios] ?? "";
 
       const cmp = first < second ? -1 : first > second ? 1 : 0;
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -219,8 +218,8 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
   }, [sortDescriptor, items]);
 
   //! ----- Función para renderizar el contenido de cada celda según la columna -----
-  const renderCell = React.useCallback((usuario: IListarUsuarios, columnKey: React.Key) => {
-    const cellValue = usuario[columnKey as keyof IListarUsuarios];
+  const renderCell = React.useCallback((usuario: ListarUsuarios, columnKey: React.Key) => {
+    const cellValue = usuario[columnKey as keyof ListarUsuarios];
 
     switch (columnKey) {
       case "nombreEmpleado":
@@ -415,55 +414,56 @@ export default function DatatableUsuarios({ onAddNew }: DatatableUsuariosProps) 
     );
   }, [selectedKeys, usuarios.length, page, pages, hasSearchFilter]);
 
-  //! --- Funcion para obtener los empleados desde la API al montar el componente ---
-  const fetchUsuarios = async () => {
-    try {
-      const usuariosData = await listarUsuarios();
-      setUsuarios(usuariosData);
-    } catch (error) {
-      console.error("Error al obtener los usuarios:", error);
-    }
-  };
-  //!montar el componente y obtener los usuarios
-  useEffect(() => {
-    fetchUsuarios();
-  }, []);
-
   return (
-    <Table
-      isHeaderSticky
-      aria-label="Example table with custom cells, pagination and sorting"
-      bottomContent={bottomContent}
-      bottomContentPlacement="outside"
-      classNames={{
-        wrapper: "max-h-[382px]",
-      }}
-      selectedKeys={selectedKeys}
-      selectionMode="multiple"
-      sortDescriptor={sortDescriptor}
-      topContent={topContent}
-      topContentPlacement="outside"
-      onSelectionChange={setSelectedKeys}
-      onSortChange={setSortDescriptor}
-    >
-      <TableHeader columns={headerColumns}>
-        {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.numeroDocumento}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      {error && (
+        <div className="flex items-center justify-between bg-danger-50 text-danger-600 px-3 py-2 rounded-lg mb-3 text-sm">
+          <span>{error}</span>
+          <Button size="sm" variant="flat" color="danger" onPress={refetch}>
+            Reintentar
+          </Button>
+        </div>
+      )}
+      <Table
+        isHeaderSticky
+        aria-label="Example table with custom cells, pagination and sorting"
+        bottomContent={bottomContent}
+        bottomContentPlacement="outside"
+        classNames={{
+          wrapper: "max-h-[382px]",
+        }}
+        selectedKeys={selectedKeys}
+        selectionMode="multiple"
+        sortDescriptor={sortDescriptor}
+        topContent={topContent}
+        topContentPlacement="outside"
+        onSelectionChange={setSelectedKeys}
+        onSortChange={setSortDescriptor}
+      >
+        <TableHeader columns={headerColumns}>
+          {(column) => (
+            <TableColumn
+              key={column.uid}
+              align={column.uid === "actions" ? "center" : "start"}
+              allowsSorting={column.sortable}
+            >
+              {column.name}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody
+          items={sortedItems}
+          isLoading={loading}
+          loadingContent={<span>Cargando usuarios...</span>}
+          emptyContent={error ? "Error al cargar usuarios" : "No hay usuarios"}
+        >
+          {(item) => (
+            <TableRow key={item.numeroDocumento}>
+              {(columnKey) => <TableCell>{renderCell(item, columnKey) as React.ReactNode}</TableCell>}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </>
   );
 }

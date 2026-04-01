@@ -1,9 +1,11 @@
 import { getAuthUser } from "@/shared/auth/auth.service";
-import { IRegistarEmpleado } from "@/types/Empleado/IRegistrarEmpleado";
+
 import {
-  registrarEmpleado as registrarEmpleadoService,
-  eliminarEmpleado as eliminarEmpleadoService,
+  registrarEmpleadoApi as registrarEmpleadoService,
+  eliminarEmpleadoApi as eliminarEmpleadoService,
 } from "@/features/empleado/empleado.service";
+import { RegistarEmpleado } from "./empleado.types";
+
 //! eliminar empleado con validación
 export async function eliminarEmpleado(id: string): Promise<void> {
   const user = getAuthUser();
@@ -20,8 +22,8 @@ export async function eliminarEmpleado(id: string): Promise<void> {
 
 //! registrar empleado con validación
 export async function registrarEmpleado(
-  payload: IRegistarEmpleado, // recibe del formulario
-): Promise<IRegistarEmpleado> {
+  payload: RegistarEmpleado, // recibe del formulario
+): Promise<RegistarEmpleado> {
   const user = getAuthUser();
   if (!user) {
     throw new Error("No autenticado");

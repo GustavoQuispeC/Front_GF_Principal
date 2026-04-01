@@ -33,7 +33,7 @@ import {
 } from "@heroui/react";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { usePathname, useRouter } from "next/navigation";
-import { IUserData } from "@/types/Auth/IAuth";
+import { IUserData } from "@/shared/auth/types/IAuth";
 import { getAuthUser, logout } from "@/shared/auth/auth.service";
 
 interface SidebarProps {

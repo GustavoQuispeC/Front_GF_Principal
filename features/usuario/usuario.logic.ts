@@ -1,12 +1,12 @@
 import { getAuthUser } from "@/shared/auth/auth.service";
-import { listarUsuarios } from "./usuario.service";
+import { listarUsuariosApi as listarUsuariosService } from "./usuario.service";
 
-export async function listarUsuariosSegunRol() {
+export async function listarUsuarios() {
   const user = getAuthUser();
 
   if (!user) {
     throw new Error("No autenticado");
   }
 
-  return listarUsuarios();
+  return listarUsuariosService();
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import { useEmpleado } from "@/features/empleado/hook/useEmpleado";
-import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
+import { useEmpleado } from "@/features/empleado";
 import { Button, Card, CardBody, CardHeader, Chip, Divider, Skeleton } from "@heroui/react";
 import {
   ArrowLeft,

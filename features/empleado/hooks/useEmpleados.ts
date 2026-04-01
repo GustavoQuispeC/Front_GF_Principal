@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { listarEmpleados } from "../empleado.service";
-import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
+import { IEmpleadosListar } from "@/features/empleado/empleado.types";
 
 export function useEmpleados() {
   const [empleados, setEmpleados] = useState<IEmpleadosListar[]>([]);

@@ -1,7 +1,7 @@
 "use client";
 import type { SVGProps } from "react";
 import type { Selection, ChipProps, SortDescriptor } from "@heroui/react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -25,10 +25,10 @@ import {
   ModalBody,
   ModalFooter,
 } from "@heroui/react";
-import { IEmpleadosListar } from "@/types/Empleado/IListarEmpleados";
+import { EmpleadosListar } from "@/features/empleado/empleado.types";
 import { useRouter } from "next/navigation";
 import { eliminarEmpleado } from "@/features/empleado/empleado.logic";
-import { useEmpleados } from "@/features/empleado/hook/useEmpleados";
+import { useEmpleados } from "@/features/empleado";
 
 //! --- Tipos para los íconos SVG ---
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
@@ -224,9 +224,9 @@ export default function DatatableEmpleados() {
 
   //! ----- Función para ordenar los elementos según la columna y dirección de ordenamiento -----
   const sortedItems = useMemo(() => {
-    return [...items].sort((a: IEmpleadosListar, b: IEmpleadosListar) => {
-      const first = a[sortDescriptor.column as keyof IEmpleadosListar] as number;
-      const second = b[sortDescriptor.column as keyof IEmpleadosListar] as number;
+    return [...items].sort((a: EmpleadosListar, b: EmpleadosListar) => {
+      const first = a[sortDescriptor.column as keyof EmpleadosListar] as number;
+      const second = b[sortDescriptor.column as keyof EmpleadosListar] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -234,8 +234,8 @@ export default function DatatableEmpleados() {
   }, [sortDescriptor, items]);
 
   //! ----- Función para renderizar el contenido de cada celda según la columna -----
-  const renderCell = React.useCallback((empleados: IEmpleadosListar, columnKey: React.Key) => {
-    const cellValue = empleados[columnKey as keyof IEmpleadosListar];
+  const renderCell = React.useCallback((empleados: EmpleadosListar, columnKey: React.Key) => {
+    const cellValue = empleados[columnKey as keyof EmpleadosListar];
 
     switch (columnKey) {
       case "nombreCompleto":

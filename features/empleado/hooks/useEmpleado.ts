@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { verEmpleado } from "@/features/empleado/empleado.service";
-import { IVerEmpleado } from "@/types/Empleado/IVerEmpleado";
+import { IVerEmpleado } from "@/features/empleado/types/VerEmpleado";
 
 export function useEmpleado(id: string) {
   const [empleado, setEmpleado] = useState<IVerEmpleado | null>(null);
