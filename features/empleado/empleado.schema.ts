@@ -37,5 +37,5 @@ export const empleadoSchema = z.object({
   observaciones: z.string().nullable(),
 });
 
-// ✅ El tipo se infiere automáticamente del schema
+//! El tipo se infiere automáticamente del schema
 export type EmpleadoForm = z.infer<typeof empleadoSchema>;
