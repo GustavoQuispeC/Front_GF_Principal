@@ -14,3 +14,4 @@ export { default as RegistrarUsuario } from "./usuario/registrar-usuario/registr
 export { Footer } from "./ui/footer/footer";
 export { default as ToastProvider } from "./ui/toast-provider/toast-provider";
 export { Navbar } from "./ui/navbar/navbar";
+export { default as EditarEmpleado } from "./empleado/editar-empleado/editar-empleado";

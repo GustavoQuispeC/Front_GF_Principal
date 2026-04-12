@@ -500,6 +500,7 @@ export default function DatatableEmpleados() {
           )}
         </TableBody>
       </Table>
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (

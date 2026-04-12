@@ -100,6 +100,8 @@ export interface VerEmpleado {
   cargoActual: string;
   salarioActual: number;
   fechaIngresoActual: string;
+  fechaEgreso: string | null;
+  observaciones: string | null;
   tipoContrato: string | null;
   tipoJornada: string | null;
   isActive: boolean;
