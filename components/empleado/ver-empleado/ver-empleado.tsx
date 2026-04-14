@@ -137,7 +137,7 @@ export default function DetalleEmpleado({ id }: Props) {
                 <img
                   src={empleado.fotoUrl ?? "/avatar.png"}
                   alt={empleado.nombreCompleto}
-                  className="w-20 h-24 rounded-xl object-cover border-2 border-default-200"
+                  className="w-26 h-26 rounded-xl object-cover border-2 border-default-200"
                 />
                 {/* Badge de estado sobre la foto */}
                 <span

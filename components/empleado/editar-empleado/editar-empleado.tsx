@@ -1,7 +1,9 @@
 "use client";
 
-import { useEmpleado } from "@/features/empleado";
-import { Button, Card, CardBody, CardHeader, Chip, Divider, Input, Skeleton } from "@heroui/react";
+import { useCatalogos } from "@/features/catalogo";
+import { EmpleadoForm, empleadoSchema, useEmpleado } from "@/features/empleado";
+import { Button, Card, CardBody, CardHeader, Chip, Divider, Input, Select, SelectItem, Skeleton } from "@heroui/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ArrowLeft,
   Save,
@@ -19,7 +21,45 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+
+const defaultValues: EmpleadoForm = {
+  nombre: "",
+  apellidos: "",
+  tipoDocumento: 0,
+  numeroDocumento: "",
+  fechaNacimiento: "",
+  genero: 0,
+  estadoCivil: 0,
+  nacionalidad: null,
+  correo: "",
+  telefonoMovil: "",
+  direccion: null,
+  distrito: "",
+  provincia: "",
+  departamento: "",
+  contactoEmergenciaNombre: null,
+  contactoEmergenciaParentesco: 0,
+  contactoEmergenciaTelefono: null,
+  numeroCuentaBancaria: null,
+  bancoNombre: null,
+  tipoCuenta: 0,
+  cci: null,
+  ruc: null,
+  numeroESSalud: null,
+  sistemaPensiones: 0,
+  cuspp: null,
+  nivelEducativo: 0,
+  profesionOficio: null,
+  fotoUrl: null,
+  cargoId: 0,
+  salario: 0.0,
+  tipoContrato: 0,
+  tipoJornada: 0,
+  fechaIngreso: "",
+  observaciones: null,
+};
 
 const AvatarUpload = ({
   currentUrl,
@@ -74,7 +114,7 @@ const AvatarUpload = ({
         onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
-        className="relative w-20 h-24 rounded-xl overflow-hidden border-2 border-default-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-400"
+        className="relative w-26 h-26 rounded-xl overflow-hidden border-2 border-default-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-400"
       >
         <img
           src={src}
@@ -187,6 +227,55 @@ export default function EditarEmpleado({ id }: Props) {
   const router = useRouter();
   const { empleado, loading, error } = useEmpleado(id);
   const [nuevaFoto, setNuevaFoto] = useState<File | null>(null);
+  const { catalogos, loading: loadingCatalogos } = useCatalogos();
+  const [genero, setGenero] = useState<string>("");
+  const [estadoCivil, setEstadoCivil] = useState<string>("");
+  const [tiposDocumento, setTiposDocumento] = useState<string>("");
+  const [resetKey, setResetKey] = useState(0);
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors, isSubmitted },
+  } = useForm<EmpleadoForm>({
+    resolver: zodResolver(empleadoSchema),
+    defaultValues,
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    shouldFocusError: true,
+  });
+
+  //! Cuando el empleado se carga exitosamente, reiniciamos el formulario con sus datos
+  useEffect(() => {
+    if (empleado?.genero && catalogos.generos.length > 0) {
+      const generoEncontrado = catalogos.generos.find((g: any) => g.nombre === empleado.genero);
+
+      if (generoEncontrado) {
+        setGenero(String(generoEncontrado.id));
+      }
+    }
+  }, [empleado, catalogos.generos]);
+
+  useEffect(() => {
+    if (empleado?.estadoCivil && catalogos.estadosCiviles.length > 0) {
+      const estadoCivilEncontrado = catalogos.estadosCiviles.find((e: any) => e.nombre === empleado.estadoCivil);
+      if (estadoCivilEncontrado) {
+        setEstadoCivil(String(estadoCivilEncontrado.id));
+      }
+    }
+  }, [empleado, catalogos.estadosCiviles]);
+
+  useEffect(() => {
+    if (empleado?.tipoDocumento && catalogos.tiposDocumentos.length > 0) {
+      const tipoDocumentoEncontrado = catalogos.tiposDocumentos.find((t: any) => t.nombre === empleado.tipoDocumento);
+      if (tipoDocumentoEncontrado) {
+        setTiposDocumento(String(tipoDocumentoEncontrado.id));
+      }
+    }
+  }, [empleado, catalogos.tiposDocumentos]);
 
   if (loading) return <LoadingSkeleton />;
 
@@ -306,9 +395,58 @@ export default function EditarEmpleado({ id }: Props) {
         <SectionCard title="Datos personales" icon={User}>
           <Input label="Nombres" size="sm" defaultValue={empleado.nombre} />
           <Input label="Apellidos" size="sm" defaultValue={empleado.apellidos} />
-          <Input label="Género" size="sm" defaultValue={empleado.genero} />
-          <Input label="Estado civil" size="sm" defaultValue={empleado.estadoCivil} />
-          <Input label="Tipo documento" size="sm" defaultValue={empleado.tipoDocumento} />
+          <Controller
+            name="genero"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Género"
+                selectedKeys={genero ? [genero] : []}
+                onSelectionChange={(keys) => {
+                  setGenero(Array.from(keys)[0] as string);
+                }}
+              >
+                {catalogos.generos.map((g: any) => (
+                  <SelectItem key={String(g.id)}>{g.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
+
+          <Controller
+            name="estadoCivil"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Estado civil"
+                selectedKeys={estadoCivil ? [estadoCivil] : []}
+                onSelectionChange={(keys) => {
+                  setEstadoCivil(Array.from(keys)[0] as string);
+                }}
+              >
+                {catalogos.estadosCiviles.map((e: any) => (
+                  <SelectItem key={String(e.id)}>{e.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
+          <Controller
+            name="tipoDocumento"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Tipo de documento "
+                selectedKeys={tiposDocumento ? [tiposDocumento] : []}
+                onSelectionChange={(keys) => {
+                  setTiposDocumento(Array.from(keys)[0] as string);
+                }}
+              >
+                {catalogos.tiposDocumentos.map((e: any) => (
+                  <SelectItem key={String(e.id)}>{e.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
           <Input label="N° documento" size="sm" defaultValue={empleado.numeroDocumento} />
           <Input label="Fecha de nacimiento" size="sm" defaultValue={empleado.fechaNacimiento?.split("T")[0]} />
           <Input label="Edad" size="sm" defaultValue={empleado.edad ? String(empleado.edad) : ""} isReadOnly />
