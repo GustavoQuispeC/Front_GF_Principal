@@ -1,6 +1,7 @@
 "use client";
 
-import { useCatalogos } from "@/features/catalogo";
+import { useCargos } from "@/features/cargo/hooks/useCargos";
+import { mapCatalogToId, useCatalogos } from "@/features/catalogo";
 import { EmpleadoForm, empleadoSchema, useEmpleado } from "@/features/empleado";
 import { Button, Card, CardBody, CardHeader, Chip, Divider, Input, Select, SelectItem, Skeleton } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 const defaultValues: EmpleadoForm = {
@@ -44,7 +45,7 @@ const defaultValues: EmpleadoForm = {
   contactoEmergenciaTelefono: null,
   numeroCuentaBancaria: null,
   bancoNombre: null,
-  tipoCuenta: 0,
+  tiposCuentaBancaria: 0,
   cci: null,
   ruc: null,
   numeroESSalud: null,
@@ -228,10 +229,19 @@ export default function EditarEmpleado({ id }: Props) {
   const { empleado, loading, error } = useEmpleado(id);
   const [nuevaFoto, setNuevaFoto] = useState<File | null>(null);
   const { catalogos, loading: loadingCatalogos } = useCatalogos();
-  const [genero, setGenero] = useState<string>("");
-  const [estadoCivil, setEstadoCivil] = useState<string>("");
-  const [tiposDocumento, setTiposDocumento] = useState<string>("");
+  const [cargoId, setCargoId] = useState<string>("");
+  const { cargos } = useCargos();
   const [resetKey, setResetKey] = useState(0);
+  const [form, setForm] = useState({
+    genero: "",
+    estadoCivil: "",
+    tipoDocumento: "",
+    tipoContrato: "",
+    tipoJornada: "",
+    sistemaPensiones: "",
+    tiposCuentaBancaria: "",
+    nivelesEducativos: "",
+  });
 
   const {
     control,
@@ -248,35 +258,23 @@ export default function EditarEmpleado({ id }: Props) {
     shouldFocusError: true,
   });
 
-  //! Cuando el empleado se carga exitosamente, reiniciamos el formulario con sus datos
+  //! Sincronizar el formulario con los datos del empleado una vez que ambos, empleado y catálogos, estén disponibles
   useEffect(() => {
-    if (empleado?.genero && catalogos.generos.length > 0) {
-      const generoEncontrado = catalogos.generos.find((g: any) => g.nombre === empleado.genero);
+    if (!empleado) return;
 
-      if (generoEncontrado) {
-        setGenero(String(generoEncontrado.id));
-      }
-    }
-  }, [empleado, catalogos.generos]);
+    setForm({
+      genero: mapCatalogToId(catalogos.generos, empleado.genero),
+      estadoCivil: mapCatalogToId(catalogos.estadosCiviles, empleado.estadoCivil),
+      tipoDocumento: mapCatalogToId(catalogos.tiposDocumentos, empleado.tipoDocumento),
+      tipoContrato: mapCatalogToId(catalogos.tiposContrato, empleado.tipoContrato ?? ""),
+      tipoJornada: mapCatalogToId(catalogos.tiposJornada, empleado.tipoJornada ?? ""),
+      sistemaPensiones: mapCatalogToId(catalogos.sistemasPensiones, empleado.sistemaPensiones ?? ""),
+      tiposCuentaBancaria: mapCatalogToId(catalogos.tiposCuentaBancaria, empleado.tiposCuentaBancaria ?? ""),
+      nivelesEducativos: mapCatalogToId(catalogos.nivelesEducativos, empleado.nivelEducativo ?? ""),
+    });
+  }, [empleado, catalogos]);
 
-  useEffect(() => {
-    if (empleado?.estadoCivil && catalogos.estadosCiviles.length > 0) {
-      const estadoCivilEncontrado = catalogos.estadosCiviles.find((e: any) => e.nombre === empleado.estadoCivil);
-      if (estadoCivilEncontrado) {
-        setEstadoCivil(String(estadoCivilEncontrado.id));
-      }
-    }
-  }, [empleado, catalogos.estadosCiviles]);
-
-  useEffect(() => {
-    if (empleado?.tipoDocumento && catalogos.tiposDocumentos.length > 0) {
-      const tipoDocumentoEncontrado = catalogos.tiposDocumentos.find((t: any) => t.nombre === empleado.tipoDocumento);
-      if (tipoDocumentoEncontrado) {
-        setTiposDocumento(String(tipoDocumentoEncontrado.id));
-      }
-    }
-  }, [empleado, catalogos.tiposDocumentos]);
-
+  //! Mostrar loading mientras se cargan los datos del empleado o los catálogos
   if (loading) return <LoadingSkeleton />;
 
   if (error) {
@@ -311,6 +309,13 @@ export default function EditarEmpleado({ id }: Props) {
       </div>
     );
   }
+
+  const handleSelectChange = (field: string, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4">
@@ -401,10 +406,8 @@ export default function EditarEmpleado({ id }: Props) {
             render={({ field }) => (
               <Select
                 label="Género"
-                selectedKeys={genero ? [genero] : []}
-                onSelectionChange={(keys) => {
-                  setGenero(Array.from(keys)[0] as string);
-                }}
+                selectedKeys={form.genero ? [form.genero] : []}
+                onSelectionChange={(keys) => handleSelectChange("genero", Array.from(keys)[0] as string)}
               >
                 {catalogos.generos.map((g: any) => (
                   <SelectItem key={String(g.id)}>{g.nombre}</SelectItem>
@@ -419,9 +422,9 @@ export default function EditarEmpleado({ id }: Props) {
             render={({ field }) => (
               <Select
                 label="Estado civil"
-                selectedKeys={estadoCivil ? [estadoCivil] : []}
+                selectedKeys={form.estadoCivil ? [form.estadoCivil] : []}
                 onSelectionChange={(keys) => {
-                  setEstadoCivil(Array.from(keys)[0] as string);
+                  handleSelectChange("estadoCivil", Array.from(keys)[0] as string);
                 }}
               >
                 {catalogos.estadosCiviles.map((e: any) => (
@@ -436,9 +439,9 @@ export default function EditarEmpleado({ id }: Props) {
             render={({ field }) => (
               <Select
                 label="Tipo de documento "
-                selectedKeys={tiposDocumento ? [tiposDocumento] : []}
+                selectedKeys={form.tipoDocumento ? [form.tipoDocumento] : []}
                 onSelectionChange={(keys) => {
-                  setTiposDocumento(Array.from(keys)[0] as string);
+                  handleSelectChange("tipoDocumento", Array.from(keys)[0] as string);
                 }}
               >
                 {catalogos.tiposDocumentos.map((e: any) => (
@@ -482,20 +485,78 @@ export default function EditarEmpleado({ id }: Props) {
 
         {/* Educación */}
         <SectionCard title="Educación" icon={GraduationCap}>
-          <Input label="Nivel educativo" size="sm" defaultValue={empleado.nivelEducativo ?? ""} />
+          <Controller
+            name="nivelEducativo"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Nivel educativo"
+                selectedKeys={form.nivelesEducativos ? [form.nivelesEducativos] : []}
+                onSelectionChange={(keys) => handleSelectChange("nivelesEducativos", Array.from(keys)[0] as string)}
+              >
+                {catalogos.nivelesEducativos.map((n: any) => (
+                  <SelectItem key={String(n.id)}>{n.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
           <Input label="Profesión / oficio" size="sm" defaultValue={empleado.profesionOficio ?? ""} />
         </SectionCard>
 
         {/* Información laboral — ancho completo */}
         <SectionCard title="Información laboral" icon={Briefcase} className="lg:col-span-2">
-          <Input label="Cargo" size="sm" defaultValue={empleado.cargoActual} />
+          <Controller
+            name="cargoId"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Cargo"
+                selectedKeys={cargoId ? [cargoId] : []}
+                onSelectionChange={(keys) => {
+                  setCargoId(Array.from(keys)[0] as string);
+                }}
+              >
+                {cargos.map((e: any) => (
+                  <SelectItem key={String(e.id)}>{e.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
           <Input
             label="Salario (S/)"
             size="sm"
             defaultValue={empleado.salarioActual ? String(empleado.salarioActual) : ""}
           />
-          <Input label="Tipo de contrato" size="sm" defaultValue={empleado.tipoContrato ?? ""} />
-          <Input label="Tipo de jornada" size="sm" defaultValue={empleado.tipoJornada ?? ""} />
+          <Controller
+            name="tipoContrato"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Tipo de contrato"
+                selectedKeys={form.tipoContrato ? [form.tipoContrato] : []}
+                onSelectionChange={(keys) => handleSelectChange("tipoContrato", Array.from(keys)[0] as string)}
+              >
+                {catalogos.tiposContrato.map((tc: any) => (
+                  <SelectItem key={String(tc.id)}>{tc.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
+          <Controller
+            name="tipoJornada"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Tipo de jornada"
+                selectedKeys={form.tipoJornada ? [form.tipoJornada] : []}
+                onSelectionChange={(keys) => handleSelectChange("tipoJornada", Array.from(keys)[0] as string)}
+              >
+                {catalogos.tiposJornada.map((tj: any) => (
+                  <SelectItem key={String(tj.id)}>{tj.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
           <Input label="Fecha de ingreso" size="sm" defaultValue={empleado.fechaIngresoActual?.split("T")[0]} />
           <Input label="Fecha de egreso" size="sm" defaultValue={empleado.fechaEgreso ?? ""} />
           <Input
@@ -511,12 +572,40 @@ export default function EditarEmpleado({ id }: Props) {
           <Input label="Banco" size="sm" defaultValue={empleado.bancoNombre ?? ""} />
           <Input label="N° de cuenta" size="sm" defaultValue={empleado.numeroCuentaBancaria ?? ""} />
           <Input label="CCI" size="sm" defaultValue={empleado.cci ?? ""} />
-          <Input label="Tipo de cuenta" size="sm" defaultValue={empleado.tipoCuenta ?? ""} />
+          <Controller
+            name="tiposCuentaBancaria"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Tipo de cuenta"
+                selectedKeys={form.tiposCuentaBancaria ? [form.tiposCuentaBancaria] : []}
+                onSelectionChange={(keys) => handleSelectChange("tiposCuentaBancaria", Array.from(keys)[0] as string)}
+              >
+                {catalogos.tiposCuentaBancaria.map((tc: any) => (
+                  <SelectItem key={String(tc.id)}>{tc.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
         </SectionCard>
 
         {/* Pensiones y salud */}
         <SectionCard title="Pensiones y salud" icon={HeartPulse}>
-          <Input label="Sistema de pensiones" size="sm" defaultValue={empleado.sistemaPensiones ?? ""} />
+          <Controller
+            name="sistemaPensiones"
+            control={control}
+            render={({ field }) => (
+              <Select
+                label="Sistema de pensiones"
+                selectedKeys={form.sistemaPensiones ? [form.sistemaPensiones] : []}
+                onSelectionChange={(keys) => handleSelectChange("sistemaPensiones", Array.from(keys)[0] as string)}
+              >
+                {catalogos.sistemasPensiones.map((sp: any) => (
+                  <SelectItem key={String(sp.id)}>{sp.nombre}</SelectItem>
+                ))}
+              </Select>
+            )}
+          />
           <Input label="CUSPP" size="sm" defaultValue={empleado.cuspp ?? ""} />
           <Input label="N° EsSalud" size="sm" defaultValue={empleado.numeroEssalud ?? ""} className="sm:col-span-2" />
         </SectionCard>

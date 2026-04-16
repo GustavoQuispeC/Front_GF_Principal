@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 import {
-  listarBancos,
+  listarTiposCuentaBancaria,
   listarEstadosCiviles,
   listarGeneros,
   listarNivelesEducativos,
@@ -62,7 +62,7 @@ export function useCatalogos() {
           listarTiposDocumento(),
           listarGeneros(),
           listarEstadosCiviles(),
-          listarBancos(),
+          listarTiposCuentaBancaria(),
           listarSistemasPensiones(),
           listarNivelesEducativos(),
           listarTiposParentesco(),

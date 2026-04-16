@@ -20,7 +20,7 @@ export const empleadoSchema = z.object({
   contactoEmergenciaTelefono: z.string().nullable(),
   numeroCuentaBancaria: z.string().nullable(),
   bancoNombre: z.string().nullable(),
-  tipoCuenta: z.number(),
+  tiposCuentaBancaria: z.number(),
   cci: z.string().nullable(),
   ruc: z.string().nullable(),
   numeroESSalud: z.string().nullable(), // ← agregar nullable

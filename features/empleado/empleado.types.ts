@@ -48,7 +48,7 @@ export interface RegistarEmpleado {
   contactoEmergenciaTelefono: string | null;
   numeroCuentaBancaria: string | null;
   bancoNombre: string | null;
-  tipoCuenta: number;
+  tiposCuentaBancaria: number;
   cci: string | null;
   ruc: string | null;
   numeroESSalud: string | null;
@@ -89,7 +89,7 @@ export interface VerEmpleado {
   contactoEmergenciaParentesco: string | null;
   bancoNombre: string | null;
   numeroCuentaBancaria: string | null;
-  tipoCuenta: string | null;
+  tiposCuentaBancaria: string | null;
   cci: string | null;
   numeroEssalud: string | null;
   sistemaPensiones: string | null;

@@ -61,7 +61,7 @@ const defaultValues: EmpleadoForm = {
   contactoEmergenciaTelefono: null,
   numeroCuentaBancaria: null,
   bancoNombre: null,
-  tipoCuenta: 0,
+  tiposCuentaBancaria: 0,
   cci: null,
   ruc: null,
   numeroESSalud: null,
@@ -789,11 +789,11 @@ export default function RegistrarEmpleados() {
             />
 
             <Controller
-              name="tipoCuenta"
+              name="tiposCuentaBancaria"
               control={control}
               render={({ field }) => (
                 <Select
-                  key={`tipoCuenta-${resetKey}`}
+                  key={`tiposCuentaBancaria-${resetKey}`}
                   label="Tipo de Cuenta"
                   placeholder="Seleccione"
                   items={catalogos.tiposCuentaBancaria}
